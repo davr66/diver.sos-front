@@ -1,14 +1,17 @@
-import {Link} from "react-router-dom"
+import { MdBusinessCenter ,MdOutlineBusinessCenter,MdOutlineHome, MdHome } from "react-icons/md";
+import NavItem from "./NavItem";
+
 
 export default function NavBar(){
   let isLoggedIn = false;
+
   return (
-    <nav>
-      <Link to="/">Home</Link>
-      <Link to="/oportunidades">Oportunidades</Link>
-      <Link to="/grupos">Grupos de Apoio</Link>
-      <Link to="/favoritos">Favoritos</Link>
-      {isLoggedIn ? (<Link to="/perfil">Perfil</Link>):(<Link to="login"></Link>)}
+    <nav className="flex justify-evenly">
+      <NavItem href={'/'} label={"Início"} IconOutlined={MdOutlineHome} IconFilled={MdHome}></NavItem>
+      <NavItem href={'/vagas'} label={'Vagas'} IconOutlined={MdOutlineBusinessCenter} IconFilled={MdBusinessCenter}></NavItem>
+      <NavItem href={'/favoritos'} label={'Vagas'} IconOutlined={MdOutlineBusinessCenter} IconFilled={MdBusinessCenter}></NavItem>
+      <NavItem href={'/grupos'} label={'Vagas'} IconOutlined={MdOutlineBusinessCenter} IconFilled={MdBusinessCenter}></NavItem>
+      <NavItem href={'/perfil'} label={'Vagas'} IconOutlined={MdOutlineBusinessCenter} IconFilled={MdBusinessCenter}></NavItem>
     </nav>
   )
 }
