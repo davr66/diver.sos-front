@@ -7,7 +7,7 @@ export default function Header() {
           bg-bottom
           bg-[length:9rem] 
           flex justify-center
-          py-8
+          py-8 mb-5
       ">
       </header>
   )

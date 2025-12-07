@@ -6,7 +6,7 @@ export default function NavBar(){
   let isLoggedIn = false;
 
   return (
-    <nav className="fixed bottom-5 left-0 right-0 
+    <nav className="bg-white fixed bottom-5 left-0 right-0 
     flex justify-evenly 
     rounded-full border-2 border-b-5 border-r-5 py-1 w-[96%] mx-auto
     nth-1:mb-100">
