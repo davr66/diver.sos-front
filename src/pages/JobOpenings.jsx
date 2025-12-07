@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import JobOpening from '../components/JobOpening'
+import SearchBar from '../components/SearchBar';
 
 export default function JobApplications(){
+  const [search,setSearch] = useState("");
   const jobOpenings = [
   {
     "title": "Desenvolvedor Front-end Júnior",
@@ -64,9 +67,29 @@ export default function JobApplications(){
   }
 ]
 
+  const filteredJobs = search.trim() === "" ? jobOpenings:jobOpenings.filter(job=>{
+    const term = search.toLowerCase();
+    return (
+      job.title.toLowerCase().includes(term) ||
+      job.company.toLowerCase().includes(term) ||
+      job.location.toLowerCase().includes(term) ||
+      job.work_mode.toLowerCase().includes(term) 
+    )
+  })
+
   return(
     <div className='flex flex-col items-center'>
-      {jobOpenings.map((jobOpening,index) =>(<JobOpening title={jobOpening.title} company={jobOpening.company} location={jobOpening.location} work_mode={jobOpening.work_mode}></JobOpening>) )}
+      <SearchBar value={search} onChange={setSearch} placeholder='Pesquisar vagas...'></SearchBar>
+
+      <div className='w-[95%] flex flex-col items-center'>
+        {filteredJobs.map((job,index)=>(
+          <JobOpening key={index} title={job.title} company={job.company} location={job.location} work_mode={job.work_mode}></JobOpening>
+        ))}
+
+        {search.trim() !== "" && filteredJobs.length === 0 &&(
+          <p>Nenhuma vaga encontrada</p>
+        )}
+      </div>
     </div>
   );
 }
