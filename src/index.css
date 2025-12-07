@@ -1,3 +1,7 @@
 @import "tailwindcss";
 
+:root{
+  --yellow-bg:#FFE79D;
+  font-family: "Inter",sans-serif;
+}
 

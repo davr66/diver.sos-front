@@ -10,7 +10,7 @@ function App() {
 
   return (
     <>
-      {/* <Header></Header> */}
+      <Header></Header>
       <NavBar></NavBar>
       {/* <Routes>
         <Route path='/'></Route>
