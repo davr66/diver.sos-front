@@ -2,7 +2,7 @@ import { useState } from "react";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
-import Dashboard from "../pages/Dashboard";
+// import Dashboard from "../pages/Dashboard";
 
 export default function Form() {
   const [currentPage, setCurrentPage] = useState("login");
@@ -36,12 +36,12 @@ export default function Form() {
       {currentPage === 'forgot' && (
         <ForgotPassword onNavigate={navigate} />
       )}
-      {currentPage === 'dashboard' && (
+      {/* {currentPage === 'dashboard' && (
         <Dashboard
           userData={userData} 
           onLogout={handleLogout}
         />
-      )}
+      )} */}
     </div>
   );
 }
