@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
 :root{
-  --yellow-bg:#FFE79D;
+  --home-bg:#C5ACFF;
+  --jobs-bg:#FFE79D;
+  --groups-bg:#FFA3BE;
+  --favorites-bg:#ff3939;
+  --profile-bg:#CCFFB4;
+  
   font-family: "Inter",sans-serif;
 }
 

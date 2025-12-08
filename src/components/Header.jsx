@@ -1,14 +1,27 @@
+import {useLocation} from 'react-router-dom';
+
 export default function Header() {
+  const {pathname} = useLocation();
+
+  const colors = {
+    "/":"bg-[var(--home-bg)]",
+    "/vagas":"bg-[var(--jobs-bg)]",
+    "/grupos":"bg-[var(--groups-bg)]",
+    "/favoritos":"bg-[var(--favorites-bg)]",
+    "/perfil":"bg-[var(--profile-bg)]",
+  }
+
+  const bg = colors[pathname] || "bg-white";
   return(
-      <header className="border-b-2
+      <header className={`border-b-2
           bg-[url('./src/assets/logo.svg')]
-          bg-[var(--yellow-bg)]
+          ${bg}
           bg-no-repeat
           bg-bottom
           bg-[length:9rem] 
           flex justify-center
           py-8 mb-5
-      ">
+      `}>
       </header>
   )
 }
