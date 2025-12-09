@@ -5,9 +5,9 @@ export default function Card({imgSrc,category,title,description,bgColor,textColo
         <img className="rounded-t-2xl w-full h-full object-cover" src={imgSrc}/>
       </div>
       <div className="flex flex-col rounded-b-xl m-2">
-        {category ? <span className="uppercase font-bold text-[.6rem] leading-3">{category}</span> : ""}
-        <h2 className={`text-lg font-bold font-[Nunito] ${textColor}`}>{title}</h2>
-        <p className={`text-[.7rem] ${textColor}`}>{description}</p>
+        {category ? <span className="uppercase font-bold text-[.6rem]">{category}</span> : ""}
+        <h2 className={`text-lg font-bold font-[Nunito] ${textColor} leading-5`}>{title}</h2>
+        <p className={`text-[.7rem] ${textColor} mt-2`}>{description}</p>
       </div>
     </div>
   );

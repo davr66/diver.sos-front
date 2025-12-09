@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root{
+  --general-bg:#FFF8E9;
   --home-bg:#C5ACFF;
   --jobs-bg:#FFE79D;
   --groups-bg:#FFA3BE;

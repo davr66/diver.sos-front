@@ -6,16 +6,18 @@ import Header from './components/Header';
 import NavBar from './components/NavBar';
 import JobApplications from './pages/JobOpenings';
 import Home from './pages/Home';
+import SupportGroups from './pages/SupportGroups';
 
 function App() {
 
   return (  
-    <div className='pb-25'>
+    <div className='pb-25 bg-[var(--general-bg)]'>
       <Header></Header>
       <NavBar></NavBar>
       <Routes>
         <Route path='/' element=<Home />></Route>
         <Route path='/vagas' element={<JobApplications/>}></Route>
+        <Route path='/grupos' element={<SupportGroups/>}></Route>
         <Route path='/perfil' element={<Form />} />
       </Routes>
     </div>
