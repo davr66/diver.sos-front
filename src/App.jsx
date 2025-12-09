@@ -10,7 +10,7 @@ import Home from './pages/Home';
 function App() {
 
   return (  
-    <div className='pb-20'>
+    <div className='pb-25'>
       <Header></Header>
       <NavBar></NavBar>
       <Routes>
