@@ -1,95 +1,73 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import ListItem from '../components/ListItem'
 import SearchBar from '../components/SearchBar';
+import {getJobOpenings, searchJobOpenings} from '../services/api';
+import Loading from '../components/Loading';
 
 export default function JobApplications(){
+  const [jobOpenings,setJobOpenings] = useState([]);
   const [search,setSearch] = useState("");
-  const jobOpenings = [
-  {
-    "title": "Desenvolvedor Front-end Júnior",
-    "company": "TechNova Solutions",
-    "location": "São Paulo, SP",
-    "work_mode": "Híbrido"
-  },
-  {
-    "title": "Analista de Suporte Técnico",
-    "company": "Infoline Serviços",
-    "location": "Fortaleza, CE",
-    "work_mode": "Presencial"
-  },
-  {
-    "title": "Assistente de Marketing Digital",
-    "company": "Agência MídiaMax",
-    "location": "Belo Horizonte, MG",
-    "work_mode": "Remoto"
-  },
-  {
-    "title": "Designer UX/UI",
-    "company": "PixelCraft Studio",
-    "location": "Curitiba, PR",
-    "work_mode": "Híbrido"
-  },
-  {
-    "title": "Assistente Administrativo",
-    "company": "Grupo Orion",
-    "location": "Recife, PE",
-    "work_mode": "Presencial"
-  },
-  {
-    "title": "Desenvolvedor Back-end (Node.js)",
-    "company": "CloudBridge Tech",
-    "location": "Rio de Janeiro, RJ",
-    "work_mode": "Remoto"
-  },
-  {
-    "title": "Analista de Dados Júnior",
-    "company": "DataFlow Analytics",
-    "location": "Porto Alegre, RS",
-    "work_mode": "Híbrido"
-  },
-  {
-    "title": "Representante de Suporte ao Cliente",
-    "company": "HelpNow Contact Center",
-    "location": "Salvador, BA",
-    "work_mode": "Presencial"
-  },
-  {
-    "title": "Produtor de Conteúdo",
-    "company": "Criativa Media House",
-    "location": "Brasília, DF",
-    "work_mode": "Remoto"
-  },
-  {
-    "title": "Estagiário de TI",
-    "company": "Infotech Systems",
-    "location": "Campinas, SP",
-    "work_mode": "Presencial"
-  }
-]
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filteredJobs = search.trim() === "" ? jobOpenings:jobOpenings.filter(job=>{
-    const term = search.toLowerCase();
-    return (
-      job.title.toLowerCase().includes(term) ||
-      job.company.toLowerCase().includes(term) ||
-      job.location.toLowerCase().includes(term) ||
-      job.work_mode.toLowerCase().includes(term) 
-    )
-  })
+  useEffect(()=>{
+    const fetchJobs = async () =>{
+      try {
+        const response = await getJobOpenings();
+        setJobOpenings(response.data);
+      } catch (error) {
+        console.error('Erro ao carregar vagas:', error);
+      }
+    };
+    fetchJobs();
+  },[]);
+
+  const handleSearchSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const response = await searchJobOpenings({ termo: search }); // backend decides behavior for empty search
+      setJobOpenings(response.data);
+    } catch (error) {
+      console.error('Erro ao procurar vagas:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // If user clears the search input and doesn't submit, re-fetch all jobs
+  useEffect(() => {
+    if (search.trim() !== "") return;
+
+    const reloadAllJobs = async () => {
+      try {
+        const response = await getJobOpenings();
+        setJobOpenings(response.data);
+      } catch (error) {
+        console.error('Erro ao recarregar vagas:', error);
+      }
+    };
+
+    reloadAllJobs();
+  }, [search]);
+
+  const filteredJobs = jobOpenings;
 
   return(
-    <div className='flex flex-col items-center'>
-      <SearchBar value={search} onChange={setSearch} placeholder='Pesquisar vagas...'></SearchBar>
+    <>
+      {isLoading ? (<Loading/>):(
+      <div className='flex flex-col items-center'>
+        <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} placeholder='Pesquisar vagas...'></SearchBar>
 
-      <div className='w-[95%] flex flex-col items-center'>
-        {filteredJobs.map((job,index)=>(
-          <ListItem key={index} data={job} type="job_opening"></ListItem>
-        ))}
+        <div className='w-[95%] flex flex-col items-center'>
+          {filteredJobs.map((job,index)=>(
+            <ListItem key={index} data={job} type="job_opening"></ListItem>
+          ))}
 
-        {search.trim() !== "" && filteredJobs.length === 0 &&(
-          <p>Nenhuma vaga encontrada</p>
-        )}
-      </div>
-    </div>
+          {search.trim() !== "" && filteredJobs.length === 0 &&(
+            <p>Nenhuma vaga encontrada</p>
+          )}
+        </div>
+      </div>)}
+    
+    </>
   );
 }

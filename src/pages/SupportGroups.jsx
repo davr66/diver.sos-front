@@ -56,7 +56,7 @@ export default function SupportGroups(){
 
   return(
     <div className="flex flex-col items-center">
-      {groupList.map((group,index)=>(<ListItem index={index} data={group}/>))}
+      {groupList.map((group,index)=>(<ListItem key={index} data={group}/>))}
     </div>
     
   )
