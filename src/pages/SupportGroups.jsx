@@ -1,4 +1,4 @@
-import Group from "../components/Group"
+import ListItem from "../components/ListItem"
 
 export default function SupportGroups(){
   const groupList = [
@@ -56,7 +56,7 @@ export default function SupportGroups(){
 
   return(
     <div className="flex flex-col items-center">
-      {groupList.map((group,index)=>(<Group index={index} title={group.title} category={group.category} description={group.description}/>))}
+      {groupList.map((group,index)=>(<ListItem index={index} data={group}/>))}
     </div>
     
   )

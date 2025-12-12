@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import JobOpening from '../components/JobOpening'
+import ListItem from '../components/ListItem'
 import SearchBar from '../components/SearchBar';
 
 export default function JobApplications(){
@@ -83,7 +83,7 @@ export default function JobApplications(){
 
       <div className='w-[95%] flex flex-col items-center'>
         {filteredJobs.map((job,index)=>(
-          <JobOpening key={index} title={job.title} company={job.company} location={job.location} work_mode={job.work_mode}></JobOpening>
+          <ListItem key={index} data={job} type="job_opening"></ListItem>
         ))}
 
         {search.trim() !== "" && filteredJobs.length === 0 &&(

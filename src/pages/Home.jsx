@@ -8,7 +8,7 @@ import imagem5 from '../assets/cards/image5.png'
 
 export default function Home(){
   return(
-    <div className=" flex flex-col gap-10 px-8 mx-auto mt-8">
+    <div className="flex flex-col gap-10 px-8 mx-auto mt-8">
       <div>
         <h1 className="font-[Nunito] font-extrabold text-xl mb-1">Somos a diver.sos!</h1>
         <p className="text-[.7rem]">Conectamos você a vagas em empresas inclusivas e a grupos de apoio reais. Aqui, sua identidade é celebrada e sua carreira é levada a sério. Encontre seu espaço seguro.</p>
