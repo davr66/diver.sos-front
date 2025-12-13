@@ -4,6 +4,7 @@ import locationIcon from '../assets/job-applications/location.svg';
 import workModeIcon from '../assets/job-applications/work-mode.svg';
 
 export default function JobOpening({data, type }) {
+  console.log(data.work_mode);
   return (
     <div className="flex justify-between pb-5 pt-1 border-t-2 w-[95%] relative nth-last-1:border-b-2">
       {type == 'job_opening' ? (
@@ -12,7 +13,7 @@ export default function JobOpening({data, type }) {
             <div className="flex flex-col gap-2 mt-1">
               <p className="flex items-end gap-1 text-[12px] text-clip leading-none"><img src={companyIcon}/>{data.company}</p>
               <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1" src={locationIcon}/>{data.location}</p>
-              <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1px" src={workModeIcon}/>{data.work_mode}</p>
+              <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1px" src={workModeIcon}/>{data.work_mode ==='Hibrido' ? 'Híbrido' : data.work_mode}</p>
             </div>
         </div>)
         : (
