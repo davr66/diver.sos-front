@@ -1,6 +1,7 @@
 import { useState,useEffect } from 'react';
 import ListItem from '../components/ListItem'
 import SearchBar from '../components/SearchBar';
+import FilterBtn from '../components/FilterBtn';
 import {getJobOpenings, searchJobOpenings} from '../services/api';
 import Loading from '../components/Loading';
 
@@ -8,6 +9,7 @@ export default function JobApplications(){
   const [jobOpenings,setJobOpenings] = useState([]);
   const [search,setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [workModeFilter, setWorkModeFilter] = useState("");
 
   useEffect(()=>{
     const fetchJobs = async () =>{
@@ -33,7 +35,14 @@ export default function JobApplications(){
     }
   };
 
-  // If user clears the search input and doesn't submit, re-fetch all jobs
+  // remove acentos para a exceção do work_mode 'híbrido'
+  const normalize = (str) => (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  const handleFilterToggle = (label) => {
+    setWorkModeFilter(prev => (prev === label ? "" : label));
+  };
+
+  
   useEffect(() => {
     if (search.trim() !== "") return;
 
@@ -49,13 +58,22 @@ export default function JobApplications(){
     reloadAllJobs();
   }, [search]);
 
-  const filteredJobs = jobOpenings;
+  const filteredJobs = workModeFilter
+    ? jobOpenings.filter(job => normalize(job.work_mode) === normalize(workModeFilter))
+    : jobOpenings;
 
   return(
     <>
       {isLoading ? (<Loading/>):(
       <div className='flex flex-col items-center'>
-        <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} placeholder='Pesquisar vagas...'></SearchBar>
+        <div className='flex flex-col gap-2 mt-2 mb-5 w-[90%]'>
+          <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} placeholder='Pesquisar vagas...'></SearchBar>
+          <div className='flex gap-1'>
+            <FilterBtn label="Remoto" active={normalize(workModeFilter) === normalize('Remoto')} onClick={() => handleFilterToggle('Remoto')} />
+            <FilterBtn label="Híbrido" active={normalize(workModeFilter) === normalize('Híbrido')} onClick={() => handleFilterToggle('Híbrido')} />
+            <FilterBtn label="Presencial" active={normalize(workModeFilter) === normalize('Presencial')} onClick={() => handleFilterToggle('Presencial')} />
+          </div>
+        </div>
 
         <div className='w-[95%] flex flex-col items-center'>
           {filteredJobs.map((job,index)=>(

@@ -12,7 +12,7 @@ import Loading from './components/Loading';
 function App() {
 
   return (  
-    <div className='pb-25 bg-[var(--general-bg)]'>
+    <div className='pb-25 bg-[var(--general-bg)] w-full min-h-screen'>
       <Header></Header>
       <NavBar></NavBar>
       <Routes>

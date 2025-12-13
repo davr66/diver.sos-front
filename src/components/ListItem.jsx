@@ -4,7 +4,7 @@ export default function JobOpening({data, type }) {
     <div className="flex justify-between pb-5 pt-1 border-t-2 w-[95%] relative nth-last-1:border-b-2">
       {type == 'job_opening' ? (
         <div className="flex flex-col">
-          <h3 className="text-sm text-nowrap text-balance font-bold uppercase">{data.title}</h3>
+          <h3 className="text-sm text-nowrap text-pretty font-bold uppercase">{data.title}</h3>
           <p className="text-[12px] text-clip"><span></span>{data.company}</p>
           <p className="text-[12px]"><span></span>{data.location}</p>
           <p className="text-[12px]"><span></span>{data.work_mode}</p>
