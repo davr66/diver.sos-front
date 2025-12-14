@@ -57,13 +57,13 @@ export default function Login({ onNavigate, onLogin }) {
 
   return (
     <AuthLayout error={error} success={success}>
-      <h1 className="text-2xl font-bold text-gray-900 text-center mb-8">
-        Bem-vindo!
+      <h1 className="text-2xl font-bold text-gray-900 text-center mt-8 mb-4">
+        Acesse a sua conta
       </h1>
 
-      <div className="space-y-5">
+      <div className="space-y-5 w-full px-6">
         <InputField
-          label="E-mail"
+          label="Email"
           type="email"
           value={values.email}
           onChange={handleChange("email")}
@@ -93,36 +93,38 @@ export default function Login({ onNavigate, onLogin }) {
           }
         />
 
-        {/* Link "Esqueceu a senha?" com margem negativa para ficar mais próximo do input */}
-        <div className="text-right -mt-3">
+        
+
+
+        <Button onClick={handleSubmit} loading={loading}>
+          ENTRAR
+        </Button>
+{/* Link "Esqueceu a senha?" com margem negativa para ficar mais próximo do input */}
+        <div className="text-center">
           <a
             href="#"
             onClick={(e) => {
               e.preventDefault();
               onNavigate("forgot");
             }}
-            className="text-sm font-medium text-violet-600 hover:text-violet-500 hover:underline"
+            className="text-sm font-medium text-black underline hover:text-[#6FC847] hover:underline"
           >
             Esqueceu a senha?
           </a>
         </div>
 
-        <Button onClick={handleSubmit} loading={loading}>
-          Entrar
-        </Button>
-
         {/* Link "Criar conta" */}
-        <p className="text-center text-sm text-gray-600 mt-4">
-          Não tem uma conta?{" "}
+        <p className="text-center text-sm text-black underline hover:text-[#6FC847]">
+          
           <a
             href="#"
             onClick={(e) => {
               e.preventDefault();
               onNavigate("register");
             }}
-            className="font-medium text-violet-600 hover:text-violet-500 hover:underline"
+            className="font-medium text-black hover:text-[#6FC847] hover:underline"
           >
-            Criar conta
+            Não tem conta? Crie agora!
           </a>
         </p>
 

@@ -46,16 +46,16 @@ export default function ForgotPasswordPage({ onNavigate }) {
 
   return (
     <AuthLayout error={error} success={success}>
-      <h1 className="text-2xl font-bold text-gray-900 text-center mb-4">
+      <h1 className="text-2xl font-bold text-gray-900 text-center mt-4">
         Recuperar Senha
       </h1>
-      <p className="text-sm text-gray-600 text-center mb-8">
+      <p className="text-sm semibold text-black text-center mt-4 mb-4">
         Digite seu email para receber instruções de recuperação
       </p>
 
-      <div className="space-y-5">
+      <div className="m-4">
         <InputField
-          label="E-mail"
+          label="Email"
           type="email"
           value={values.email}
           onChange={handleChange("email")}
@@ -64,20 +64,24 @@ export default function ForgotPasswordPage({ onNavigate }) {
           disabled={loading}
           onKeyPress={(e) => e.key === "Enter" && handleSubmit()}
         />
-
-        <Button onClick={handleSubmit} loading={loading}>
-          Enviar instruções
-        </Button>
-
-        <p className="text-center text-sm text-gray-600 mt-4">
-          <Button
-            variant="link"
-            onClick={() => onNavigate("login")}
-            fullWidth={false}
-          >
-            Voltar para login
+        <div className="mt-8">
+          <Button onClick= {handleSubmit} loading={loading} className = "">
+            Enviar instruções
           </Button>
-        </p>
+        </div>
+
+        <div className="text-center m-4">
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate("login");
+            }}
+            className="text-sm font-medium text-black underline hover:text-[#6FC847] hover:underline"
+          >
+            Voltar para o login
+          </a>
+        </div>
       </div>
     </AuthLayout>
   );

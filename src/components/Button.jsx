@@ -1,18 +1,19 @@
-export default function Button({ 
-  children, 
-  onClick, 
-  disabled = false, 
+export default function Button({
+  children,
+  onClick,
+  disabled = false,
   loading = false,
-  variant = 'primary',
+  variant = "primary",
   fullWidth = true,
-  type = 'button'
+  type = "button",
 }) {
-  const baseClasses = 'font-semibold py-3.5 px-4 rounded-lg transition shadow-sm';
+  const baseClasses = "font-semibold rounded-lg transition shadow-sm";
   const variantClasses = {
-    primary: 'bg-violet-500 hover:bg-violet-600 disabled:bg-violet-300 text-white',
-    link: 'text-violet-600 hover:text-violet-700 shadow-none p-0'
+    primary:
+      "w-full bg-[#7FD957] hover:bg-[#6FC847] text-black font-bold py-3 rounded-xl border-4 border-black transition-colors",
+    link: "text-violet-600 hover:text-violet-700 shadow-none p-0",
   };
-  const widthClass = fullWidth ? 'w-full' : '';
+  const widthClass = fullWidth ? "w-full" : "";
 
   return (
     <button
@@ -21,7 +22,7 @@ export default function Button({
       disabled={disabled || loading}
       className={`${baseClasses} ${variantClasses[variant]} ${widthClass}`}
     >
-      {loading ? 'Carregando...' : children}
+      {loading ? "Carregando..." : children}
     </button>
   );
 }

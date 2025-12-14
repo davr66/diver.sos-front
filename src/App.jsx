@@ -20,7 +20,7 @@ function App() {
         <Route path='/vagas' element={<JobApplications/>}></Route>
         <Route path='/grupos' element={<SupportGroups/>}></Route>
         <Route path='/favoritos' element={<Loading/>}></Route>
-        <Route path='/perfil' element={<Form />} />
+        <Route path='/login' element={<Form />} />
       </Routes>
     </div>
   )

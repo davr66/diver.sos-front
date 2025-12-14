@@ -65,11 +65,11 @@ export default function RegisterPage({ onNavigate }) {
 
   return (
     <AuthLayout error={error} success={success}>
-      <h1 className="text-2xl font-bold text-gray-900 text-center mb-8">
+      <h1 className="text-2xl font-bold text-gray-900 text-center my-4  ">
         Criar Conta
       </h1>
 
-      <div className="space-y-5">
+      <div className="space-y-4 mx-4">
         <InputField
           label="E-mail"
           type="email"
@@ -117,20 +117,23 @@ export default function RegisterPage({ onNavigate }) {
             </button>
           }
         />
-
-        <Button onClick={handleSubmit} loading={loading}>
-          Criar conta
-        </Button>
-
-        <p className="text-center text-sm text-gray-600 mt-4">
-          Já tem uma conta?{" "}
-          <Button
-            variant="link"
-            onClick={() => onNavigate("login")}
-            fullWidth={false}
-          >
-            Fazer login
+        <div className="mt-8">
+          <Button onClick={handleSubmit} loading={loading}>
+            Criar conta
           </Button>
+        </div>
+
+        <p className="text-center text-1xl text-black underline hover:text-[#6FC847] my-4">
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate("login");
+            }}
+            className="font-medium text-black hover:text-[#6FC847] hover:underline"
+          >
+            Já tem conta? Faça seu login!
+          </a>
         </p>
       </div>
     </AuthLayout>
