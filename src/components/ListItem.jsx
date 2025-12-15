@@ -2,6 +2,7 @@ import { FavoriteIcon, FavoriteIconFilled } from '../assets/nav';
 import companyIcon from '../assets/job-applications/company.svg';
 import locationIcon from '../assets/job-applications/location.svg';
 import workModeIcon from '../assets/job-applications/work-mode.svg';
+import { Link } from 'react-router-dom';
 
 export default function JobOpening({data, type }) {
   console.log(data.work_mode);
@@ -21,10 +22,11 @@ export default function JobOpening({data, type }) {
             <h3 className="text-sm text-nowrap text-balance font-bold uppercase">{data.title}</h3>
             <span className="text-[0.75rem] font-semibold text-gray-700">{data.category}</span>
             <p className="text-[0.65rem] text-wrap w-[75%]">{data.description}</p>
-          </div>)
+          </div>
+          )
       }
       <FavoriteIcon className="w-6 h-6" />
-      <button className="absolute right-0 bottom-2 text-nowrap text-sm font-bold border rounded-full border-b-2 border-r-2 px-3 py-1">Ver mais</button>
+      <Link to={type ==='job_opening' ? `/vagas/${data.id}`:`/grupos/${data.id}`} className="absolute right-0 bottom-2 text-nowrap text-sm font-bold border rounded-full border-b-2 border-r-2 px-3 py-1">Ver mais</Link>
     </div>
   )
 }

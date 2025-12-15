@@ -11,10 +11,11 @@ export default function Header() {
     "/perfil":"bg-[var(--profile-bg)]",
   }
 
-  const bg = colors[pathname] || "bg-white";
+  const bg = pathname.startsWith('/vagas') ? colors['/vagas'] : (colors[pathname] || 'bg-white');
+
   return(
       <header className={`border-b-2
-          bg-[url('./src/assets/logo.svg')]
+          bg-[url('../src/assets/logo.svg')]
           ${bg}
           bg-no-repeat
           bg-bottom

@@ -32,3 +32,11 @@ export const searchJobOpenings = async(params)=>{
   const transformedData = response.data.map(transformJob);
   return { ...response, data: transformedData };
 }
+
+export const getJobById = async(id)=>{
+  const response = await api.get(`/vagas/${id}`);
+  return{
+    ...response,
+    data: transformJob(response.data)
+  };
+}
