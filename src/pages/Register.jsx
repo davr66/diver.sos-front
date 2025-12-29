@@ -2,6 +2,7 @@ import PasswordRules from "../components/PasswordRules";
 import AuthForm from "../components/AuthForm";
 import Field from "../components/Field";
 import { useState } from "react";
+import {Link} from 'react-router-dom';
 
 export default function Register(){
   const [form, setForm] = useState({
@@ -18,6 +19,8 @@ export default function Register(){
   const [passwordRules, setPasswordRules] = useState(
     checkPasswordRules("")
   );
+
+  const registerFooter = (<div><p className="font-medium">Já tem conta? <Link className="font-bold underline" to={'/login'}>Ir para o login.</Link></p></div>)
 
   function handleChange(field) {
     return (e) => {
@@ -68,12 +71,13 @@ export default function Register(){
   return(
     <div className="flex flex-col items-center bg-[var(--profile-bg)] min-h-full">
       <img className="w-[50%] h-auto mt-10 mb-3" src="./src/assets/logo.svg" alt="Logo da diver.sos" />
-      <AuthForm heading={"Acesse sua Conta"} onSubmit={handleSubmit} btnText={"Cadastrar"}>
+      <AuthForm heading={"Crie seu perfil"} onSubmit={handleSubmit} btnText={"Cadastrar"} footer={registerFooter}>
         <Field
           label="Nome"
           value={form.name}
           onChange={handleChange("name")}
           error={errors.name}
+          placeholder={'ex. John Doe'}
         />
 
         <Field
@@ -82,6 +86,7 @@ export default function Register(){
           onChange={handleChange("email")}
           error={errors.email}
           type="email"
+          placeholder={'exemplo@email.com'}
         />
 
         <Field
