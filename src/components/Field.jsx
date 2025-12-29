@@ -7,13 +7,13 @@ export default function Field({
   onFocus,
   onBlur,
   placeholder,
-  required=true,
+  required = true,
   requiredStyle
-}){
+}) {
   return (
     <div className="flex flex-col gap-1 w-full">
-      <label className="font-semibold">{label} 
-        {requiredStyle ? <span className="text-red-500">*</span> : "" }
+      <label className="font-semibold">{label}
+        {requiredStyle ? <span className="text-red-500">*</span> : ""}
       </label>
 
       <input

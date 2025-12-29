@@ -2,9 +2,9 @@ import PasswordRules from "../components/PasswordRules";
 import AuthForm from "../components/AuthForm";
 import Field from "../components/Field";
 import { useState } from "react";
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export default function Register(){
+export default function Register() {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -68,7 +68,7 @@ export default function Register(){
     console.log("Cadastro válido:", form);
   }
 
-  return(
+  return (
     <div className="flex flex-col items-center bg-[var(--profile-bg)] min-h-full">
       <img className="w-[50%] h-auto mt-10 mb-3" src="./src/assets/logo.svg" alt="Logo da diver.sos" />
       <AuthForm heading={"Crie seu perfil"} onSubmit={handleSubmit} btnText={"Cadastrar"} footer={registerFooter}>
