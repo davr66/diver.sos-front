@@ -1,141 +1,121 @@
-import React, { useState } from "react";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import AuthLayout from "../components/AuthLayout";
-import InputField from "../components/InputField.jsx";
-import Button from "../components/Button";
-import { useForm } from "../hooks/useForm";
-import {
-  validateEmail,
-  validatePassword,
-  validateRequired,
-} from "../utils/Validation";
+import PasswordRules from "../components/PasswordRules";
+import AuthForm from "../components/AuthForm";
+import Field from "../components/Field";
+import { useState } from "react";
 
-export default function RegisterPage({ onNavigate }) {
-  const {
-    values,
-    error,
-    success,
-    loading,
-    setError,
-    setSuccess,
-    setLoading,
-    handleChange,
-  } = useForm({
+export default function Register(){
+  const [form, setForm] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleSubmit = () => {
-    setError("");
-    setSuccess("");
+  const [errors, setErrors] = useState({});
 
-    const requiredError = validateRequired(values);
-    if (requiredError) {
-      setError(requiredError);
-      return;
-    }
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
-    if (!validateEmail(values.email)) {
-      setError("Por favor, insira um email válido");
-      return;
-    }
-
-    const passwordError = validatePassword(values.password);
-    if (passwordError) {
-      setError(passwordError);
-      return;
-    }
-
-    if (values.password !== values.confirmPassword) {
-      setError("As senhas não coincidem");
-      return;
-    }
-
-    setLoading(true);
-
-    setTimeout(() => {
-      setSuccess("Conta criada com sucesso! Faça login para continuar.");
-      setLoading(false);
-      setTimeout(() => onNavigate("login"), 2000);
-    }, 1500);
-  };
-
-  return (
-    <AuthLayout error={error} success={success}>
-      <h1 className="text-2xl font-bold text-gray-900 text-center my-4  ">
-        Criar Conta
-      </h1>
-
-      <div className="space-y-4 mx-4">
-        <InputField
-          label="E-mail"
-          type="email"
-          value={values.email}
-          onChange={handleChange("email")}
-          placeholder="Digite seu email"
-          icon={Mail}
-          disabled={loading}
-        />
-
-        <InputField
-          label="Senha"
-          type={showPassword ? "text" : "password"}
-          value={values.password}
-          onChange={handleChange("password")}
-          placeholder="Mínimo 6 caracteres"
-          icon={Lock}
-          disabled={loading}
-          rightIcon={
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          }
-        />
-
-        <InputField
-          label="Confirmar Senha"
-          type={showConfirmPassword ? "text" : "password"}
-          value={values.confirmPassword}
-          onChange={handleChange("confirmPassword")}
-          placeholder="Digite a senha novamente"
-          icon={Lock}
-          disabled={loading}
-          rightIcon={
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          }
-        />
-        <div className="mt-8">
-          <Button onClick={handleSubmit} loading={loading}>
-            Criar conta
-          </Button>
-        </div>
-
-        <p className="text-center text-1xl text-black underline hover:text-[#6FC847] my-4">
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigate("login");
-            }}
-            className="font-medium text-black hover:text-[#6FC847] hover:underline"
-          >
-            Já tem conta? Faça seu login!
-          </a>
-        </p>
-      </div>
-    </AuthLayout>
+  const [passwordRules, setPasswordRules] = useState(
+    checkPasswordRules("")
   );
+
+  function handleChange(field) {
+    return (e) => {
+      const value = e.target.value;
+
+      setForm((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+
+      // feedback em tempo real APENAS para senha
+      if (field === "password") {
+        setPasswordRules(checkPasswordRules(value));
+      }
+    };
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const newErrors = {};
+
+    // validações básicas
+    if (!form.name) newErrors.name = "Nome obrigatório";
+    if (!form.email) newErrors.email = "Email obrigatório";
+
+    // validação final da senha
+    const rules = checkPasswordRules(form.password);
+    const isPasswordStrong = Object.values(rules).every(Boolean);
+
+    if (!isPasswordStrong) {
+      newErrors.password = "A senha não atende aos requisitos mínimos";
+    }
+
+    if (form.password !== form.confirmPassword) {
+      newErrors.confirmPassword = "As senhas não conferem";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    console.log("Cadastro válido:", form);
+  }
+
+  return(
+    <div className="flex flex-col items-center bg-[var(--profile-bg)] min-h-full">
+      <img className="w-[50%] h-auto mt-10 mb-3" src="./src/assets/logo.svg" alt="Logo da diver.sos" />
+      <AuthForm heading={"Acesse sua Conta"} onSubmit={handleSubmit} btnText={"Cadastrar"}>
+        <Field
+          label="Nome"
+          value={form.name}
+          onChange={handleChange("name")}
+          error={errors.name}
+        />
+
+        <Field
+          label="Email"
+          value={form.email}
+          onChange={handleChange("email")}
+          error={errors.email}
+          type="email"
+        />
+
+        <Field
+          label="Senha"
+          type="password"
+          value={form.password}
+          onChange={handleChange("password")}
+          onFocus={() => setIsPasswordFocused(true)}
+          onBlur={() => setIsPasswordFocused(false)}
+          error={errors.password}
+        />
+
+        {isPasswordFocused && (
+          <PasswordRules rules={passwordRules} />
+        )}
+
+        <Field
+          label="Confirmar senha"
+          type="password"
+          value={form.confirmPassword}
+          onChange={handleChange("confirmPassword")}
+          error={errors.confirmPassword}
+        />
+      </AuthForm>
+    </div>
+  );
+}
+
+function checkPasswordRules(password) {
+  return {
+    minLength: password.length >= 8,
+    hasUppercase: /[A-Z]/.test(password),
+    hasLowercase: /[a-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSpecialChar: /[^A-Za-z0-9]/.test(password),
+  };
 }

@@ -1,8 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 
-export default function NavItem({ href, label, Icon,IconActive,bgColor}) {
+
+export default function NavItem({ href, label, Icon,IconActive,bgColor, match }) {
   const { pathname } = useLocation();
-  const active = pathname === href;
+
+  const active = Array.isArray(match)
+    ? match.some(m => m.endsWith('*') ? pathname.startsWith(m.slice(0, -1)) : pathname === m)
+    : (typeof match === 'function' ? match(pathname) : pathname === href);
 
   const SelectedIcon = active ? IconActive : Icon;
 

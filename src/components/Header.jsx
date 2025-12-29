@@ -3,6 +3,10 @@ import {useLocation} from 'react-router-dom';
 export default function Header() {
   const {pathname} = useLocation();
 
+  // rotas onde o header não deve aparecer
+  const hiddenPaths = ['/login', '/cadastro', '/esqueci-a-senha'];
+  if (hiddenPaths.some(p => pathname === p || pathname.startsWith(p + '/'))) return null;
+
   const colors = {
     "/":"bg-[var(--home-bg)]",
     "/vagas":"bg-[var(--jobs-bg)]",
@@ -11,7 +15,7 @@ export default function Header() {
     "/perfil":"bg-[var(--profile-bg)]",
   }
 
-  const bg = pathname.startsWith('/vagas') ? colors['/vagas'] : (colors[pathname] || 'bg-white');
+  const bg = pathname.startsWith('/vagas') ? colors['/vagas'] : (colors[pathname] || 'bg-none');
 
   return(
       <header className={`border-b-2
