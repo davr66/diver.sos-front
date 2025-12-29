@@ -6,11 +6,15 @@ export default function Field({
   type = "text",
   onFocus,
   onBlur,
-  placeholder
+  placeholder,
+  required=true,
+  requiredStyle
 }){
   return (
     <div className="flex flex-col gap-1 w-full">
-      <label className="font-semibold">{label}<span className="text-red-500">*</span></label>
+      <label className="font-semibold">{label} 
+        {requiredStyle ? <span className="text-red-500">*</span> : "" }
+      </label>
 
       <input
         className="border-2 rounded-lg py-2 pl-2"
@@ -20,7 +24,7 @@ export default function Field({
         onFocus={onFocus}
         onBlur={onBlur}
         placeholder={placeholder}
-        required
+        required={required}
       />
 
       {error && <span className="text-xs text-red-500"><i>{error}</i></span>}
