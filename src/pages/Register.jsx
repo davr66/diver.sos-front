@@ -69,7 +69,7 @@ export default function Register() {
   }
 
   return (
-    <div className="flex flex-col items-center bg-[var(--profile-bg)] min-h-full">
+    <div className="flex flex-col items-center bg-[var(--profile-bg)] min-h-screen">
       <img className="w-[50%] h-auto mt-10 mb-3" src="./src/assets/logo.svg" alt="Logo da diver.sos" />
       <AuthForm heading={"Crie seu perfil"} onSubmit={handleSubmit} btnText={"Cadastrar"} footer={registerFooter}>
         <Field

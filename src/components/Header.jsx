@@ -25,7 +25,11 @@ export default function Header() {
           bg-bottom
           bg-[length:9rem] 
           flex justify-center
+          h-fit
           py-8 mb-5
+          lg:border-b-0 lg:border-r-2 lg:mb-0 lg:w-auto lg:h-auto 
+          lg:row-start-1 lg:row-end-3 lg:col-start-1 lg:col-end-2
+          lg:bg-[url('../src/assets/logo2.png')] lg:bg-center
       `}>
       </header>
   )
