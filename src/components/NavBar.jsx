@@ -4,7 +4,7 @@ import NavItem from "./NavItem";
 
 
 export default function NavBar(){
-  let isLoggedIn = false;
+  let isLoggedIn = true;
 
   return (
     <nav className="bg-white z-1 fixed bottom-5 left-0 right-0 
