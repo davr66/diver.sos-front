@@ -26,7 +26,7 @@ export default function JobOpening({data, type }) {
           )
       }
       <FavoriteIcon className="w-6 h-6" />
-      <Link to={type ==='job_opening' ? `/vagas/${data.id}`:`/grupos/${data.id}`} className="absolute right-0 bottom-2 text-nowrap text-sm font-bold border rounded-2xl border-b-2 border-r-2 px-3 py-1">Ver mais</Link>
+      <Link to={type ==='job_opening' ? `/vagas/${data.id}`:`/grupos/${data.id}`} className="absolute right-0 bottom-2 text-nowrap text-sm font-bold border rounded-md border-b-3 bg-white border-r-3 px-3 py-1">Ver mais</Link>
     </div>
   )
 }
