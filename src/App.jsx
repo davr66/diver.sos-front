@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Layout from './layouts/Layout';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path='/login' element={<Login />}/>
           <Route path='/cadastro' element={<Register />}/>
           <Route path='/esqueci-a-senha' element={<ForgotPassword />}/>
+          <Route path='/perfil' element={<Profile/>}></Route>
         </Route>
       </Routes>
   )

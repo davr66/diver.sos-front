@@ -8,7 +8,7 @@ import imagem5 from '../assets/cards/image5.png'
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-10 px-8 mx-auto mt-8 items-center">
+    <div className="flex flex-col gap-10 px-8 mx-auto items-center">
       <div>
         <h1 className="font-[Nunito] font-extrabold text-xl mb-1 lg:text-center lg:text-4xl lg:mb-3">Somos a diver.sos!</h1>
         <p className="text-[.7rem] lg:text-sm lg:text-center">Conectamos você a vagas em empresas inclusivas e a grupos de apoio reais. Aqui, sua identidade é celebrada e sua carreira é levada a sério. Encontre seu espaço seguro.</p>
@@ -16,7 +16,7 @@ export default function Home() {
 
       <div className="grid
       grid-cols-[repeat(auto-fit,minmax(15rem,1fr))]
-      place-items-center gap-10 md:gap-0
+      place-items-center gap-10
       w-full">
         <Card imgSrc={imagem1}
           category="comunidades"
@@ -34,9 +34,9 @@ export default function Home() {
       </div>
 
       <section className="flex flex-col items-center">
-        <h2 className="text-xl font-bold font-[nunito] mb-3 lg:text-2xl lg:mb-3 self-start lg:self-center">Feed de Notícias</h2>
+        <h2 className="text-xl font-bold font-[nunito] mb-3 lg:text-2xl lg:mb-3 self-start md:self-center">Feed de Notícias</h2>
         <div className="grid
-      grid-cols-[repeat(auto-fit,minmax(17rem,1fr))]
+      grid-cols-[repeat(auto-fit,minmax(19rem,1fr))]
       gap-10
       w-full">
           <NewsArticle title="Dia da Visibilidade Trans"
