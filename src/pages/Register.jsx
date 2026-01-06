@@ -45,6 +45,7 @@ export default function Register() {
 
     // validações básicas
     if (!form.name) newErrors.name = "Nome obrigatório";
+    if (form.name.length < 3) newErrors.name = "O nome deve ter mais que 3 caracteres";
     if (!form.email) newErrors.email = "Email obrigatório";
 
     // validação final da senha

@@ -9,9 +9,9 @@ import imagem5 from '../assets/cards/image5.png'
 export default function Home() {
   return (
     <div className="flex flex-col gap-10 px-8 mx-auto items-center">
-      <div>
+      <div className="flex flex-col">
         <h1 className="font-[Nunito] font-extrabold text-xl mb-1 lg:text-center lg:text-4xl lg:mb-3">Somos a diver.sos!</h1>
-        <p className="text-[.7rem] lg:text-sm lg:text-center">Conectamos você a vagas em empresas inclusivas e a grupos de apoio reais. Aqui, sua identidade é celebrada e sua carreira é levada a sério. Encontre seu espaço seguro.</p>
+        <p className="text-[.7rem] lg:text-sm lg:self-center lg:text-center lg:w-[50%]">Conectamos você a vagas em empresas inclusivas e a grupos de apoio reais. Aqui, sua identidade é celebrada e sua carreira é levada a sério. Encontre seu espaço seguro.</p>
       </div>
 
       <div className="grid
