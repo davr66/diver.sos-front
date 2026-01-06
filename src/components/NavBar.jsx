@@ -1,10 +1,13 @@
 import {HomeIcon,JobsIcon,GroupsIcon,FavoriteIcon,ProfileIcon,
   HomeIconFilled,JobsIconFilled,GroupsIconFilled,FavoriteIconFilled,ProfileIconFilled,LoginIcon,LoginIconFilled} from '../assets/nav/'
 import NavItem from "./NavItem";
+import { useAuth } from '../context/AuthContext';
 
 
 export default function NavBar(){
-  let isLoggedIn = false;
+  const auth = useAuth();
+  console.log(auth.isAuthenticated)
+  const isLoggedIn = auth?.isAuthenticated ?? false;
 
   return (
     <nav className="bg-white z-1 fixed bottom-5 left-0 right-0 
@@ -18,7 +21,7 @@ export default function NavBar(){
       <NavItem href={'/vagas'} label={'Vagas'} Icon={JobsIcon} IconActive={JobsIconFilled} bgColor={'#FFE79D'}></NavItem>
       <NavItem href={'/grupos'} label={'Grupos'} Icon={GroupsIcon} IconActive={GroupsIconFilled} bgColor={'#FFA3BE'}></NavItem>
       <NavItem href={'/favoritos'} label={'Favoritos'} Icon={FavoriteIcon} IconActive={FavoriteIconFilled} bgColor={'#ff3939'}></NavItem>
-      {isLoggedIn ? <NavItem href={'/perfil'} label={'Perfil'} Icon={ProfileIcon} IconActive={ProfileIconFilled} bgColor={'#C5ACFF'}></NavItem> : <NavItem href={'/login'} label={'Login'} Icon={LoginIcon} IconActive={LoginIconFilled} bgColor={'#CCFFB4'} match={["/login","/cadastro","/esqueci-a-senha"]}></NavItem>}
+      {isLoggedIn ? <NavItem href={'/perfil'} label={'Perfil'} Icon={ProfileIcon} IconActive={ProfileIconFilled} bgColor={'#CCFFB4'}></NavItem> : <NavItem href={'/login'} label={'Login'} Icon={LoginIcon} IconActive={LoginIconFilled} bgColor={'#CCFFB4'} match={["/login","/cadastro","/esqueci-a-senha"]}></NavItem>}
     </nav>
   )
 }
