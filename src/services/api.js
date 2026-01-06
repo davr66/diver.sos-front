@@ -44,10 +44,25 @@ export const getMyData = async ()=>{
   return response;
 }
 
+export const updateMyData = async (data) =>{
+  const response = await api.put("/usuarios/me", data);
+  return response;
+}
+
+export const getUserById = async (id) => {
+  const response = await api.get(`/usuarios/${id}`);
+  return response;
+}
+
+export const updateUserById = async (id, data) => {
+  const response = await api.put(`/usuarios/${id}`, data);
+  return response;
+}
+
 export const getAllUsers = async() =>{
   const response = await api.get('/usuarios');
   return response;
-}
+}      
 
 export const getJobOpenings = async()=>{
   const response = await api.get("/vagas");

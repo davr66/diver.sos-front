@@ -4,15 +4,17 @@ export default function Field({
   onChange,
   error,
   type = "text",
+  id,
   onFocus,
   onBlur,
   placeholder,
   required = true,
-  requiredStyle
+  requiredStyle,
+  maxLength
 }) {
   return (
     <div className="flex flex-col gap-1 w-full">
-      <label className="font-semibold">{label}
+      <label id={id} className="font-semibold">{label}
         {requiredStyle ? <span className="text-red-500">*</span> : ""}
       </label>
 
@@ -25,6 +27,7 @@ export default function Field({
         onBlur={onBlur}
         placeholder={placeholder}
         required={required}
+        maxLength={maxLength}
       />
 
       {error && <span className="text-xs text-red-500"><i>{error}</i></span>}
