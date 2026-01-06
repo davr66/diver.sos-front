@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Layout from './layouts/Layout';
 import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path='/cadastro' element={<Register />}/>
           <Route path='/esqueci-a-senha' element={<ForgotPassword />}/>
           <Route path='/perfil' element={<Profile/>}></Route>
+          <Route path='/perfil/editar' element={<EditProfile/>}/>
         </Route>
       </Routes>
   )
