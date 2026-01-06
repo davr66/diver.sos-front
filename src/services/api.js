@@ -38,6 +38,11 @@ export const loginUser = async (loginData) => {
   return response;
 }
 
+export const registerUser = async (userData) => {
+  const response = await api.post('/usuarios', userData);
+  return response;
+}
+
 export const getMyData = async ()=>{
   const response = await api.get("/usuarios/me");
   console.log(response);

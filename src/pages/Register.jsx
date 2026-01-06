@@ -2,7 +2,8 @@ import PasswordRules from "../components/PasswordRules";
 import AuthForm from "../components/AuthForm";
 import Field from "../components/Field";
 import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { registerUser } from '../services/api';
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -19,6 +20,10 @@ export default function Register() {
   const [passwordRules, setPasswordRules] = useState(
     checkPasswordRules("")
   );
+
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(null);
 
   const registerFooter = (<div><p className="font-medium">Já tem conta? <Link className="font-bold underline" to={'/login'}>Ir para o login.</Link></p></div>)
 
@@ -38,7 +43,7 @@ export default function Register() {
     };
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     const newErrors = {};
@@ -66,7 +71,28 @@ export default function Register() {
       return;
     }
 
-    console.log("Cadastro válido:", form);
+    setLoading(true);
+    try {
+      const payload = {
+        nome: form.name,
+        email: form.email,
+        senha: form.password,
+        tipoDeUsuario: 'USUARIO'
+      };
+
+      await registerUser(payload);
+      setSuccess('Cadastro realizado com sucesso! Redirecionando...');
+      setTimeout(() => navigate('/login'), 1200);
+    } catch (err) {
+      console.error(err);
+      if (err?.response?.data?.message) {
+        setErrors({ api: err.response.data.message });
+      } else {
+        setErrors({ api: 'Erro ao cadastrar usuário' });
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -103,6 +129,9 @@ export default function Register() {
         {isPasswordFocused && (
           <PasswordRules rules={passwordRules} />
         )}
+
+        {errors.api && <div className="text-sm text-red-500">{errors.api}</div>}
+        {success && <div className="text-sm text-green-600">{success}</div>}
 
         <Field
           label="Confirmar senha"

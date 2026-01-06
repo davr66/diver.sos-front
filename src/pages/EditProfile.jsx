@@ -37,14 +37,13 @@ export default function EditProfile() {
         setForm({
           name: user.nome ?? "",
           email: user.email ?? "",
-          city: user.endereco.cidade ?? "",
-          uf: user.endereco.estado ?? "",
+          city: user.endereco?.cidade ?? "",
+          uf: user.endereco?.estado ?? "",
           pronouns: user.pronomes ?? "",
           phone: user.telefone ?? ""
         });
-        if (user.pronomes && !["ele/dele","ela/dela","elu/delu"].includes(user.pronomes)) {
-          setShowOther(true);
-        }
+        // show 'outro' field only when user explicitly stored 'outro' as selection
+        setShowOther(user.pronomes === 'outro');
       } catch (err) {
         console.error(err);
         if (err?.response?.status === 403) logout();
@@ -65,8 +64,8 @@ export default function EditProfile() {
   function handlePronounsChange(e) {
     const value = e.target.value;
     if (value === "outro") {
-      setForm((prev) => ({ ...prev, pronouns: "" }));
       setShowOther(true);
+      // keep existing form.pronouns so user sees their custom value if present
     } else {
       setForm((prev) => ({ ...prev, pronouns: value }));
       setShowOther(false);
@@ -85,6 +84,9 @@ export default function EditProfile() {
     const formatted = formatPhone(e.target.value);
     setForm((prev) => ({ ...prev, phone: formatted }));
   }
+
+  const pronounOptions = ["ele/dele", "ela/dela", "elu/delu"];
+  const selectValue = showOther ? 'outro' : (pronounOptions.includes(form.pronouns) ? form.pronouns : '');
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -119,7 +121,7 @@ export default function EditProfile() {
         await updateMyData(payload);
       }
       setSuccess("Perfil atualizado com sucesso!");
-      // setTimeout(() => navigate("/perfil"), 1300);
+      setTimeout(() => navigate("/perfil"), 1300);
     } catch (err) {
       console.error(err);
       if (err?.response?.data?.message) {
@@ -151,12 +153,13 @@ export default function EditProfile() {
 
         <div className="flex flex-col gap-1 w-full">
           <label className="font-semibold">Pronomes</label>
-          <select className="border-2 rounded-lg py-2 pl-2" value={showOther ? 'outro' : (form.pronouns || '')} onChange={handlePronounsChange}>
+          <select className="border-2 rounded-lg py-2 pl-2" value={selectValue} onChange={handlePronounsChange}>
             <option value="">Selecione</option>
             <option value="ele/dele">ele/dele</option>
             <option value="ela/dela">ela/dela</option>
             <option value="elu/delu">elu/delu</option>
-            <option value="qualquer pronome">qualquer pronome</option>
+            <option value="elu/delu">qualquer pronome</option>
+            <option value="outro">Outro</option>
           </select>
         </div>
 
