@@ -1,6 +1,11 @@
-import ListItem from "../components/ListItem"
+import ListItem from "../components/ListItem";
+import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
+import groupImage from "../assets/group.svg";
 
 export default function SupportGroups(){
+  const {isAuthenticated} = useAuth();
+
   const groupList = [
   {
     "title": "TransVoz",
@@ -56,8 +61,18 @@ export default function SupportGroups(){
 
   return(
     <div className="flex flex-col items-center">
-      {groupList.map((group,index)=>(<ListItem key={index} data={group}/>))}
+    {isAuthenticated ? 
+      groupList.map((group,index)=>(<ListItem key={index} data={group}/>))
+    :(
+      <div className="flex flex-col items-center self-center gap-10 py-10">
+        <img className="w-70"src={groupImage} alt="Ilustração de um grupo de pessoas" />
+        <div className="flex flex-col items-center">
+          <h1 className="font-[Nunito] font-bold text-xl">Conexão, escuta e apoio</h1>
+          <p className="max-w-60 font-medium text-sm text-center" >Entre com sua conta para acessar grupos de apoio inclusivos!</p>
+        </div>
+        <Link className="border-2 border-b-3 border-r-3 rounded-md bg-[var(--groups-bg)] px-4 py-3 uppercase text-sm font-bold" to="/login">Ir para o login</Link>
+      </div>
+    )}
     </div>
-    
   )
 }
