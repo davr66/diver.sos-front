@@ -1,19 +1,22 @@
-import { FavoriteIcon, FavoriteIconFilled } from '../assets/nav';
 import companyIcon from '../assets/job-applications/company.svg';
 import locationIcon from '../assets/job-applications/location.svg';
 import workModeIcon from '../assets/job-applications/work-mode.svg';
 import { Link } from 'react-router-dom';
+import SaveBtn from './SaveBtn';
+import { saveJobOpening } from '../services/api';
+
+
 
 export default function JobOpening({data, type }) {
-  console.log(data.work_mode);
+  const id = data.id;
   return (
-    <div className="flex justify-between pb-5 pt-1 border-t-2 w-[95%] relative nth-last-1:border-b-2">
+    <div className="flex justify-between pb-5 pt-2 border-t-2 w-[95%] relative nth-last-1:border-b-2">
       {type == 'job_opening' ? (
         <div className="flex flex-col">
-            <h3 className="text-sm text-nowrap text-pretty font-bold uppercase">{data.title}</h3>
+            <h3 className="text-sm text-wrap max-w-75 font-bold uppercase">{data.title}</h3>
             <div className="flex flex-col gap-2 mt-1">
               <p className="flex items-end gap-1 text-[12px] text-clip leading-none"><img src={companyIcon}/>{data.company}</p>
-              <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1" src={locationIcon}/>{data.location}</p>
+              <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1" src={locationIcon}/>{data.city}/{data.uf}</p>
               <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1px" src={workModeIcon}/>{data.work_mode ==='Hibrido' ? 'Híbrido' : data.work_mode}</p>
             </div>
         </div>)
@@ -25,8 +28,8 @@ export default function JobOpening({data, type }) {
           </div>
           )
       }
-      <FavoriteIcon className="w-6 h-6" />
-      <Link to={type ==='job_opening' ? `/vagas/${data.id}`:`/grupos/${data.id}`} className="absolute right-0 bottom-2 text-nowrap text-sm font-bold border rounded-md border-b-3 bg-white border-r-3 px-3 py-1">Ver mais</Link>
+      <SaveBtn onClick={() => saveJobOpening(id)}/>
+      <Link to={type ==='job_opening' ? `/vagas/${id}`:`/grupos/${id}`} className="absolute right-0 bottom-2 text-nowrap text-sm font-bold border rounded-md border-b-3 bg-white border-r-3 px-3 py-1">Ver mais</Link>
     </div>
   )
 }

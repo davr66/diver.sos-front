@@ -14,7 +14,7 @@ export default function BackButton({ fallback = "/" }) {
   };
 
   return (
-    <button className="flex items-center gap-1 leading-none font-['Nunito']" onClick={handleBack}>
+    <button className="flex items-center gap-1 leading-none font-['Nunito'] p-1 rounded-full hover:cursor-pointer hover:bg-[#b0a5a54A]" onClick={handleBack}>
       <MdOutlineArrowBack size={25}/>
     </button>
   );
