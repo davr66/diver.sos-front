@@ -1,6 +1,6 @@
-export default function Card({imgSrc,category,title,description,bgColor,textColor=""}){
+export default function Card({imgSrc,category,title,description,bgColor,textColor="",interactiveClasses="",onClick=null}){
   return (
-    <div className={`flex flex-col border rounded-2xl border-2 border-b-5 ${bgColor} max-h-[14.75rem] gap-1 max-w-[25rem]`}>
+    <div className={`flex flex-col border rounded-2xl border-2 border-b-5 ${bgColor} max-h-[14.75rem] gap-1 max-w-[25rem] ${interactiveClasses}`} onClick={onClick}>
       <div className="h-3/5 w-full overflow-hidden">
         <img className="rounded-t-2xl w-full min-h-full object-cover" src={imgSrc}/>
       </div>

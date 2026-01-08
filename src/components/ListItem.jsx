@@ -22,14 +22,16 @@ export default function JobOpening({data, type }) {
         </div>)
         : (
           <div className="flex flex-col">
-            <h3 className="text-sm text-nowrap text-balance font-bold uppercase">{data.title}</h3>
-            <span className="text-[0.75rem] font-semibold text-gray-700">{data.category}</span>
-            <p className="text-[0.65rem] text-wrap w-[75%]">{data.description}</p>
+            <h3 className="text-sm text-nowrap text-balance font-bold uppercase">{data.nome}</h3>
+            <span className="text-[0.75rem] font-semibold text-gray-700">{data.categoria}</span>
+            <p className="text-[0.65rem] text-wrap w-[75%] line-clamp-3">{data.descricao}</p>
           </div>
           )
       }
-      <SaveBtn onClick={() => saveJobOpening(id)}/>
-      <Link to={type ==='job_opening' ? `/vagas/${id}`:`/grupos/${id}`} className="absolute right-0 bottom-2 text-nowrap text-sm font-bold border rounded-md border-b-3 bg-white border-r-3 px-3 py-1">Ver mais</Link>
+      <div className="flex-shrink-0">
+        <SaveBtn onClick={() => saveJobOpening(id)}/>
+      </div>
+      <Link to={type ==='job_opening' ? `/vagas/${id}`:`/grupos/${id}`} className="absolute right-0 bottom-3 text-nowrap text-sm font-bold border rounded-md border-b-3 bg-white border-r-3 px-5 py-2 hover:cursor-pointer hover:shadow-sm hover:bg-gray-100 hover:scale-102 transition-all">Ver mais</Link>
     </div>
   )
 }

@@ -2,17 +2,17 @@ import axios from "axios";
 const url = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-  baseURL:url? url : "http://localhost:8080"
+  baseURL: url ? url : "http://localhost:8080"
 });
 
 api.interceptors.request.use(
-  (config) =>{
+  (config) => {
     try {
       const token = sessionStorage.getItem("token");
       // log minimal debug info (do NOT log full token in production)
       console.debug("API request:", config.method?.toUpperCase(), config.url, "tokenPresent=", !!token);
 
-      if(token){
+      if (token) {
         config.headers.Authorization = `Bearer ${token}`;
         // also log that header was attached
         console.debug("API request: Authorization header attached");
@@ -22,7 +22,7 @@ api.interceptors.request.use(
     }
 
     return config;
-  },(error) => Promise.reject(error)
+  }, (error) => Promise.reject(error)
 );
 
 // Response error logger for debugging 403 and other errors
@@ -44,7 +44,7 @@ const transformJob = (job) => ({
   description: job.descricao,
   status: job.status,
   type: job.tipo,
-  uf:job.estado,
+  uf: job.estado,
   id: job.id,
   createdAt: job.dataCriacao,
   deadline: job.dataLimite,
@@ -52,7 +52,7 @@ const transformJob = (job) => ({
 });
 
 export const loginUser = async (loginData) => {
-  const response = await api.post("/auth/login",loginData);
+  const response = await api.post("/auth/login", loginData);
   return response;
 }
 
@@ -61,22 +61,22 @@ export const registerUser = async (userData) => {
   return response;
 }
 
-export const getMyData = async ()=>{
+export const getMyData = async () => {
   const response = await api.get("/usuarios/me");
   console.log(response);
   return response;
 }
 
-export const updateMyData = async (data) =>{
+export const updateMyData = async (data) => {
   const response = await api.put("/usuarios/me", data);
   return response;
 }
 
-export const saveJobOpening = async (userId,id) =>{
-  try{
+export const saveJobOpening = async (userId, id) => {
+  try {
     const token = sessionStorage.getItem("token");
     console.debug("saveJobOpening: id=", id, "tokenPresent=", !!token);
-  }catch(e){
+  } catch (e) {
     console.debug("saveJobOpening: could not read token", e);
   }
 
@@ -104,27 +104,37 @@ export const updateUserById = async (id, data) => {
   return response;
 }
 
-export const getAllUsers = async() =>{
+export const getAllUsers = async () => {
   const response = await api.get('/usuarios');
   return response;
-}      
+}
 
-export const getJobOpenings = async()=>{
+export const getJobOpenings = async () => {
   const response = await api.get("/vagas");
   const transformedData = response.data.map(transformJob);
   return { ...response, data: transformedData };
 }
 
-export const searchJobOpenings = async(params)=>{
-  const response = await api.get("/vagas/buscar", {params});
+export const searchJobOpenings = async (params) => {
+  const response = await api.get("/vagas/buscar", { params });
   const transformedData = response.data.map(transformJob);
   return { ...response, data: transformedData };
 }
 
-export const getJobById = async(id)=>{
+export const getJobById = async (id) => {
   const response = await api.get(`/vagas/${id}`);
-  return{
+  return {
     ...response,
     data: transformJob(response.data)
   };
+}
+
+export const getSupportGroups = async () => {
+  const response = await api.get('/grupos');
+  return response;
+}
+
+export const getGroupById = async (id) => {
+  const response = await api.get(`/grupos/${id}`);
+  return response;
 }
