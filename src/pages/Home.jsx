@@ -4,9 +4,11 @@ import imagem1 from '../assets/cards/image1.png';
 import imagem2 from '../assets/cards/image2.png';
 import imagem3 from '../assets/cards/image3.png';
 import imagem4 from '../assets/cards/image4.png';
-import imagem5 from '../assets/cards/image5.png'
+import imagem5 from '../assets/cards/image5.png';
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col gap-10 px-8 mx-auto items-center">
       <div className="flex flex-col">
@@ -23,6 +25,8 @@ export default function Home() {
           title="Grupos de Apoio"
           description="Troque experiências e encontre acolhimento em grupos online e presenciais."
           bgColor="bg-[var(--home-bg)]"
+          interactiveClasses="hover:cursor-pointer hover:translate-y-[-4px] hover:shadow-md transition-all"
+          onClick={()=>navigate('grupos')}
         ></Card>
 
         <Card imgSrc={imagem2}
@@ -30,6 +34,8 @@ export default function Home() {
           title="Oporturnidades Inclusivas"
           description="Encontre vagas em empresas verificadas que respeitam sua identidade."
           bgColor="bg-[var(--jobs-bg)]"
+          interactiveClasses="hover:cursor-pointer hover:translate-y-[-4px] hover:shadow-md transition-all"
+          onClick={()=>navigate('vagas')}
         ></Card>
       </div>
 

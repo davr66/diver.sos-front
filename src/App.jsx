@@ -6,6 +6,7 @@ import JobOpeningsDetails from './pages/JobOpeningDetails';
 import Home from './pages/Home';
 import SupportGroups from './pages/SupportGroups';
 import Loading from './components/Loading';
+import GroupDetails from './pages/GroupDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -22,6 +23,7 @@ function App() {
           <Route path='/vagas' element={<JobOpenings />}/>
           <Route path='/vagas/:id' element={<JobOpeningsDetails />}/>
           <Route path='/grupos' element={<SupportGroups />}/>
+          <Route path='/grupos/:id' element={<GroupDetails/>}/>
           <Route path='/favoritos' element={<Favorites/>}/>
           <Route path='/login' element={<Login />}/>
           <Route path='/cadastro' element={<Register />}/>
