@@ -26,6 +26,8 @@ export default function SupportGroups(){
         }
       }
       fetchGroups()
+    }else{
+      setLoading(false)
     }
   },[isAuthenticated])
 
@@ -33,11 +35,14 @@ export default function SupportGroups(){
 
   return(
     <div className="flex flex-col items-center">
-      <div className='flex flex-col gap-2 mt-2 mb-5 w-[90%]'>
-        <SearchBar placeholder="Pesquisar grupos..."/>
-      </div>
     {isAuthenticated ? 
-      groupList.map((group,index)=>(<ListItem key={index} data={group}/>))
+    ( <>
+        <div className='flex flex-col gap-2 mt-2 mb-5 w-[90%]'>
+          <SearchBar placeholder="Pesquisar grupos..."/>
+        </div>
+        {groupList.map((group,index)=>(<ListItem key={index} data={group}/>))}
+      </>
+    )
     :(
       <div className="flex flex-col items-center self-center gap-10 py-10 lg:scale-120 lg:justify-end">
         <img className="w-70"src={groupImage} alt="Ilustração de um grupo de pessoas" />
