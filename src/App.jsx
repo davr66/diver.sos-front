@@ -12,6 +12,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import Layout from './layouts/Layout';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
+import Favorites from './pages/Favorites'
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
           <Route path='/vagas' element={<JobOpenings />}/>
           <Route path='/vagas/:id' element={<JobOpeningsDetails />}/>
           <Route path='/grupos' element={<SupportGroups />}/>
-          <Route path='/favoritos' element={<Loading />}/>
+          <Route path='/favoritos' element={<Favorites/>}/>
           <Route path='/login' element={<Login />}/>
           <Route path='/cadastro' element={<Register />}/>
           <Route path='/esqueci-a-senha' element={<ForgotPassword />}/>
