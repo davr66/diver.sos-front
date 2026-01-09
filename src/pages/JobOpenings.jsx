@@ -3,16 +3,25 @@ import ListItem from '../components/ListItem'
 import SearchBar from '../components/SearchBar';
 import Filter from '../components/Filter';
 import CascadingFilter from '../components/CascadingFilter';
-import {getJobOpenings, searchJobOpenings} from '../services/api';
+import {getJobOpenings, searchJobOpenings, getMyFavoriteJobs} from '../services/api';
 import Loading from '../components/Loading';
+import { useAuth } from '../context/AuthContext';
+import Feedback from '../components/Feedback';
 
 export default function JobApplications(){
+  const { isAuthenticated } = useAuth();
   const [jobOpenings,setJobOpenings] = useState([]);
   const [search,setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [workModeFilters, setWorkModeFilters] = useState([]);
   const [selectedState, setSelectedState] = useState([]);
   const [selectedCities, setSelectedCities] = useState([]);
+  const [savedJobIds, setSavedJobIds] = useState([]);
+  const [feedback, setFeedback] = useState(null);
+
+  const showFeedback = (type, heading, message) => {
+    setFeedback({ type, heading, message });
+  };
 
   useEffect(()=>{
     const fetchJobs = async () =>{
@@ -26,13 +35,30 @@ export default function JobApplications(){
     fetchJobs();
   },[]);
 
+  useEffect(()=>{
+    if (!isAuthenticated) {
+      setSavedJobIds([]);
+      return;
+    }
+    
+    const fetchSavedJobs = async () =>{
+      try {
+        const response = await getMyFavoriteJobs();
+        const ids = response.data.map(job => job.id);
+        setSavedJobIds(ids);
+      } catch (error) {
+        console.error('Erro ao carregar vagas salvas:', error);
+      }
+    };
+    fetchSavedJobs();
+  },[isAuthenticated]);
+
   const handleSearchSubmit = async () => {
     setIsLoading(true);
-    // Reset location filters when using search bar
     setSelectedState([]);
     setSelectedCities([]);
     try {
-      const response = await searchJobOpenings({ termo: search }); // backend decides behavior for empty search
+      const response = await searchJobOpenings({ termo: search });
       setJobOpenings(response.data);
     } catch (error) {
       console.error('Erro ao procurar vagas:', error);
@@ -101,7 +127,13 @@ export default function JobApplications(){
 
         <div className='w-[95%] flex flex-col items-center'>
           {filteredJobs.map((job,index)=>(
-            <ListItem key={index} data={job} type="job_opening"></ListItem>
+            <ListItem 
+              key={index} 
+              data={job} 
+              type="job_opening" 
+              isSaved={savedJobIds.includes(job.id)}
+              onError={showFeedback}
+            />
           ))}
 
           {search.trim() !== "" && filteredJobs.length === 0 &&(
@@ -110,6 +142,14 @@ export default function JobApplications(){
         </div>
       </div>)}
     
+      {feedback && (
+        <Feedback
+          type={feedback.type}
+          heading={feedback.heading}
+          message={feedback.message}
+          onClose={() => setFeedback(null)}
+        />
+      )}
     </>
   );
 }

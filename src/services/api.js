@@ -67,31 +67,28 @@ export const getMyData = async () => {
   return response;
 }
 
+export const getMyFavoriteJobs = async () => {
+  const response = await api.get("/usuarios/me/vagas");
+  return response;
+}
+
 export const updateMyData = async (data) => {
   const response = await api.put("/usuarios/me", data);
   return response;
 }
 
-export const saveJobOpening = async (userId, id) => {
-  try {
-    const token = sessionStorage.getItem("token");
-    console.debug("saveJobOpening: id=", id, "tokenPresent=", !!token);
-  } catch (e) {
-    console.debug("saveJobOpening: could not read token", e);
-  }
+export const saveJobOpening = async (id) => {
+  const response = await api.post(`/usuarios/me/vagas/${id}`);
+  return response;
+}
 
-  try {
-    const response = await api.put(`/usuarios/me/vagas/${id}?id=${userId}`);
-    return response;
-  } catch (err) {
-    console.error("saveJobOpening failed:", {
-      id,
-      status: err?.response?.status,
-      data: err?.response?.data,
-      headers: err?.response?.headers
-    });
-    throw err;
-  }
+export const deleteSavedJobOpening = async (id) =>{
+  const response = await api.delete(`/usuarios/me/vagas/${id}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  return response;
 }
 
 export const getUserById = async (id) => {

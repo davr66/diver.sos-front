@@ -5,7 +5,7 @@ export default function SaveBtn({ active, onClick }) {
   const [hover, setHover] = useState(false);
   const showFilled = active || hover;
 
-  const svgBaseClasses = "w-full h-full transition-opacity duration-150 group-hover:opacity-0";
+  const svgBaseClasses = "w-full h-full transition-opacity duration-150 group-hover:opacity-0 pointer-events-none";
 
   return (
     <button

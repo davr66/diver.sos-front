@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const navigate = useNavigate();
+
   return (
     <div className="flex flex-col gap-10 px-8 mx-auto items-center">
       <div className="flex flex-col">

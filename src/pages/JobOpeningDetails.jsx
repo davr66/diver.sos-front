@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { getJobById } from '../services/api';
+import { useEffect, useState, useContext } from 'react';
+import { getJobById, getMyFavoriteJobs, saveJobOpening } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import companyIcon from '../assets/job-applications/company.svg';
 import locationIcon from '../assets/job-applications/location.svg';
 import workModeIcon from '../assets/job-applications/work-mode.svg';
@@ -9,13 +10,41 @@ import SaveBtn from '../components/SaveBtn';
 
 
 export default function JobDetails() {
+  const { isAuthenticated } = useAuth();
   const { id } = useParams();
   const [job, setJob] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     getJobById(id).then(res => setJob(res.data));
   }, [id]);
-  console.log(job);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setIsSaved(false);
+      return;
+    }
+
+    const fetchSavedStatus = async () => {
+      try {
+        const response = await getMyFavoriteJobs();
+        const isSavedJob = response.data.some(savedJob => savedJob.id === parseInt(id));
+        setIsSaved(isSavedJob);
+      } catch (error) {
+        console.error('Erro ao verificar se vaga está salva:', error);
+      }
+    };
+    fetchSavedStatus();
+  }, [id, isAuthenticated]);
+
+  const handleSave = async () => {
+    try {
+      await saveJobOpening(id);
+      setIsSaved(true);
+    } catch (error) {
+      console.error('Erro ao salvar vaga:', error);
+    }
+  };
 
   if (!job) return <p>Carregando...</p>;
 
@@ -30,7 +59,7 @@ export default function JobDetails() {
           <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1px" src={workModeIcon} />{job.work_mode === 'Hibrido' ? 'Híbrido' : job.work_mode}</p>
         </div>
         <div className="flex flex-col items-end justify-between min-h-full">
-          <SaveBtn></SaveBtn>
+          <SaveBtn active={isSaved} onClick={handleSave}></SaveBtn>
           <a href={job.jobLink} className="text-nowrap mt-5 bg-[#FFDF7B] py-2 px-3 rounded-md border-2 border-r-4 border-b-4 hover:cursor-pointer hover:bg-[#d1b14b]" target="_blank">Ir para a vaga</a>
         </div>
       </div>

@@ -20,7 +20,7 @@ export default function JobDetails() {
   if (!group) return <Loading/>;
 
   return (
-    <div className='px-[1rem] relative'>
+    <div className='px-[1rem] relative lg:px-40'>
       <BackButton fallback='/vagas'></BackButton>
       <div className="flex justify-between min-h-[40%] py-4">
         <div className="flex flex-col gap-2">
@@ -31,7 +31,7 @@ export default function JobDetails() {
         </div>
         <div className="flex flex-col items-end justify-between min-h-full">
           <SaveBtn></SaveBtn>
-          <a href={group.jobLink} className="text-sm font-bold text-nowrap uppercase mt-5 bg-[var(--groups-bg)] py-2 px-3 rounded-lg border-2 border-r-4 border-b-4 hover:cursor-pointer hover:bg-[#d1b14b] translate-y-1" target="_blank">quero participar</a>
+          <a href={group.jobLink} className="text-sm font-bold text-nowrap uppercase mt-5 bg-[var(--groups-bg)] py-2 px-3 rounded-lg border-2 border-r-4 border-b-4 hover:cursor-pointer hover:bg-[#d17b95] hover:scale-104 translate-y-1" target="_blank">quero participar</a>
         </div>
       </div>
 

@@ -3,12 +3,53 @@ import locationIcon from '../assets/job-applications/location.svg';
 import workModeIcon from '../assets/job-applications/work-mode.svg';
 import { Link } from 'react-router-dom';
 import SaveBtn from './SaveBtn';
-import { saveJobOpening } from '../services/api';
+import { saveJobOpening, deleteSavedJobOpening } from '../services/api';
+import { useState, useEffect, useRef } from 'react';
 
 
-
-export default function JobOpening({data, type }) {
+export default function JobOpening({data, type, isSaved = false, onError }) {
   const id = data.id;
+  const [saved, setSaved] = useState(isSaved);
+  const userInteracted = useRef(false);
+
+  // Sincroniza com a prop apenas se o usuário não interagiu
+  useEffect(() => {
+    if (!userInteracted.current) {
+      setSaved(isSaved);
+    }
+  }, [isSaved]);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    userInteracted.current = true;
+    const previousState = saved;
+    const newState = !saved;
+    
+    setSaved(newState);
+    
+    try {
+      if (previousState) {
+        await deleteSavedJobOpening(id);
+      } else {
+        await saveJobOpening(id);
+      }
+    } catch (error) {
+      console.error("Erro ao salvar/deletar vaga:", error);
+      setSaved(previousState);
+      
+      // Mostrar feedback de erro
+      if (onError) {
+        if (error?.response?.status === 403) {
+          onError('error', 'Acesso negado', 'Faça login para salvar vagas nos seus favoritos.');
+        } else {
+          onError('error', 'Erro ao salvar vaga', 'Não foi possível salvar a vaga. Tente novamente.');
+        }
+      }
+    }
+  };
+
   return (
     <div className="flex justify-between pb-5 pt-2 border-t-2 w-[95%] relative nth-last-1:border-b-2">
       {type == 'job_opening' ? (
@@ -29,7 +70,7 @@ export default function JobOpening({data, type }) {
           )
       }
       <div className="flex-shrink-0">
-        <SaveBtn onClick={() => saveJobOpening(id)}/>
+        <SaveBtn key={`save-${id}-${saved}`} active={saved} onClick={handleSave}/>
       </div>
       <Link to={type ==='job_opening' ? `/vagas/${id}`:`/grupos/${id}`} className="absolute right-0 bottom-3 text-nowrap text-sm font-bold border rounded-md border-b-3 bg-white border-r-3 px-5 py-2 hover:cursor-pointer hover:shadow-sm hover:bg-gray-100 hover:scale-102 transition-all">Ver mais</Link>
     </div>
