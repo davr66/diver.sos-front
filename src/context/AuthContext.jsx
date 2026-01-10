@@ -74,8 +74,12 @@ export function AuthProvider({children}){
 
       scheduleLogout(expiryTimestamp);
     } catch (err) {
-      const message = err?.response?.data?.message || 'Erro no login';
-      throw new Error(message);
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message || 'Erro ao fazer login';
+      const enhanced = new Error(message);
+      enhanced.status = status;
+      enhanced.data = err?.response?.data;
+      throw enhanced;
     }
   }
 
