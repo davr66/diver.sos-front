@@ -1,12 +1,13 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
-import { getJobById, getMyFavoriteJobs, saveJobOpening } from '../services/api';
+import { getJobById, getMyFavoriteJobs, saveJobOpening, deleteSavedJobOpening } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import companyIcon from '../assets/job-applications/company.svg';
 import locationIcon from '../assets/job-applications/location.svg';
 import workModeIcon from '../assets/job-applications/work-mode.svg';
 import BackButton from '../components/BackBtn';
 import SaveBtn from '../components/SaveBtn';
+import Feedback from '../components/Feedback';
 
 
 export default function JobDetails() {
@@ -14,6 +15,8 @@ export default function JobDetails() {
   const { id } = useParams();
   const [job, setJob] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  const showFeedback = (type, heading, message) => setFeedback({ type, heading, message });
 
   useEffect(() => {
     getJobById(id).then(res => setJob(res.data));
@@ -38,11 +41,24 @@ export default function JobDetails() {
   }, [id, isAuthenticated]);
 
   const handleSave = async () => {
+    const previousState = isSaved;
+    const newState = !isSaved;
+    setIsSaved(newState);
+
     try {
-      await saveJobOpening(id);
-      setIsSaved(true);
+      if (previousState) {
+        await deleteSavedJobOpening(id);
+      } else {
+        await saveJobOpening(id);
+      }
     } catch (error) {
-      console.error('Erro ao salvar vaga:', error);
+      console.error('Erro ao salvar/deletar vaga:', error);
+      setIsSaved(previousState);
+
+      const isForbidden = error?.response?.status === 403;
+      const loginMsg = 'Faça login para salvar vagas nos seus favoritos.';
+      const genericMsg = 'Não foi possível salvar a vaga. Tente novamente.';
+      showFeedback('error', isForbidden ? 'Acesso negado' : 'Erro ao salvar vaga', isForbidden ? loginMsg : genericMsg);
     }
   };
 
@@ -67,6 +83,14 @@ export default function JobDetails() {
       <div className='flex flex-col py-4'>
         <p className='flex items-end gap-1 text-[12px] text-clip leading-none'>{job.description}</p>
       </div>
+      {feedback && (
+        <Feedback
+          type={feedback.type}
+          heading={feedback.heading}
+          message={feedback.message}
+          onClose={() => setFeedback(null)}
+        />
+      )}
     </div>
   )
 }

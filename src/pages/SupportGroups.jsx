@@ -3,14 +3,18 @@ import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import groupImage from "../assets/group.svg";
 import { useEffect, useState } from "react";
-import { getSupportGroups } from "../services/api";
+import { getSupportGroups, getMyGroups } from "../services/api";
 import Loading from "../components/Loading";
+import Feedback from "../components/Feedback";
 import SearchBar from "../components/SearchBar";
 
 export default function SupportGroups(){
   const {isAuthenticated} = useAuth();
-  const [groupList,setGroupList] = useState(null);
+  const [groupList,setGroupList] = useState([]);
+  const [savedGroupIds, setSavedGroupIds] = useState([]);
   const [loading,setLoading] = useState(true);
+  const [feedback, setFeedback] = useState(null);
+  const showFeedback = (type, heading, message) => setFeedback({ type, heading, message });
 
   useEffect(()=>{
     if(isAuthenticated){
@@ -18,14 +22,28 @@ export default function SupportGroups(){
         try {
           const response = await getSupportGroups();
           console.log(response);
-          setGroupList(response.data); 
+          const data = Array.isArray(response?.data) ? response.data : [];
+          setGroupList(data);
         } catch (err) {
           console.error(err);
+          showFeedback('error', 'Erro ao carregar grupos', 'Não foi possível carregar os grupos. Tente novamente.');
         } finally{
           setLoading(false);
         }
       }
       fetchGroups()
+      // Carrega grupos salvos do usuário
+      const fetchSavedGroups = async () => {
+        try {
+          const response = await getMyGroups();
+          const ids = Array.isArray(response?.data) ? response.data.map(g => g.id) : [];
+          setSavedGroupIds(ids);
+        } catch (err) {
+          console.error('Erro ao carregar grupos salvos:', err);
+          showFeedback('error', 'Erro ao carregar grupos salvos', 'Não foi possível carregar seus grupos salvos. Tente novamente.');
+        }
+      };
+      fetchSavedGroups();
     }else{
       setLoading(false)
     }
@@ -40,7 +58,17 @@ export default function SupportGroups(){
         <div className='flex flex-col gap-2 mt-2 mb-5 w-[90%]'>
           <SearchBar placeholder="Pesquisar grupos..."/>
         </div>
-        {groupList.map((group,index)=>(<ListItem key={index} data={group}/>))}
+        {groupList.map((group,index)=>(
+          <ListItem key={index} data={group} type="group" isSaved={savedGroupIds.includes(group.id)} onError={showFeedback} />
+        ))}
+        {feedback && (
+          <Feedback
+            type={feedback.type}
+            heading={feedback.heading}
+            message={feedback.message}
+            onClose={() => setFeedback(null)}
+          />
+        )}
       </>
     )
     :(

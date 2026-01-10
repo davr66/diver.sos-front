@@ -83,11 +83,7 @@ export const saveJobOpening = async (id) => {
 }
 
 export const deleteSavedJobOpening = async (id) =>{
-  const response = await api.delete(`/usuarios/me/vagas/${id}`, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
+  const response = await api.delete(`/usuarios/me/vagas/${id}`);
   return response;
 }
 
@@ -133,5 +129,20 @@ export const getSupportGroups = async () => {
 
 export const getGroupById = async (id) => {
   const response = await api.get(`/grupos/${id}`);
+  return response;
+}
+
+export const saveGroup = async (id) => {
+  const response = await api.post(`/usuarios/me/grupos/${id}`);
+  return response;
+}
+
+export const deleteSavedGroup = async (id) =>{
+  const response = await api.delete(`/usuarios/me/grupos/${id}`);
+  return response;
+}
+
+export const getMyGroups = async () => {
+  const response = await api.get('/usuarios/me/grupos');
   return response;
 }

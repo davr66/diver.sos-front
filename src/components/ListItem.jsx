@@ -3,7 +3,7 @@ import locationIcon from '../assets/job-applications/location.svg';
 import workModeIcon from '../assets/job-applications/work-mode.svg';
 import { Link } from 'react-router-dom';
 import SaveBtn from './SaveBtn';
-import { saveJobOpening, deleteSavedJobOpening } from '../services/api';
+import { saveJobOpening, deleteSavedJobOpening, saveGroup, deleteSavedGroup } from '../services/api';
 import { useState, useEffect, useRef } from 'react';
 
 
@@ -30,22 +30,36 @@ export default function JobOpening({data, type, isSaved = false, onError }) {
     setSaved(newState);
     
     try {
-      if (previousState) {
-        await deleteSavedJobOpening(id);
+      if (type === 'job_opening') {
+        if (previousState) {
+          await deleteSavedJobOpening(id);
+        } else {
+          await saveJobOpening(id);
+        }
       } else {
-        await saveJobOpening(id);
+        if (previousState) {
+          await deleteSavedGroup(id);
+        } else {
+          await saveGroup(id);
+        }
       }
     } catch (error) {
-      console.error("Erro ao salvar/deletar vaga:", error);
+      console.error("Erro ao salvar/deletar item:", error);
       setSaved(previousState);
       
       // Mostrar feedback de erro
       if (onError) {
-        if (error?.response?.status === 403) {
-          onError('error', 'Acesso negado', 'Faça login para salvar vagas nos seus favoritos.');
-        } else {
-          onError('error', 'Erro ao salvar vaga', 'Não foi possível salvar a vaga. Tente novamente.');
-        }
+        const isForbidden = error?.response?.status === 403;
+        const isJob = type === 'job_opening';
+        const entityLabel = isJob ? 'vaga' : 'grupo';
+        const loginMsg = isJob
+          ? 'Faça login para salvar vagas nos seus favoritos.'
+          : 'Faça login para salvar grupos nos seus favoritos.';
+        const genericMsg = isJob
+          ? 'Não foi possível salvar a vaga. Tente novamente.'
+          : 'Não foi possível salvar o grupo. Tente novamente.';
+
+        onError('error', isForbidden ? 'Acesso negado' : `Erro ao salvar ${entityLabel}`, isForbidden ? loginMsg : genericMsg);
       }
     }
   };
