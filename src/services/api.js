@@ -147,3 +147,19 @@ export const getMyGroups = async () => {
   const response = await api.get('/usuarios/me/grupos');
   return response;
 }
+
+export const uploadProfilePhoto = async (file) => {
+  const formData = new FormData();
+  formData.append('arquivo', file);
+  const response = await api.post('/usuarios/me/foto', formData, {
+    headers: {
+      'Content-Type': undefined
+    }
+  });
+  return response;
+}
+
+export const getSkills = async () =>{
+  const response = await api.get('/habilidades');
+  return response;
+}

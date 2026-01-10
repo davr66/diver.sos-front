@@ -21,13 +21,13 @@ export default function JobDetails() {
 
   return (
     <div className='px-[1rem] relative lg:px-40'>
-      <BackButton fallback='/vagas'></BackButton>
+      <BackButton fallback='/grupos'></BackButton>
       <div className="flex justify-between min-h-[40%] py-4">
         <div className="flex flex-col gap-2">
           <h3 className="text-lg text-nowrap text-pretty font-bold uppercase leading-none">{group.nome}</h3>
           <span className='flex items-center gap-1 uppercase text-[.6rem] leading-none font-semibold text-nowrap mb-2'><img src={verifiedIcon} />Espaço seguro verificado</span>
-          <p className="flex items-end gap-1 text-[12px] text-clip leading-none"><img src={companyIcon} />Coletivo 123</p>
-          <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1" src={locationIcon} />Fortaleza/CE</p>
+          <p className="flex items-end gap-1 text-[12px] text-clip leading-none"><img src={companyIcon} />{group.responsavel}</p>
+          <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1" src={locationIcon} />{group.cidade}/{group.estado}</p>
         </div>
         <div className="flex flex-col items-end justify-between min-h-full">
           <SaveBtn></SaveBtn>
@@ -36,7 +36,7 @@ export default function JobDetails() {
       </div>
 
       <div className='flex flex-col py-4'>
-        <p className='flex items-end gap-1 text-[12px] text-clip leading-none'>{group.description}</p>
+        <p className='flex items-end gap-1 text-[12px] text-clip leading-none'>{group.descricao}</p>
       </div>
     </div>
   )

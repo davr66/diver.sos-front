@@ -9,6 +9,9 @@ export default function Profile(){
   const [user,setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error,setError] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL;
+  const fotoPerfil = user?.fotoPerfil ? `${API_URL}${user.fotoPerfil}` : "../src/assets/profile-placeholder.png";
+  console.log(fotoPerfil);
 
   console.log(isAuthenticated);
 
@@ -35,7 +38,12 @@ export default function Profile(){
   return(
     <div className="flex flex-col items-center px-4 lg:px-15">
       <section className="flex flex-col items-center gap-1 border-b-1 w-full pb-5" id="profile-info">
-        <div className={`w-40 h-40 rounded-full border-3 bg-[url('../src/assets/profile-placeholder.png')] bg-contain bg-no-repeat bg-center`}>
+        <div 
+          className="w-40 h-40 rounded-full border-3 bg-cover bg-no-repeat bg-contain"
+          style={{
+            backgroundImage: `url('${fotoPerfil}')`
+          }}
+        >
         </div>
         <h1 className="font-[Nunito] font-extrabold text-2xl">{user.nome}</h1>
         <div className="flex items-center justify-center bg-gray-300 text-center uppercase font-bold px-5 py-[2px] rounded-full border-2 text-[.65rem]">{user?.pronomes ?? 'seus pronomes'}</div>

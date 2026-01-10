@@ -2,7 +2,7 @@ import { MdSearch } from "react-icons/md";
 
 export default function SearchBar({value,onChange,onSubmit,placeholder = "Pesquisar...",className=""}){
   return (
-    <form onSubmit={(e)=>{ e.preventDefault(); if (typeof onSubmit === 'function') onSubmit(); }} className="flex justify-center items-center w-full gap-1 relative">
+    <form onSubmit={(e)=>{ e.preventDefault(); if (typeof onSubmit === 'function') onSubmit(); }} className="flex justify-center items-center w-full gap-1 relative max-w-150">
       <input type="text"
       name={value}
       onChange={(e)=>onChange(e.target.value)}

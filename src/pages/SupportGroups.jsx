@@ -52,10 +52,10 @@ export default function SupportGroups(){
   if(loading) return <Loading/>
 
   return(
-    <div className="flex flex-col items-center px-4 lg:px-10">
+    <div className="flex flex-col px-4 lg:px-10">
     {isAuthenticated ? 
     ( <>
-        <div className='flex flex-col gap-2 mt-2 mb-5 w-[90%]'>
+        <div className='flex flex-col gap-2 mt-2 mb-5'>
           <SearchBar placeholder="Pesquisar grupos..."/>
         </div>
         {groupList.map((group,index)=>(
