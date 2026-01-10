@@ -14,6 +14,9 @@ import Layout from './layouts/Layout';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import Favorites from './pages/Favorites'
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminHome from './pages/AdminHome';
+import AdminLayout from './layouts/AdminLayout';
 
 function App() {
   return (
@@ -30,6 +33,18 @@ function App() {
           <Route path='/esqueci-a-senha' element={<ForgotPassword />}/>
           <Route path='/perfil' element={<Profile/>}></Route>
           <Route path='/perfil/editar' element={<EditProfile/>}/>
+        </Route>
+        <Route
+          element={
+            <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path='/admin' element={<AdminHome />} />
+          <Route path='/admin/vagas' element={<JobOpenings />} />
+          <Route path='/admin/grupos' element={<SupportGroups />} />
+          <Route path='/admin/noticias' element={<AdminHome />} />
         </Route>
       </Routes>
   )

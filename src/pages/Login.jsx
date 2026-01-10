@@ -55,6 +55,10 @@ export default function Login() {
     try {
       setIsSubmitting(true);
       await login(form);
+      // Determina rota segura para administradores/moderadores
+      const role = (sessionStorage.getItem('role') || '').toLowerCase();
+      const isPrivileged = ['administrador','moderador','admin','moderator'].includes(role);
+      const redirectPath = isPrivileged ? '/admin' : '/';
       // Mostrar feedback de sucesso antes de redirecionar
       setFeedback({
         type: 'success',
@@ -64,7 +68,7 @@ export default function Login() {
       });
       setShowFeedback(true);
       // Mantém loading até redirecionar; desligamos ao navegar
-      setFeedbackOnClose(() => () => { setShowFeedback(false); navigate('/'); });
+      setFeedbackOnClose(() => () => { setShowFeedback(false); navigate(redirectPath); });
     } catch (err) {
       const apiMessage = getLoginErrorMessage(err);
       setFeedback({
