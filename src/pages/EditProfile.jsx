@@ -21,7 +21,8 @@ export default function EditProfile() {
     city: "",
     uf: "",
     pronouns: "",
-    phone: ""
+    phone: "",
+    birthDate: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -44,7 +45,6 @@ export default function EditProfile() {
   const [loadingSkills, setLoadingSkills] = useState(true);
   const API_URL = import.meta.env.VITE_API_URL;
 
-  // Fetch states from IBGE API on mount
   useEffect(() => {
     const fetchStates = async () => {
       try {
@@ -67,7 +67,6 @@ export default function EditProfile() {
     fetchStates();
   }, []);
 
-  // Fetch skills from API
   useEffect(() => {
     const fetchSkills = async () => {
       try {
@@ -87,7 +86,6 @@ export default function EditProfile() {
     fetchSkills();
   }, []);
 
-  // Fetch cities when state changes
   useEffect(() => {
     const fetchCities = async () => {
       if (!form.uf) {
@@ -129,7 +127,8 @@ export default function EditProfile() {
           city: cidade,
           uf: uf,
           pronouns: user.pronomes ?? "",
-          phone: user.telefone ?? ""
+          phone: user.telefone ?? "",
+          birthDate: user.dataNascimento ?? ""
         });
         // Carrega foto existente do perfil
         if (user?.fotoPerfil) {
@@ -315,6 +314,7 @@ export default function EditProfile() {
         },
         pronomes: form.pronouns,
         telefone: form.phone,
+        dataNascimento: form.birthDate,
         habilidades: selectedSkills.map(id => ({ id }))
       };
 
@@ -436,6 +436,8 @@ export default function EditProfile() {
           disabled={loadingSkills}
           placeholder="Buscar e selecionar habilidades"
         />
+
+        <Field label="Data de nascimento" value={form.birthDate} onChange={handleChange("birthDate")} type="date" required={false} />
 
         <Field label="Telefone" value={form.phone} onChange={handlePhoneChange} placeholder={'(xx) xxxxx-xxxx'} required={false} type="tel" maxLength={15} />
       </FormContainer>
