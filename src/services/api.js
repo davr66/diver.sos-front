@@ -69,7 +69,8 @@ export const getMyData = async () => {
 
 export const getMyFavoriteJobs = async () => {
   const response = await api.get("/usuarios/me/vagas");
-  return response;
+  const transformedData = Array.isArray(response.data) ? response.data.map(transformJob) : [];
+  return { ...response, data: transformedData };
 }
 
 export const updateMyData = async (data) => {

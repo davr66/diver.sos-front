@@ -51,7 +51,7 @@ export default function Filter({ value = [], onChange, options: propOptions, lab
   const hasSelection = value.length > 0;
   const buttonClass = hasSelection
     ? 'flex items-center gap-2 border-2 rounded-full px-3 py-1 bg-black text-white hover:ring-1 hover:ring-gray-600 hover:cursor-pointer'
-    : 'flex items-center gap-2  border-2 rounded-full px-3 py-1 bg-white text-gray-700 hover:ring-1 hover:ring-gray-300 hover:cursor-pointer';
+    : 'flex items-center gap-2  border-2 rounded-full px-3 py-1 bg-white hover:ring-1 hover:ring-gray-300 hover:cursor-pointer';
   const btnLabel = label;
 
   return (

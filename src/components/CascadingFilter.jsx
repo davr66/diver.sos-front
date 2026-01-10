@@ -48,7 +48,6 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
     fetchStates();
   }, []);
 
-  // Fetch cities when state changes
   useEffect(() => {
     const fetchCities = async () => {
       if (selectedState.length === 0) {
@@ -77,7 +76,6 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
     fetchCities();
   }, [selectedState]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) setIsOpen(false);
@@ -86,7 +84,6 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Calculate dropdown position when it opens
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
@@ -104,7 +101,6 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
     }
   }, [isOpen]);
 
-  // Block body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -116,7 +112,6 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
     };
   }, [isOpen]);
 
-  // Handle state change: force single select and clear cities
   const handleStateChange = (newState) => {
     const singleState = newState.slice(-1); // Keep only the last selected
     setSelectedState(singleState);
@@ -124,12 +119,10 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
     setCityOptions([]);
   };
 
-  // Handle city change
   const handleCityChange = (newCities) => {
     setSelectedCities(newCities);
   };
 
-  // Apply filters and close dropdown
   const handleApplyFilters = () => {
     setAppliedState(selectedState);
     setAppliedCities(selectedCities);
@@ -138,20 +131,17 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
     setIsOpen(false);
   };
 
-  // Reset filters
   const handleResetFilters = () => {
     setSelectedState([]);
     setSelectedCities([]);
   };
 
-  // Get display label for selected state
   const getSelectedStateLabel = () => {
     if (selectedState.length === 0) return 'Estado';
     const found = stateOptions.find(s => normalizeStr(s.value) === normalizeStr(selectedState[0]));
     return found ? found.label : 'Estado';
   };
 
-  // Get display label for selected cities
   const getSelectedCitiesLabel = () => {
     if (selectedCities.length === 0) return 'Cidades';
     if (selectedCities.length === 1) {
@@ -161,7 +151,6 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
     return `${selectedCities.length} cidades selecionadas`;
   };
 
-  // Button label without cities
   const btnLabel = (appliedState.length > 0 || appliedCities.length > 0)
     ? `Local (${appliedCities.length})`
     : 'Local';
@@ -169,7 +158,7 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
   const hasSelection = appliedState.length > 0 || appliedCities.length > 0;
   const buttonClass = hasSelection
     ? 'flex items-center gap-2 border-2 rounded-full px-3 py-1 bg-black text-medium text-white hover:ring-1 hover:ring-gray-600 hover:cursor-pointer'
-    : 'flex items-center gap-2 border-2 border-black rounded-full px-3 py-1 bg-white text-gray-700 hover:ring-1 hover:ring-gray-300 hover:cursor-pointer';
+    : 'flex items-center gap-2 border-2 border-black rounded-full px-3 py-1 bg-white hover:ring-1 hover:ring-gray-300 hover:cursor-pointer';
 
   return (
     <div className="relative inline-block text-left" ref={ref}>
@@ -184,7 +173,7 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
         <div className="flex-1">
           <span>{btnLabel}</span>
         </div>
-        <svg className={`w-4 h-4 ${hasSelection ? 'text-white' : 'text-gray-600'}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-4 h-4 ${hasSelection ? 'text-white' : 'text-black'}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M6 8l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
@@ -200,11 +189,11 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
           }}
         >
           <div id='modal' className="flex-1 overflow-y-auto p-4">
-            <h3 className="text-sm font-semibold text-gray-800 mb-3">Filtrar por Local</h3>
+            <h3 className="text-sm font-semibold mb-3">Filtrar por Local</h3>
 
             {/* Estado Filter */}
             <div className="mb-4">
-              <label className="block text-xs font-medium text-gray-600 mb-2">Estado</label>
+              <label className="block text-xs font-medium mb-2">Estado</label>
               {loadingStates ? (
                 <div className="text-sm text-gray-500">Carregando estados...</div>
               ) : (
@@ -221,7 +210,7 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
 
             {selectedState.length > 0 && (
               <div className="mb-4">
-                <label className="block text-xs font-medium text-gray-600 mb-2">Cidades</label>
+                <label className="block text-xs font-medium mb-2">Cidades</label>
                 {loadingCities ? (
                   <div className="text-sm text-gray-500">Carregando cidades...</div>
                 ) : (
@@ -245,7 +234,7 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
                 handleResetFilters();
                 setIsOpen(false);
               }}
-              className="px-3 py-1.5 border-2  rounded-md text-xs font-medium text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+              className="px-3 py-1.5 border-2 rounded-md text-xs font-medium hover:bg-gray-50 hover:cursor-pointer"
             >
               Cancelar
             </button>

@@ -104,8 +104,8 @@ export default function JobApplications(){
   return(
     <>
       {isLoading ? (<Loading/>):(
-      <div className='flex flex-col items-center'>
-        <div className='flex flex-col gap-2 mt-2 mb-5 w-[90%]'>
+      <div className='flex flex-col items-center px-4'>
+        <div className='flex flex-col gap-2 mt-2 mb-5 w-full'>
           <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} placeholder='Pesquisar vagas...'></SearchBar>
           <div className='flex gap-2'>
             <Filter
@@ -125,7 +125,7 @@ export default function JobApplications(){
           </div>
         </div>
 
-        <div className='w-[95%] flex flex-col items-center'>
+        <div className='flex flex-col items-center w-full'>
           {filteredJobs.map((job,index)=>(
             <ListItem 
               key={index} 

@@ -65,7 +65,7 @@ export default function JobOpening({data, type, isSaved = false, onError }) {
   };
 
   return (
-    <div className="flex justify-between pb-5 pt-2 border-t-2 w-[95%] relative nth-last-1:border-b-2">
+    <div className="flex justify-between pb-5 pt-2 border-t-2 w-full relative nth-last-1:border-b-2 min-h-30">
       {type == 'job_opening' ? (
         <div className="flex flex-col">
             <h3 className="text-sm text-wrap max-w-75 font-bold uppercase">{data.title}</h3>
