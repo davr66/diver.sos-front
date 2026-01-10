@@ -1,6 +1,7 @@
 import PasswordRules from "../components/PasswordRules";
 import AuthForm from "../components/AuthForm";
 import Field from "../components/Field";
+import Feedback from "../components/Feedback";
 import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { registerUser } from '../services/api';
@@ -23,7 +24,11 @@ export default function Register() {
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedback, setFeedback] = useState({});
+  const [feedbackOnClose, setFeedbackOnClose] = useState(() => () => setShowFeedback(false));
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
   const registerFooter = (<div><p className="font-medium">Já tem conta? <Link className="font-bold underline" to={'/login'}>Ir para o login.</Link></p></div>)
 
@@ -81,15 +86,19 @@ export default function Register() {
       };
 
       await registerUser(payload);
-      setSuccess('Cadastro realizado com sucesso! Redirecionando...');
-      setTimeout(() => navigate('/login'), 1200);
+      setRegisteredEmail(form.email);
+      setShowEmailModal(true);
     } catch (err) {
       console.error(err);
-      if (err?.response?.data?.message) {
-        setErrors({ api: err.response.data.message });
-      } else {
-        setErrors({ api: 'Erro ao cadastrar usuário' });
-      }
+      const errorMessage = err?.response?.data?.message || 'Erro ao cadastrar usuário';
+      setFeedback({
+        type: 'error',
+        heading: 'Erro no cadastro',
+        message: errorMessage,
+        duration: 4000
+      });
+      setShowFeedback(true);
+      setFeedbackOnClose(() => () => setShowFeedback(false));
     } finally {
       setLoading(false);
     }
@@ -130,9 +139,6 @@ export default function Register() {
           <PasswordRules rules={passwordRules} />
         )}
 
-        {errors.api && <div className="text-sm text-red-500">{errors.api}</div>}
-        {success && <div className="text-sm text-green-600">{success}</div>}
-
         <Field
           label="Confirmar senha"
           type="password"
@@ -141,6 +147,46 @@ export default function Register() {
           error={errors.confirmPassword}
         />
       </AuthForm>
+
+      {showFeedback && (
+        <Feedback
+          type={feedback.type}
+          heading={feedback.heading}
+          message={feedback.message}
+          duration={feedback.duration || 3000}
+          onClose={feedbackOnClose}
+        />
+      )}
+
+      {showEmailModal && (
+        <>
+          <div className="fixed inset-0 bg-slate-900/20 z-40" onClick={() => setShowEmailModal(false)}></div>
+          <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
+            <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+            <div className="flex justify-center mb-6">
+              <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: '#f0fce3' }}>
+                <svg className="w-12 h-12" fill="#71CC47" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">Cadastro realizado!</h2>
+            <p className="text-gray-600 mb-2">Um email de confirmação foi enviado para:</p>
+            <p className="font-semibold text-gray-800 mb-6 break-words">{registeredEmail}</p>
+            <p className="text-gray-600 mb-6">Verifique sua caixa de entrada e clique no link de confirmação para ativar sua conta.</p>
+            <button
+              onClick={() => {
+                setShowEmailModal(false);
+                navigate('/login');
+              }}
+              className="w-full bg-[#71CC47] hover:bg-[#5ba339] border-2 border-b-3 border-r-3 px-4 py-2 rounded-md font-semibold"
+            >
+              Ir para o login
+            </button>
+          </div>
+        </div>
+        </>
+      )}
     </div>
   );
 }
