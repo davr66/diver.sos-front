@@ -121,6 +121,7 @@ export default function JobApplications(){
             <CascadingFilter
               onStateChange={setSelectedState}
               onCityChange={setSelectedCities}
+              buttonColor="#FFE79D"
             />
           </div>
         </div>

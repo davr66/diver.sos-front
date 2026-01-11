@@ -7,6 +7,7 @@ import { getSupportGroups, getMyGroups } from "../services/api";
 import Loading from "../components/Loading";
 import Feedback from "../components/Feedback";
 import SearchBar from "../components/SearchBar";
+import CascadingFilter from "../components/CascadingFilter";
 
 export default function SupportGroups(){
   const {isAuthenticated} = useAuth();
@@ -14,6 +15,8 @@ export default function SupportGroups(){
   const [savedGroupIds, setSavedGroupIds] = useState([]);
   const [loading,setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
+  const [selectedState, setSelectedState] = useState([]);
+  const [selectedCities, setSelectedCities] = useState([]);
   const showFeedback = (type, heading, message) => setFeedback({ type, heading, message });
 
   useEffect(()=>{
@@ -49,6 +52,21 @@ export default function SupportGroups(){
     }
   },[isAuthenticated])
 
+  // remove acentos para filtragem
+  const normalize = (str) => (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  const filteredGroups = groupList.filter(group => {
+    // Filter by state
+    if (selectedState.length > 0 && !selectedState.includes(normalize(group.estado))) {
+      return false;
+    }
+    // Filter by cities
+    if (selectedCities.length > 0 && !selectedCities.includes(normalize(group.cidade))) {
+      return false;
+    }
+    return true;
+  });
+
   if(loading) return <Loading/>
 
   return(
@@ -57,8 +75,13 @@ export default function SupportGroups(){
     ( <>
         <div className='flex flex-col gap-2 mt-2 mb-5'>
           <SearchBar placeholder="Pesquisar grupos..."/>
+          <CascadingFilter
+            onStateChange={setSelectedState}
+            onCityChange={setSelectedCities}
+            buttonColor="#FFA3BE"
+          />
         </div>
-        {groupList.map((group,index)=>(
+        {filteredGroups.map((group,index)=>(
           <ListItem key={index} data={group} type="group" isSaved={savedGroupIds.includes(group.id)} onError={showFeedback} />
         ))}
         {feedback && (

@@ -68,7 +68,7 @@ export default function Favorites(){
               className={`px-4 py-1 rounded-full border-2 font-bold text-sm transition-all ${
                 filterType === 'all'
                   ? 'bg-black text-white border-black'
-                  : 'bg-white hover:ring-1 hover:ring-gray-300'
+                  : 'bg-white hover:ring-1 hover:ring-gray-300 hover:cursor-pointer'
               }`}
             >
               Todos
@@ -78,7 +78,7 @@ export default function Favorites(){
               className={`px-4 rounded-full border-2 font-bold text-sm transition-all ${
                 filterType === 'jobs'
                   ? 'bg-black text-white border-black'
-                  : 'bg-white hover:ring-1 hover:ring-gray-300'
+                  : 'bg-white hover:ring-1 hover:ring-gray-300 hover:cursor-pointer'
               }`}
             >
               Vagas
@@ -88,7 +88,7 @@ export default function Favorites(){
               className={`px-4 py-1 rounded-full border-2 font-bold text-sm transition-all ${
                 filterType === 'groups'
                   ? 'bg-black text-white border-black'
-                  : 'bg-white hover:ring-1 hover:ring-gray-300'
+                  : 'bg-white hover:ring-1 hover:ring-gray-300 hover:cursor-pointer'
               }`}
             >
               Grupos

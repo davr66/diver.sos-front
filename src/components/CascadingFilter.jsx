@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import LocationSelect from './LocationSelect';
 
-export default function CascadingFilter({ onStateChange, onCityChange }) {
+export default function CascadingFilter({ onStateChange, onCityChange, buttonColor }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedState, setSelectedState] = useState([]);
   const [selectedCities, setSelectedCities] = useState([]);
@@ -241,8 +241,10 @@ export default function CascadingFilter({ onStateChange, onCityChange }) {
             <button
               type="button"
               onClick={handleApplyFilters}
-              className="border-2 border-b-3 border-r-3 px-3 py-1.5 bg-[#FFE79D] rounded-md text-xs font-medium text-black hover:bg-[#eaca6b]
-              hover:cursor-pointer"
+              style={{ 
+                backgroundColor: buttonColor,
+              }}
+              className="border-2 border-b-3 border-r-3 px-3 py-1.5 rounded-md text-xs font-medium text-black hover:brightness-90 hover:cursor-pointer"
             >
               Aplicar
             </button>
