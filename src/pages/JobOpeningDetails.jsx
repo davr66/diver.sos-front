@@ -63,6 +63,7 @@ export default function JobDetails() {
   };
 
   if (!job) return <p>Carregando...</p>;
+  console.log(job);
 
   return (
     <div className='px-[1rem] relative'>
@@ -80,8 +81,14 @@ export default function JobDetails() {
         </div>
       </div>
 
-      <div className='flex flex-col py-4'>
+      <div className='flex flex-col py-4 gap-5'>
         <p className='flex items-end gap-1 text-[12px] text-clip leading-none'>{job.description}</p>
+        <div>
+          <h2 className='font-semibold text-lg mb-2'>Habilidades</h2>
+          <div className='flex flex-wrap gap-2'>
+            {job.skills && job.skills.map((skill)=>(<span className='font-medium rounded-md py-1 px-1 bg-[var(--jobs-bg)] text-sm' key={skill.id}>{skill.nome}</span>))}
+          </div>
+        </div>
       </div>
       {feedback && (
         <Feedback

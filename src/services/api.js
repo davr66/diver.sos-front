@@ -48,7 +48,8 @@ const transformJob = (job) => ({
   id: job.id,
   createdAt: job.dataCriacao,
   deadline: job.dataLimite,
-  jobLink: job.linkDaVaga
+  jobLink: job.linkDaVaga,
+  skills: Array.isArray(job.habilidades) ? job.habilidades : []
 });
 
 export const loginUser = async (loginData) => {
