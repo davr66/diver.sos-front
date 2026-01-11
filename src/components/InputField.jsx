@@ -7,21 +7,23 @@ export default function InputField({
   disabled = false,
   onKeyPress,
   rightIcon,
+  name,
+  required,
 }) {
   return (
-    <div>
-      <label className="block text-2x1 font-semibold mb-2">{label}</label>
-      <div className="">
+    <div className="flex flex-col gap-1">
+      <label className="font-semibold">{label}</label>
+      <div className="relative">
         <input
           type={type}
+          name={name}
           value={value}
-          className={
-            "w-full px-4 py-3 border-4  border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black "
-          }
+          className="w-full px-3 py-2 border-2 rounded-lg focus:outline-none h-[42px]"
           placeholder={placeholder}
           onChange={onChange}
           disabled={disabled}
           onKeyPress={onKeyPress}
+          required={required}
         />
         {rightIcon && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2 ">
