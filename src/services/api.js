@@ -52,6 +52,7 @@ const transformJob = (job) => ({
   skills: Array.isArray(job.habilidades) ? job.habilidades : []
 });
 
+//user
 export const loginUser = async (loginData) => {
   const response = await api.post("/auth/login", loginData);
   return response;
@@ -68,24 +69,8 @@ export const getMyData = async () => {
   return response;
 }
 
-export const getMyFavoriteJobs = async () => {
-  const response = await api.get("/usuarios/me/vagas");
-  const transformedData = Array.isArray(response.data) ? response.data.map(transformJob) : [];
-  return { ...response, data: transformedData };
-}
-
 export const updateMyData = async (data) => {
   const response = await api.put("/usuarios/me", data);
-  return response;
-}
-
-export const saveJobOpening = async (id) => {
-  const response = await api.post(`/usuarios/me/vagas/${id}`);
-  return response;
-}
-
-export const deleteSavedJobOpening = async (id) =>{
-  const response = await api.delete(`/usuarios/me/vagas/${id}`);
   return response;
 }
 
@@ -104,10 +89,99 @@ export const getAllUsers = async () => {
   return response;
 }
 
+export const uploadProfilePhoto = async (file) => {
+  const formData = new FormData();
+  formData.append('arquivo', file);
+  const response = await api.post('/usuarios/me/foto', formData, {
+    headers: {
+      'Content-Type': undefined
+    }
+  });
+  return response;
+}
+
+export const deleteUser = async (id) => {
+  const response = await api.delete(`/usuarios/${id}`);
+  return response;
+}
+
+//usuários -> vagas
+export const getMyFavoriteJobs = async () => {
+  const response = await api.get("/usuarios/me/vagas");
+  const transformedData = Array.isArray(response.data) ? response.data.map(transformJob) : [];
+  return { ...response, data: transformedData };
+}
+export const saveJobOpening = async (id) => {
+  const response = await api.post(`/usuarios/me/vagas/${id}`);
+  return response;
+}
+
+export const deleteSavedJobOpening = async (id) =>{
+  const response = await api.delete(`/usuarios/me/vagas/${id}`);
+  return response;
+}
+
+export const deleteJobOpening = async(id)=>{
+  const response = await api.delete(`/vagas/${id}`);
+  return response;
+}
+
+//usuários->grupos
+export const saveGroup = async (id) => {
+  const response = await api.post(`/usuarios/me/grupos/${id}`);
+  return response;
+}
+
+export const deleteSavedGroup = async (id) =>{
+  const response = await api.delete(`/usuarios/me/grupos/${id}`);
+  return response;
+}
+
+export const getMyGroups = async () => {
+  const response = await api.get('/usuarios/me/grupos');
+  return response;
+}
+
+//notícias
+export const getNews = async () =>{
+  const response = await api.get('/noticias');
+  return response;
+}
+
+export const getNewsById = async (id) => {
+  const response = await api.get(`/noticias/${id}`);
+  return response;
+}
+export const createNews = async (data) => {
+  const response = await api.post('/noticias', data);
+  return response;
+}
+
+export const editNews = async (id, data) => {
+  const response = await api.put(`/noticias/${id}`, data);
+  return response;
+}
+
+export const deleteNews = async (id) => {
+  const response = await api.delete(`/noticias/${id}`);
+  return response;
+}
+
+//vagas
 export const getJobOpenings = async () => {
   const response = await api.get("/vagas");
   const transformedData = response.data.map(transformJob);
   return { ...response, data: transformedData };
+}
+
+export const createJobOpening = async (data) =>{
+  const response = await api.post("/vagas",data);
+  return response;
+}
+
+export const editJobOpening = async (id,data)=>{
+  const response = await api.put(`/vagas/${id}`,data);
+  return response;
 }
 
 export const searchJobOpenings = async (params) => {
@@ -124,6 +198,7 @@ export const getJobById = async (id) => {
   };
 }
 
+//grupos
 export const getSupportGroups = async () => {
   const response = await api.get('/grupos');
   return response;
@@ -134,32 +209,22 @@ export const getGroupById = async (id) => {
   return response;
 }
 
-export const saveGroup = async (id) => {
-  const response = await api.post(`/usuarios/me/grupos/${id}`);
+export const createGroup = async (data) => {
+  const response = await api.post('/grupos', data);
   return response;
 }
 
-export const deleteSavedGroup = async (id) =>{
-  const response = await api.delete(`/usuarios/me/grupos/${id}`);
+export const editGroup = async (id, data) => {
+  const response = await api.put(`/grupos/${id}`, data);
   return response;
 }
 
-export const getMyGroups = async () => {
-  const response = await api.get('/usuarios/me/grupos');
+export const deleteGroup = async (id) => {
+  const response = await api.delete(`/grupos/${id}`);
   return response;
 }
 
-export const uploadProfilePhoto = async (file) => {
-  const formData = new FormData();
-  formData.append('arquivo', file);
-  const response = await api.post('/usuarios/me/foto', formData, {
-    headers: {
-      'Content-Type': undefined
-    }
-  });
-  return response;
-}
-
+//habilidades
 export const getSkills = async () =>{
   const response = await api.get('/habilidades');
   return response;

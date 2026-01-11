@@ -17,6 +17,16 @@ import Favorites from './pages/Favorites'
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminHome from './pages/AdminHome';
 import AdminLayout from './layouts/AdminLayout';
+import ManageJobs from './pages/ManageJobs';
+import ManageUsers from './pages/ManageUsers';
+import ManageGroups from './pages/ManageGroups';
+import ManageNews from './pages/ManageNews';
+import CreateJob from './pages/CreateJob';
+import EditJob from './pages/EditJob';
+import CreateGroup from './pages/CreateGroup';
+import EditGroup from './pages/EditGroup';
+import CreateNews from './pages/CreateNews';
+import EditNews from './pages/EditNews';
 
 function App() {
   return (
@@ -42,12 +52,19 @@ function App() {
           }
         >
           <Route path='/admin' element={<AdminHome />} />
-          <Route path='/admin/vagas' element={<JobOpenings />} />
-          <Route path='/admin/grupos' element={<SupportGroups />} />
-          <Route path='/admin/noticias' element={<AdminHome />} />
+          <Route path='/admin/vagas' element={<ManageJobs/>} />
+          <Route path='/admin/vaga/criar' element={<CreateJob/>} />
+          <Route path='/admin/vaga/editar/:id' element={<EditJob/>} />
+          <Route path='/admin/grupos' element={<ManageGroups/>} />
+          <Route path='/admin/grupo/criar' element={<CreateGroup/>} />
+          <Route path='/admin/grupo/editar/:id' element={<EditGroup/>} />
+          <Route path='/admin/noticias' element={<ManageNews/>} />
+          <Route path='/admin/noticia/criar' element={<CreateNews/>} />
+          <Route path='/admin/noticia/editar/:id' element={<EditNews/>} />
+          <Route path='/admin/gerenciar-usuarios' element={<ManageUsers/>}/>
         </Route>
       </Routes>
-  )
+  ) 
 }
 
 export default App
