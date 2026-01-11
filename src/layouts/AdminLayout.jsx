@@ -43,9 +43,9 @@ export default function Layout(){
   return(
     <div className={`min-h-screen lg:grid lg:grid-cols-5 lg:grid-rows-8 lg:gap-0 lg:h-screen ${rootBg}`}>
       <Header/>
-        <main className='lg:row-start-1 lg:row-end-9 lg:col-start-2 lg:col-end-6 lg:overflow-y-auto lg:pt-10 pb-30 px-15'>
-        <section className="flex gap-2 h-fit" id="profile-info">
-          <div className={`w-40 h-40 rounded-full border-3 bg-[url('../src/assets/profile-placeholder.png')] bg-contain bg-no-repeat bg-center`}>
+        <main className='lg:row-start-1 lg:row-end-9 lg:col-start-2 lg:col-end-6 lg:overflow-y-auto lg:pt-10 pb-30 px-5'>
+        <section className="flex gap-2 h-fit mb-10" id="profile-info">
+          <div className={`w-30 h-30 rounded-full border-3 bg-[url('../src/assets/profile-placeholder.png')] bg-contain bg-no-repeat bg-center`}>
           </div>
           <div className='flex flex-col justify-between'>
             <div>
