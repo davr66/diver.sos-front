@@ -19,6 +19,8 @@ import AdminHome from './pages/AdminHome';
 import AdminLayout from './layouts/AdminLayout';
 import ManageJobs from './pages/ManageJobs';
 import ManageUsers from './pages/ManageUsers';
+import CreateUser from './pages/CreateUser';
+import EditUser from './pages/EditUser';
 import ManageGroups from './pages/ManageGroups';
 import ManageNews from './pages/ManageNews';
 import CreateJob from './pages/CreateJob';
@@ -42,7 +44,7 @@ function App() {
           <Route path='/cadastro' element={<Register />}/>
           <Route path='/esqueci-a-senha' element={<ForgotPassword />}/>
           <Route path='/perfil' element={<Profile/>}></Route>
-          <Route path='/perfil/editar' element={<EditProfile/>}/>
+          <Route path='/perfil/editar' element={<EditProfile fallback='/perfil' destination='/perfil'/>}/>
         </Route>
         <Route
           element={
@@ -52,6 +54,7 @@ function App() {
           }
         >
           <Route path='/admin' element={<AdminHome />} />
+          <Route path='admin/perfil' element={<EditProfile fallback='/admin' destination='/admin'/>}/>
           <Route path='/admin/vagas' element={<ManageJobs/>} />
           <Route path='/admin/vaga/criar' element={<CreateJob/>} />
           <Route path='/admin/vaga/editar/:id' element={<EditJob/>} />
@@ -62,6 +65,8 @@ function App() {
           <Route path='/admin/noticia/criar' element={<CreateNews/>} />
           <Route path='/admin/noticia/editar/:id' element={<EditNews/>} />
           <Route path='/admin/gerenciar-usuarios' element={<ManageUsers/>}/>
+          <Route path='/admin/usuario/criar' element={<CreateUser/>} />
+          <Route path='/admin/usuario/editar/:id' element={<EditUser/>} />
         </Route>
       </Routes>
   ) 

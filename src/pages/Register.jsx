@@ -5,6 +5,7 @@ import Feedback from "../components/Feedback";
 import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { registerUser } from '../services/api';
+import BackBtn from "../components/BackBtn";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -105,8 +106,9 @@ export default function Register() {
   }
 
   return (
-    <div className="flex flex-col items-center bg-[var(--profile-bg)] min-h-screen">
-      <img className="w-[50%] max-w-[18rem] h-auto mt-10 mb-3" src="./src/assets/logo.svg" alt="Logo da diver.sos" />
+    <div className="flex flex-col items-center bg-[var(--profile-bg)] min-h-screen">      <div className="w-full px-4 py-4">
+        <BackBtn fallback="/" />
+      </div>      <img className="w-[50%] max-w-[18rem] h-auto mt-10 mb-3" src="./src/assets/logo.svg" alt="Logo da diver.sos" />
       <AuthForm heading={"Crie seu perfil"} onSubmit={handleSubmit} btnText={"Cadastrar"} footer={registerFooter}>
         <Field
           label="Nome"

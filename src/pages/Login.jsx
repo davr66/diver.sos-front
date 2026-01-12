@@ -5,6 +5,7 @@ import { useState } from "react";
 import { validateEmail } from "../utils/Validation";
 import { useAuth } from "../context/AuthContext";
 import Feedback from "../components/Feedback";
+import BackBtn from "../components/BackBtn";
 
 
 export default function Login() {
@@ -85,6 +86,9 @@ export default function Login() {
   }
   return (
     <div className="flex flex-col items-center bg-[var(--profile-bg)] min-h-full">
+      <div className="w-full px-4 py-4">
+        <BackBtn fallback="/" />
+      </div>
       <img className="w-[50%] max-w-[18rem] h-auto mt-10 mb-3" src="./src/assets/logo.svg" alt="Logo da diver.sos" />
       <AuthForm heading={'Acesse sua conta'} onSubmit={handleSubmit} requiredStyle={false} btnText={'Entrar'} btnLoadingText={'Entrando...'} loading={isSubmitting} footer={loginFooter}>
         <Field label={'Email'}

@@ -4,8 +4,7 @@ import { editGroup, getGroupById } from "../services/api";
 import InputField from "../components/InputField";
 import SearchableSelect from "../components/SearchableSelect";
 import Feedback from "../components/Feedback";
-import Loading from "../components/Loading";
-
+import Loading from "../components/Loading";import BackBtn from "../components/BackBtn";
 export default function EditGroup() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -104,6 +103,9 @@ export default function EditGroup() {
 
   return (
     <div className="flex flex-col items-center w-full px-4 py-4">
+      <div className="w-full max-w-4xl mb-6">
+        <BackBtn fallback="/admin/grupos" />
+      </div>
       <h1 className="font-[Nunito] font-extrabold text-2xl mb-6">Editar Grupo</h1>
       <form onSubmit={handleSubmit} className="w-full max-w-4xl flex flex-col gap-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

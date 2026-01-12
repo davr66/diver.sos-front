@@ -5,6 +5,7 @@ import InputField from "../components/InputField";
 import SearchableSelect from "../components/SearchableSelect";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
+import BackBtn from "../components/BackBtn";
 
 export default function CreateGroup() {
   const navigate = useNavigate();
@@ -97,6 +98,9 @@ export default function CreateGroup() {
 
   return (
     <div className="flex flex-col items-center w-full px-4 py-4">
+      <div className="w-full max-w-4xl mb-6">
+        <BackBtn fallback="/admin/grupos" />
+      </div>
       <h1 className="font-[Nunito] font-extrabold text-2xl mb-6">Cadastrar Novo Grupo</h1>
       <form onSubmit={handleSubmit} className="w-full max-w-4xl flex flex-col gap-4">
         {/* Linha 1: Nome / Responsável */}
@@ -121,7 +125,6 @@ export default function CreateGroup() {
         </div>
         {/* Ações */}
         <div className="flex gap-4 mt-4">
-          <button type="button" onClick={() => navigate('/admin/grupos')} className="flex-1 border-2 border-b-3 border-r-3 rounded-lg py-2 font-semibold hover:brightness-95">Cancelar</button>
           <button type="submit" className="flex-1 border-2 border-b-3 border-r-3 rounded-lg py-2 bg-[var(--groups-bg)] font-semibold hover:brightness-95">Cadastrar Grupo</button>
         </div>
       </form>

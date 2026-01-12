@@ -11,7 +11,7 @@ import Feedback from "../components/Feedback";
 import SearchableSelect from "../components/SearchableSelect";
 import SearchableMultiSelect from "../components/SearchableMultiSelect";
 
-export default function EditProfile() {
+export default function EditProfile({fallback = '/',destination='/'}) {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -333,7 +333,7 @@ export default function EditProfile() {
       });
       setShowFeedback(true);
       // Mantém loading até redirecionar
-      setFeedbackOnClose(() => () => { setShowFeedback(false); navigate('/perfil'); });
+      setFeedbackOnClose(() => () => { setShowFeedback(false); navigate(destination); });
     } catch (err) {
       console.error(err);
       const errorMessage = err?.response?.data?.message || "Não foi possível atualizar o perfil. Tente novamente.";
@@ -356,7 +356,7 @@ export default function EditProfile() {
   return (
     <div className="flex flex-col items-center bg-[var(--general-bg)] min-h-screen px-5">
       <div className="w-full max-w-[45rem] mt-6">
-        <BackBtn fallback="/perfil"/>
+        <BackBtn fallback={fallback}/>
       </div>
 
       <FormContainer heading={"Editar perfil"} onSubmit={handleSubmit} btnText={"Salvar"} btnLoadingText={"Salvando..."} loading={isSubmitting} bordered={false}>

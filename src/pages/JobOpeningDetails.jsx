@@ -82,7 +82,9 @@ export default function JobDetails() {
       </div>
 
       <div className='flex flex-col py-4 gap-5'>
-        <p className='flex items-end gap-1 text-[12px] text-clip leading-none'>{job.description}</p>
+        <div className='prose prose-sm max-w-none whitespace-pre-line leading-relaxed'>
+          {job.description || ''}
+        </div>
         <div>
           <h2 className='font-semibold text-lg mb-2'>Habilidades</h2>
           <div className='flex flex-wrap gap-2'>

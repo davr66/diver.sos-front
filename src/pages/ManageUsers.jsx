@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AdminTable from "../components/AdminTable";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
@@ -6,6 +7,7 @@ import ConfirmModal from "../components/ConfirmModal";
 import { getAllUsers, deleteUser } from "../services/api";
 
 export default function ManageUsers() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
@@ -45,7 +47,7 @@ export default function ManageUsers() {
         return (
           <span
             className={`px-3 py-1 rounded-md font-semibold ${
-              isActive ? "bg-green-500 text-white" : "bg-gray-200 text-gray-700"
+              isActive ? "bg-[var(--profile-bg)]" : "bg-gray-200 text-gray-700"
             }`}
           >
             {status}
@@ -87,7 +89,7 @@ export default function ManageUsers() {
   }, []);
 
   const handleEdit = (user) => {
-    console.log("Editar usuário", user);
+    navigate(`/admin/usuario/editar/${user.id}`);
   };
 
   const handleDelete = (user) => {
@@ -125,6 +127,7 @@ export default function ManageUsers() {
   return (
     <div className="flex flex-col items-center w-full px-4 py-4">
       <h1 className="font-[Nunito] font-extrabold text-2xl mb-4">Gerenciar Usuários</h1>
+      <Link to={`/admin/usuario/criar`} className="bg-[var(--profile-bg)] px-4 py-2 self-end border-2 border-r-3 border-b-3 rounded-md mb-4 font-semibold hover:brightness-95">Novo Usuário</Link>
       <AdminTable
         columns={columns}
         data={users}

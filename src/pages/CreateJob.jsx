@@ -6,6 +6,7 @@ import SearchableMultiSelect from "../components/SearchableMultiSelect";
 import SearchableSelect from "../components/SearchableSelect";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
+import BackBtn from "../components/BackBtn";
 
 export default function CreateJob() {
   const navigate = useNavigate();
@@ -144,6 +145,9 @@ export default function CreateJob() {
 
   return (
     <div className="flex flex-col items-center w-full px-4 py-4">
+      <div className="w-full max-w-4xl mb-6">
+        <BackBtn fallback="/admin/vagas" />
+      </div>
       <h1 className="font-[Nunito] font-extrabold text-2xl mb-6">Cadastrar Nova Vaga</h1>
 
       <form onSubmit={handleSubmit} className="w-full max-w-4xl flex flex-col gap-4">
@@ -258,9 +262,10 @@ export default function CreateJob() {
             name="descricao"
             value={formData.descricao}
             onChange={handleChange}
+            placeholder="Digite a descrição da vaga..."
+            rows={10}
+            className="border-2 rounded-lg px-3 py-2 font-sans text-sm resize-y min-h-[200px] focus:outline-none focus:border-blue-500"
             required
-            rows={5}
-            className="border-2 rounded-lg px-3 py-2 resize-none"
           />
         </div>
 

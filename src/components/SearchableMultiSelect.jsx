@@ -37,19 +37,25 @@ export default function SearchableMultiSelect({
   );
 
   const handleSelect = (optValue) => {
-    const newValue = value.includes(optValue)
-      ? value.filter(v => v !== optValue)
-      : [...value, optValue];
+    // Garante que value seja sempre um array
+    const currentValue = Array.isArray(value) ? value : [];
+    const newValue = currentValue.includes(optValue)
+      ? currentValue.filter(v => v !== optValue)
+      : [...currentValue, optValue];
     onChange({ target: { value: newValue } });
   };
 
   const handleRemove = (optValue, e) => {
     e.stopPropagation();
-    const newValue = value.filter(v => v !== optValue);
+    // Garante que value seja sempre um array
+    const currentValue = Array.isArray(value) ? value : [];
+    const newValue = currentValue.filter(v => v !== optValue);
     onChange({ target: { value: newValue } });
   };
 
-  const selectedLabels = value.map(v => {
+  // Garante que value seja sempre um array antes de mapear
+  const currentValue = Array.isArray(value) ? value : [];
+  const selectedLabels = currentValue.map(v => {
     const option = options.find(opt => opt.value === v);
     return option ? option.label : v;
   });
@@ -101,25 +107,28 @@ export default function SearchableMultiSelect({
                 Nenhum resultado encontrado
               </div>
             ) : (
-              filteredOptions.map((option) => (
-                <div
-                  key={option.value}
-                  onClick={() => handleSelect(option.value)}
-                  className={`px-3 py-2 cursor-pointer text-sm flex items-center gap-2 ${
-                    value.includes(option.value)
-                      ? 'bg-blue-100 text-blue-900 font-semibold'
-                      : 'hover:bg-gray-100'
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={value.includes(option.value)}
-                    onChange={() => {}}
-                    className="cursor-pointer"
-                  />
-                  {option.label}
-                </div>
-              ))
+              filteredOptions.map((option) => {
+                const currentValue = Array.isArray(value) ? value : [];
+                return (
+                  <div
+                    key={option.value}
+                    onClick={() => handleSelect(option.value)}
+                    className={`px-3 py-2 cursor-pointer text-sm flex items-center gap-2 ${
+                      currentValue.includes(option.value)
+                        ? 'bg-blue-100 text-blue-900 font-semibold'
+                        : 'hover:bg-gray-100'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={currentValue.includes(option.value)}
+                      onChange={() => {}}
+                      className="cursor-pointer"
+                    />
+                    {option.label}
+                  </div>
+                );
+              })
             )}
           </div>
         )}
