@@ -9,7 +9,9 @@ export default function SaveBtn({ active, onClick }) {
 
   return (
     <button
-    className="w-7 h-7 inline-flex items-center justify-center hover:cursor-pointer" 
+      data-testid="save-button"
+      aria-pressed={active ? "true" : "false"}
+      className="w-7 h-7 inline-flex items-center justify-center hover:cursor-pointer" 
     onMouseEnter={()=>setHover(true)}
     onMouseLeave={()=>setHover(false)}
     onFocus={()=>setHover(true)} 

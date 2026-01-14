@@ -92,11 +92,15 @@ export default function Login() {
       <img className="w-[50%] max-w-[18rem] h-auto mt-10 mb-3" src="./src/assets/logo.svg" alt="Logo da diver.sos" />
       <AuthForm heading={'Acesse sua conta'} onSubmit={handleSubmit} requiredStyle={false} btnText={'Entrar'} btnLoadingText={'Entrando...'} loading={isSubmitting} footer={loginFooter}>
         <Field label={'Email'}
+          id="login-email"
+          name="email"
           type="text"
           placeholder={'exemplo@email.com'}
           error={errors.email}
           onChange={handleChange('email')} />
         <Field label={'Senha'}
+          id="login-password"
+          name="senha"
           type="password"
           error={errors.password}
           onChange={handleChange('password')} />

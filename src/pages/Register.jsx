@@ -111,6 +111,8 @@ export default function Register() {
       </div>      <img className="w-[50%] max-w-[18rem] h-auto mt-10 mb-3" src="./src/assets/logo.svg" alt="Logo da diver.sos" />
       <AuthForm heading={"Crie seu perfil"} onSubmit={handleSubmit} btnText={"Cadastrar"} footer={registerFooter}>
         <Field
+          id="register-name"
+          name="nome"
           label="Nome"
           value={form.name}
           onChange={handleChange("name")}
@@ -119,6 +121,8 @@ export default function Register() {
         />
 
         <Field
+          id="register-email"
+          name="email"
           label="Email"
           value={form.email}
           onChange={handleChange("email")}
@@ -128,6 +132,8 @@ export default function Register() {
         />
 
         <Field
+          id="register-password"
+          name="senha"
           label="Senha"
           type="password"
           value={form.password}
@@ -142,6 +148,8 @@ export default function Register() {
         )}
 
         <Field
+          id="register-confirm-password"
+          name="confirmarSenha"
           label="Confirmar senha"
           type="password"
           value={form.confirmPassword}

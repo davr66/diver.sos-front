@@ -389,9 +389,9 @@ export default function EditProfile({fallback = '/',destination='/'}) {
           )}
         </div>
 
-        <Field label="Nome" value={form.name} onChange={handleChange("name")} error={errors.name} placeholder={'ex. John Doe'} />
+        <Field label="Nome" id="edit-name" name="name" value={form.name} onChange={handleChange("name")} error={errors.name} placeholder={'ex. John Doe'} />
 
-        <Field label="Email" value={form.email} onChange={handleChange("email")} error={errors.email} type="email" placeholder={'exemplo@email.com'} />
+        <Field label="Email" id="edit-email" name="email" value={form.email} onChange={handleChange("email")} error={errors.email} type="email" placeholder={'exemplo@email.com'} />
 
         <div className="flex flex-col gap-1 w-full">
           <label className="font-semibold">Pronomes</label>
@@ -406,7 +406,7 @@ export default function EditProfile({fallback = '/',destination='/'}) {
         </div>
 
         {showOther && (
-          <Field label="Pronomes (outro)" value={form.pronouns} onChange={handleChange("pronouns")} placeholder={'ex. they/them'} required={false} />
+          <Field label="Pronomes (outro)" id="edit-custom-pronouns" name="customPronouns" value={form.pronouns} onChange={handleChange("pronouns")} placeholder={'ex. they/them'} required={false} />
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
@@ -437,9 +437,9 @@ export default function EditProfile({fallback = '/',destination='/'}) {
           placeholder="Buscar e selecionar habilidades"
         />
 
-        <Field label="Data de nascimento" value={form.birthDate} onChange={handleChange("birthDate")} type="date" required={false} />
+        <Field label="Data de nascimento" id="edit-birthdate" name="birthDate" value={form.birthDate} onChange={handleChange("birthDate")} type="date" required={false} />
 
-        <Field label="Telefone" value={form.phone} onChange={handlePhoneChange} placeholder={'(xx) xxxxx-xxxx'} required={false} type="tel" maxLength={15} />
+        <Field label="Telefone" id="edit-phone" name="phone" value={form.phone} onChange={handlePhoneChange} placeholder={'(xx) xxxxx-xxxx'} required={false} type="tel" maxLength={15} />
       </FormContainer>
 
       {showFeedback && (
