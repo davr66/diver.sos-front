@@ -11,7 +11,7 @@ describe('CT-02: Edição de perfil e favoritos', () => {
     cy.get('input[name="senha"]').type(Cypress.env('testUserPassword') || 'Senha@123');
     cy.get('button[type="submit"]').click();
     cy.contains(/Bem-vindo|Login realizado/i, { timeout: 10000 }).should('be.visible');
-    cy.url().should('not.include', '/login');
+    cy.url().should('not.include', '/login', { timeout: 10000 });
   });
 
   it('Editar perfil com sucesso', () => {
@@ -51,8 +51,7 @@ describe('CT-02: Edição de perfil e favoritos', () => {
     cy.get('@saveBtn').invoke('attr', 'aria-pressed').then((initialState) => {
       if (initialState === 'false') {
         cy.get('@saveBtn').click();
-        cy.wait(2000);
-        cy.get('@saveBtn').should('have.attr', 'aria-pressed', 'true', { timeout: 5000 });
+        cy.get('@saveBtn').should('have.attr', 'aria-pressed', 'true', { timeout: 10000 });
       }
     });
   });

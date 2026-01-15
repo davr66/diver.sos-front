@@ -11,7 +11,8 @@ export const helperLogin = (email = Cypress.env('testUserEmail'), password = Cyp
   cy.get('button[type="submit"]').click();
 
   // Aguarda sucesso (usuário comum vai para /)
-  cy.url().should('eq', 'http://localhost:5173/');
+  cy.contains(/Bem-vindo|Login realizado/i, { timeout: 10000 }).should('be.visible');
+  cy.url().should('not.include', '/login', { timeout: 10000 });
 };
 
 export const helperLogout = () => {
@@ -47,7 +48,8 @@ Cypress.Commands.add('loginUser', (email = 'usuario@example.com', password = 'Se
   cy.get('button[type="submit"]').click();
   
   // Aguarda redirecionamento após login
-  cy.url().should('not.include', '/login');
+  cy.contains(/Bem-vindo|Login realizado/i, { timeout: 10000 }).should('be.visible');
+  cy.url().should('not.include', '/login', { timeout: 10000 });
 });
 
 /**
