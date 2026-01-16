@@ -219,13 +219,14 @@ export default function EditUser() {
               <option value="USUARIO">Usuário</option>
               <option value="MODERADOR">Moderador</option>
               <option value="ADMINISTRADOR">Administrador</option>
+              <option value="RH">RH</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
             <label className="font-semibold">Status</label>
             <select name="status" value={formData.status} onChange={handleChange} className="border-2 rounded-lg px-3 py-2 h-[42px]">
-              <option value="HABILITADO">Habilitado</option>
-              <option value="DESABILITADO">Desabilitado</option>
+              <option value="ATIVO">Ativo</option>
+              <option value="INATIVO">Inativo</option>
             </select>
           </div>
         </div>

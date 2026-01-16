@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createGroup } from "../services/api";
+import { createGroup, appendGroupBanner } from "../services/api";
 import InputField from "../components/InputField";
 import SearchableSelect from "../components/SearchableSelect";
 import Feedback from "../components/Feedback";
@@ -15,6 +15,7 @@ export default function CreateGroup() {
   const [cityOptions, setCityOptions] = useState([]);
   const [loadingStates, setLoadingStates] = useState(true);
   const [loadingCities, setLoadingCities] = useState(false);
+  const [bannerFile, setBannerFile] = useState(null);
   const [formData, setFormData] = useState({
     nome: "",
     categoria: "",
@@ -79,12 +80,47 @@ export default function CreateGroup() {
     setFormData(prev => ({ ...prev, cidade: e.target.value }));
   };
 
+  const handleBannerChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setFeedback({
+          type: "error",
+          heading: "Arquivo muito grande",
+          message: "O banner deve ter no máximo 5MB."
+        });
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        setFeedback({
+          type: "error",
+          heading: "Formato inválido",
+          message: "O banner deve ser uma imagem."
+        });
+        return;
+      }
+      setBannerFile(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setFeedback(null);
     try {
-      await createGroup(formData);
+      const response = await createGroup(formData);
+      const groupId = response.data?.id || response.data;
+
+      // Se houver banner, fazer upload
+      if (bannerFile && groupId) {
+        try {
+          await appendGroupBanner(groupId, bannerFile);
+        } catch (bannerErr) {
+          console.error("Erro ao enviar banner", bannerErr);
+          // Não bloqueia o cadastro por erro no banner
+        }
+      }
+
       navigate('/admin/grupos');
     } catch (err) {
       console.error('Erro ao criar grupo', err);
@@ -123,6 +159,23 @@ export default function CreateGroup() {
           <label className="font-semibold">Descrição</label>
           <textarea name="descricao" value={formData.descricao} onChange={handleChange} required rows={5} className="border-2 rounded-lg px-3 py-2 resize-none" />
         </div>
+        
+        {/* Banner do Grupo */}
+        <div className="flex flex-col gap-1">
+          <label className="font-semibold">Banner do Grupo (opcional)</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleBannerChange}
+            className="border-2 rounded-lg px-3 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--groups-bg)] file:font-semibold file:cursor-pointer hover:file:brightness-95"
+          />
+          {bannerFile && (
+            <span className="text-sm text-gray-600 mt-1">
+              Arquivo selecionado: {bannerFile.name}
+            </span>
+          )}
+        </div>
+
         {/* Ações */}
         <div className="flex gap-4 mt-4">
           <button type="submit" className="flex-1 border-2 border-b-3 border-r-3 rounded-lg py-2 bg-[var(--groups-bg)] font-semibold hover:brightness-95">Cadastrar Grupo</button>

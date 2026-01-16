@@ -171,6 +171,7 @@ export default function CreateUser() {
               <option value="USUARIO">Usuário</option>
               <option value="MODERADOR">Moderador</option>
               <option value="ADMINISTRADOR">Administrador</option>
+              <option value="RH">RH</option>
             </select>
           </div>
         </div>

@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createJobOpening, getSkills } from "../services/api";
+import { createJobOpening, appendJobBanner, getSkills } from "../services/api";
 import InputField from "../components/InputField";
 import SearchableMultiSelect from "../components/SearchableMultiSelect";
 import SearchableSelect from "../components/SearchableSelect";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
 import BackBtn from "../components/BackBtn";
+import { useAuth } from "../context/AuthContext";
 
 export default function CreateJob() {
+  const {user} = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -17,6 +19,7 @@ export default function CreateJob() {
   const [cityOptions, setCityOptions] = useState([]);
   const [loadingStates, setLoadingStates] = useState(true);
   const [loadingCities, setLoadingCities] = useState(false);
+  const [bannerFile, setBannerFile] = useState(null);
   const [formData, setFormData] = useState({
     titulo: "",
     descricao: "",
@@ -110,6 +113,29 @@ export default function CreateJob() {
     setFormData(prev => ({ ...prev, cidade: e.target.value }));
   };
 
+  const handleBannerChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setFeedback({
+          type: "error",
+          heading: "Arquivo muito grande",
+          message: "O banner deve ter no máximo 5MB."
+        });
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        setFeedback({
+          type: "error",
+          heading: "Formato inválido",
+          message: "O banner deve ser uma imagem."
+        });
+        return;
+      }
+      setBannerFile(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -122,7 +148,19 @@ export default function CreateJob() {
         habilidades: formData.habilidades.map(id => ({ id: Number(id) }))
       };
       
-      await createJobOpening(payload);
+      const response = await createJobOpening(payload);
+      const jobId = response.data?.id || response.data;
+
+      // Se houver banner, fazer upload
+      if (bannerFile && jobId) {
+        try {
+          await appendJobBanner(jobId, bannerFile);
+        } catch (bannerErr) {
+          console.error("Erro ao enviar banner", bannerErr);
+          // Não bloqueia o cadastro por erro no banner
+        }
+      }
+
       navigate("/admin/vagas");
     } catch (err) {
       console.error("Erro ao criar vaga", err);
@@ -224,8 +262,10 @@ export default function CreateJob() {
         </div>
 
         {/* Status e Tipo */}
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
+          {user.role !== "RH" && ( 
+            <div className="flex flex-col gap-1">
             <label className="font-semibold">Status</label>
             <select
               name="status"
@@ -236,8 +276,11 @@ export default function CreateJob() {
             >
               <option value="ATIVA">Ativa</option>
               <option value="PREENCHIDA">Preenchida</option>
+              <option value="INATIVA">Inativa</option>
             </select>
           </div>
+        )}
+
           <div className="flex flex-col gap-1">
             <label className="font-semibold">Tipo</label>
             <select
@@ -277,6 +320,22 @@ export default function CreateJob() {
           options={skillOptions}
           placeholder="Selecione as habilidades"
         />
+
+        {/* Banner da Vaga */}
+        <div className="flex flex-col gap-1">
+          <label className="font-semibold">Banner da Vaga (opcional)</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleBannerChange}
+            className="border-2 rounded-lg px-3 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--jobs-bg)] file:font-semibold file:cursor-pointer hover:file:brightness-95"
+          />
+          {bannerFile && (
+            <span className="text-sm text-gray-600 mt-1">
+              Arquivo selecionado: {bannerFile.name}
+            </span>
+          )}
+        </div>
 
         <div className="flex gap-4 mt-4">
           <button

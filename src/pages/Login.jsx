@@ -58,7 +58,7 @@ export default function Login() {
       await login(form);
       // Determina rota segura para administradores/moderadores
       const role = (sessionStorage.getItem('role') || '').toLowerCase();
-      const isPrivileged = ['administrador','moderador','admin','moderator'].includes(role);
+      const isPrivileged = ['administrador','moderador','rh'].includes(role);
       const redirectPath = isPrivileged ? '/admin' : '/';
       // Mostrar feedback de sucesso antes de redirecionar
       setFeedback({
