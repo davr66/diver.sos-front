@@ -118,10 +118,6 @@ export default function ManageUsers() {
     }
   };
 
-  const handlePreview = (user) => {
-    console.log("Pré-visualizar usuário", user);
-  };
-
   if (loading) return <Loading />;
 
   return (
@@ -133,8 +129,6 @@ export default function ManageUsers() {
         data={users}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onPreview={handlePreview}
-        showPreview
       />
 
       {feedback && (

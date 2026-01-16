@@ -4,6 +4,7 @@ import AdminTable from "../components/AdminTable";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
 import ConfirmModal from "../components/ConfirmModal";
+import PreviewModal from "../components/PreviewModal";
 import { getSupportGroups, deleteGroup } from "../services/api";
 
 export default function ManageGroups() {
@@ -12,6 +13,7 @@ export default function ManageGroups() {
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, item: null });
+  const [previewModal, setPreviewModal] = useState({ isOpen: false, group: null });
 
   const columns = [
     {
@@ -92,7 +94,7 @@ export default function ManageGroups() {
   };
 
   const handlePreview = (group) => {
-    console.log("Pré-visualizar grupo", group);
+    setPreviewModal({ isOpen: true, group });
   };
 
   if (loading) return <Loading />;
@@ -127,6 +129,13 @@ export default function ManageGroups() {
         message={`Tem certeza que deseja excluir o grupo \"${confirmModal.item?.nome || confirmModal.item?.name}\"? Esta ação não pode ser desfeita.`}
         confirmText="Excluir"
         cancelText="Cancelar"
+      />
+
+      <PreviewModal
+        isOpen={previewModal.isOpen}
+        onClose={() => setPreviewModal({ isOpen: false, group: null })}
+        type="group"
+        item={previewModal.group}
       />
     </div>
   );

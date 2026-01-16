@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import AdminTable from "../components/AdminTable";
-import { getJobOpenings, deleteJobOpening } from "../services/api";
+import { getAllJobOpenings, deleteJobOpening } from "../services/api";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
 import ConfirmModal from "../components/ConfirmModal";
+import PreviewModal from "../components/PreviewModal";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function ManageJobs(){
@@ -12,6 +13,7 @@ export default function ManageJobs(){
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, job: null });
+  const [previewModal, setPreviewModal] = useState({ isOpen: false, job: null });
 
   const columns = [
     { key: "title", label: "Título / Empresa", render: (row) => (
@@ -42,7 +44,7 @@ export default function ManageJobs(){
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await getJobOpenings();
+        const response = await getAllJobOpenings();
         setJobs(response.data || []);
       } catch (err) {
         console.error("Erro ao carregar vagas", err);
@@ -90,7 +92,7 @@ export default function ManageJobs(){
   };
 
   const handlePreview = (job) => {
-    console.log("Pré-visualizar vaga", job);
+    setPreviewModal({ isOpen: true, job });
   };
 
   if (loading) return <Loading />;
@@ -125,6 +127,13 @@ export default function ManageJobs(){
         message={`Tem certeza que deseja excluir a vaga "${confirmModal.job?.title}"? Esta ação não pode ser desfeita.`}
         confirmText="Excluir"
         cancelText="Cancelar"
+      />
+
+      <PreviewModal
+        isOpen={previewModal.isOpen}
+        onClose={() => setPreviewModal({ isOpen: false, job: null })}
+        type="job"
+        item={previewModal.job}
       />
     </div>
   )

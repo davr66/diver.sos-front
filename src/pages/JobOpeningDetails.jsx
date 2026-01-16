@@ -11,6 +11,7 @@ import Feedback from '../components/Feedback';
 
 
 export default function JobDetails() {
+  const api = import.meta.env.VITE_API_URL;
   const { isAuthenticated } = useAuth();
   const { id } = useParams();
   const [job, setJob] = useState(null);
@@ -63,14 +64,22 @@ export default function JobDetails() {
   };
 
   if (!job) return <p>Carregando...</p>;
-  console.log(job);
+  console.log('Job data:', job);
+  console.log('Banner URL:', job.bannerDaVaga ? `${api}${job.bannerDaVaga}` : 'No banner');
 
   return (
-    <div className='px-[1rem] relative'>
-      <BackButton fallback='/vagas'></BackButton>
-      <div className="flex justify-between min-h-[40%] py-4">
+    <div>
+      {job.bannerDaVaga && (
+        <div 
+          style={{ backgroundImage: `url('${api}${job.bannerDaVaga}')` }}
+          className="bg-cover bg-center bg-no-repeat w-full h-40 md:h-48 flex-shrink-0 mb-5 border-1"
+        ></div>
+      )}
+      <div className="px-[1rem]">
+       <BackButton className="self-start" fallback='/vagas'></BackButton>
+        <div className="flex justify-between min-h-[40%] py-4">
         <div className="flex flex-col gap-2">
-          <h3 className="text-lg text-nowrap text-pretty font-bold uppercase leading-none mb-1">{job.title}</h3>
+          <h3 className="flex items-center text-lg text-nowrap text-pretty font-bold uppercase leading-none mb-1"> {job.title}</h3>
           <p className="flex items-end gap-1 text-[12px] text-clip leading-none"><img src={companyIcon} />{job.company}</p>
           <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1" src={locationIcon} />{job.city}/{job.uf}</p>
           <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1px" src={workModeIcon} />{job.work_mode === 'Hibrido' ? 'Híbrido' : job.work_mode}</p>
@@ -82,7 +91,7 @@ export default function JobDetails() {
       </div>
 
       <div className='flex flex-col py-4 gap-5'>
-        <div className='prose prose-sm max-w-none whitespace-pre-line leading-relaxed'>
+        <div className='prose prose-sm max-w-none whitespace-pre-line leading-relaxed break-words overflow-wrap-anywhere'>
           {job.description || ''}
         </div>
         <div>
@@ -100,6 +109,7 @@ export default function JobDetails() {
           onClose={() => setFeedback(null)}
         />
       )}
+      </div>
     </div>
   )
 }

@@ -23,7 +23,7 @@ export default function Header() {
   const bg = base ? colors[base] : 'bg-none';
 
   return(
-      <header className={`${bg} ${shouldHideOnMobile ? 'hidden lg:flex':'flex'} justify-center h-fit py-3 border-b-2 mb-5 lg:border-b-0 lg:border-r-2 lg:mb-0 lg:w-auto lg:h-auto lg:row-start-1 lg:row-end-3 lg:col-start-1 lg:col-end-2`} aria-label="Site header">
+      <header className={`${bg} ${shouldHideOnMobile ? 'hidden lg:flex':'flex'} justify-center h-fit py-3 border-b-2 lg:border-b-0 lg:border-r-2 lg:mb-0 lg:w-auto lg:h-auto lg:row-start-1 lg:row-end-3 lg:col-start-1 lg:col-end-2`} aria-label="Site header">
         {/* Small logo (mobile) */}
         <img src={logo} alt="diver.sos logo" className="block lg:hidden w-[9rem] h-auto object-contain" />
 
