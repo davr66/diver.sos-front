@@ -3,7 +3,7 @@ import ListItem from '../components/ListItem'
 import SearchBar from '../components/SearchBar';
 import Filter from '../components/Filter';
 import CascadingFilter from '../components/CascadingFilter';
-import {getAllJobOpenings, searchJobOpenings, getMyFavoriteJobs} from '../services/api';
+import {getJobOpenings, searchJobOpenings, getMyFavoriteJobs} from '../services/api';
 import Loading from '../components/Loading';
 import { useAuth } from '../context/AuthContext';
 import Feedback from '../components/Feedback';
@@ -26,7 +26,7 @@ export default function JobApplications(){
   useEffect(()=>{
     const fetchJobs = async () =>{
       try {
-        const response = await getAllJobOpenings();
+        const response = await getJobOpenings();
         setJobOpenings(response.data);
       } catch (error) {
         console.error('Erro ao carregar vagas:', error);
