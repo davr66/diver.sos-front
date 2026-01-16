@@ -43,6 +43,14 @@ export default function Home() {
       grid-cols-[repeat(auto-fit,minmax(15rem,1fr))]
       place-items-center gap-10
       w-full">
+        <Card imgSrc={imagem2}
+          category="vagas"
+          title="Oporturnidades Inclusivas"
+          description="Encontre vagas em empresas verificadas que respeitam sua identidade."
+          bgColor="bg-[var(--jobs-bg)]"
+          interactiveClasses="hover:cursor-pointer hover:translate-y-[-4px] hover:shadow-md transition-all"
+          onClick={()=>navigate('vagas')}
+        ></Card>
         <Card imgSrc={imagem1}
           category="comunidades"
           title="Grupos de Apoio"
@@ -52,14 +60,6 @@ export default function Home() {
           onClick={()=>navigate('grupos')}
         ></Card>
 
-        <Card imgSrc={imagem2}
-          category="vagas"
-          title="Oporturnidades Inclusivas"
-          description="Encontre vagas em empresas verificadas que respeitam sua identidade."
-          bgColor="bg-[var(--jobs-bg)]"
-          interactiveClasses="hover:cursor-pointer hover:translate-y-[-4px] hover:shadow-md transition-all"
-          onClick={()=>navigate('vagas')}
-        ></Card>
       </div>
 
       <section className="flex flex-col items-center">

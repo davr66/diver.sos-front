@@ -11,7 +11,7 @@ export default function Layout(){
   const auth = useAuth();
   const isLoggedIn = auth?.isAuthenticated ?? false;
   const { pathname } = useLocation();
-  const paths = ['/login', '/cadastro', '/esqueci-a-senha'];
+  const paths = ['/login', '/cadastro', '/esqueci-a-senha', '/auth/confirmar'];
   const hiddenAuth = paths.some(p => pathname === p || pathname.startsWith(p + '/'));
 
   const rootBg = hiddenAuth ? 'bg-[var(--profile-bg)]' : 'bg-[var(--general-bg)]';

@@ -8,7 +8,7 @@ export default function NewsArticle({title,description,imgSrc,text,textColor,lin
       imgSrc={imgSrc}
       textColor={textColor}
       bgColor={"bg-[var(--news-bg)]"}>
-        <a className="self-end font-bold underline text-sm text-white" href={link}target="_blank">Ver mais</a>
+        <a className="self-end font-bold underline text-sm text-white mt-1" href={link}target="_blank">Ver mais</a>
       </Card>
     </div>
   )

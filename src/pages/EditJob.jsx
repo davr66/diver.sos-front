@@ -7,7 +7,10 @@ import SearchableSelect from "../components/SearchableSelect";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
 import BackBtn from "../components/BackBtn";
+import { useAuth } from "../context/AuthContext";
+
 export default function EditJob() {
+  const {user} = useAuth();
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
@@ -304,6 +307,7 @@ export default function EditJob() {
 
         {/* Status e Tipo */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {user.role !== "RH" &&(
           <div className="flex flex-col gap-1">
             <label className="font-semibold">Status</label>
             <select
@@ -315,8 +319,10 @@ export default function EditJob() {
             >
               <option value="ATIVA">Ativa</option>
               <option value="PREENCHIDA">Preenchida</option>
+              <option value="INATIVA">Inativa</option>
             </select>
           </div>
+          )}
           <div className="flex flex-col gap-1">
             <label className="font-semibold">Tipo</label>
             <select

@@ -1,5 +1,4 @@
-import { BrowserRouter,Route, Routes, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import JobOpenings from './pages/JobOpenings';
 import JobOpeningsDetails from './pages/JobOpeningDetails';
@@ -9,6 +8,7 @@ import GroupDetails from './pages/GroupDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
+import AccountActivated from './pages/AccountActivated';
 import Layout from './layouts/Layout';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
@@ -42,6 +42,7 @@ function App() {
           <Route path='/login' element={<Login />}/>
           <Route path='/cadastro' element={<Register />}/>
           <Route path='/esqueci-a-senha' element={<ForgotPassword />}/>
+          <Route path='/auth/confirmar' element={<AccountActivated />}/>
           <Route path='/perfil' element={<Profile/>}></Route>
           <Route path='/perfil/editar' element={<EditProfile fallback='/perfil' destination='/perfil'/>}/>
         </Route>
