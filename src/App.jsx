@@ -5,7 +5,6 @@ import JobOpenings from './pages/JobOpenings';
 import JobOpeningsDetails from './pages/JobOpeningDetails';
 import Home from './pages/Home';
 import SupportGroups from './pages/SupportGroups';
-import Loading from './components/Loading';
 import GroupDetails from './pages/GroupDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -48,7 +47,7 @@ function App() {
         </Route>
         <Route
           element={
-            <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+            <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR','RH']}>
               <AdminLayout />
             </ProtectedRoute>
           }
@@ -58,15 +57,78 @@ function App() {
           <Route path='/admin/vagas' element={<ManageJobs/>} />
           <Route path='/admin/vaga/criar' element={<CreateJob/>} />
           <Route path='/admin/vaga/editar/:id' element={<EditJob/>} />
-          <Route path='/admin/grupos' element={<ManageGroups/>} />
-          <Route path='/admin/grupo/criar' element={<CreateGroup/>} />
-          <Route path='/admin/grupo/editar/:id' element={<EditGroup/>} />
-          <Route path='/admin/noticias' element={<ManageNews/>} />
-          <Route path='/admin/noticia/criar' element={<CreateNews/>} />
-          <Route path='/admin/noticia/editar/:id' element={<EditNews/>} />
-          <Route path='/admin/gerenciar-usuarios' element={<ManageUsers/>}/>
-          <Route path='/admin/usuario/criar' element={<CreateUser/>} />
-          <Route path='/admin/usuario/editar/:id' element={<EditUser/>} />
+          <Route
+            path='/admin/grupos'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <ManageGroups/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/grupo/criar'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <CreateGroup/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/grupo/editar/:id'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <EditGroup/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/noticias'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <ManageNews/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/noticia/criar'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <CreateNews/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/noticia/editar/:id'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <EditNews/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/gerenciar-usuarios'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <ManageUsers/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/usuario/criar'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <CreateUser/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/usuario/editar/:id'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <EditUser/>
+              </ProtectedRoute>
+            }
+          />
         </Route>
       </Routes>
   ) 

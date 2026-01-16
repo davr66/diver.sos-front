@@ -49,6 +49,7 @@ const transformJob = (job) => ({
   createdAt: job.dataCriacao,
   deadline: job.dataLimite,
   jobLink: job.linkDaVaga,
+  bannerDaVaga: job.bannerDaVaga,
   skills: Array.isArray(job.habilidades) ? job.habilidades : []
 });
 
@@ -169,6 +170,12 @@ export const deleteNews = async (id) => {
 
 //vagas
 export const getJobOpenings = async () => {
+  const response = await api.get("/vagas/ativas");
+  const transformedData = response.data.map(transformJob);
+  return { ...response, data: transformedData };
+}
+
+export const getAllJobOpenings = async () => {
   const response = await api.get("/vagas");
   const transformedData = response.data.map(transformJob);
   return { ...response, data: transformedData };
@@ -176,6 +183,17 @@ export const getJobOpenings = async () => {
 
 export const createJobOpening = async (data) =>{
   const response = await api.post("/vagas",data);
+  return response;
+}
+
+export const appendJobBanner = async(id, file) =>{
+  const formData = new FormData();
+  formData.append('arquivo', file);
+  const response = await api.post(`/vagas/${id}/foto`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
   return response;
 }
 
@@ -211,6 +229,17 @@ export const getGroupById = async (id) => {
 
 export const createGroup = async (data) => {
   const response = await api.post('/grupos', data);
+  return response;
+}
+
+export const appendGroupBanner = async (id, file) =>{
+  const formData = new FormData();
+  formData.append('arquivo', file);
+  const response = await api.post(`/grupos/${id}/foto`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
   return response;
 }
 
