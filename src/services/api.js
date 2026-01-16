@@ -59,6 +59,11 @@ export const loginUser = async (loginData) => {
   return response;
 }
 
+export const confirmAccount = async (token) => {
+  const response = await api.get("/auth/confirmar", { params: { token } });
+  return response;
+}
+
 export const registerUser = async (userData) => {
   const response = await api.post('/usuarios', userData);
   return response;

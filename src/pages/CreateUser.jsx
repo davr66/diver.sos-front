@@ -112,6 +112,14 @@ export default function CreateUser() {
     setLoading(true);
     setFeedback(null);
     try {
+      const habilidades = (Array.isArray(formData.habilidades) ? formData.habilidades : [])
+        .map((h) => {
+          if (h && typeof h === "object") return { id: h.id };
+          const numericId = Number(h);
+          return { id: Number.isFinite(numericId) ? numericId : h };
+        })
+        .filter((h) => h.id !== undefined && h.id !== null && h.id !== "");
+
       const payload = {
         nome: formData.nome,
         email: formData.email,
@@ -124,7 +132,7 @@ export default function CreateUser() {
           estado: formData.estado
         },
         tipoDeUsuario: formData.tipoDeUsuario,
-        habilidades: formData.habilidades
+        habilidades
       };
       await registerUser(payload);
       navigate('/admin/gerenciar-usuarios');
