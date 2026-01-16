@@ -26,7 +26,7 @@ export function AuthProvider({children}){
     const timeLeft = expiryTimestamp - Date.now();
 
     if (timeLeft <= 0) {
-      logout();
+      logout('/login');
       return;
     }
 
@@ -44,7 +44,7 @@ export function AuthProvider({children}){
         setUser({ token, role, name });
         scheduleLogout(expiry);
       } else {
-        logout();
+        logout('/login');
       }
     }
 
@@ -83,11 +83,11 @@ export function AuthProvider({children}){
     }
   }
 
-  function logout(){
+  function logout(destination = '/'){
     clearLogoutTimer();
     sessionStorage.clear();
     setUser(null);
-    navigate('/');
+    navigate(destination);
   }
 
   useEffect(() => clearLogoutTimer, []);

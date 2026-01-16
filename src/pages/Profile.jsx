@@ -1,14 +1,21 @@
 import { Link } from "react-router-dom";
 import { getMyData } from "../services/api";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {useAuth} from '../context/AuthContext'
 import Loading from "../components/Loading";
+import Feedback from "../components/Feedback";
 
 export default function Profile(){
   const {logout,isAuthenticated} = useAuth();
   const [user,setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error,setError] = useState(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const logoutTimerRef = useRef(null);
+
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedback, setFeedback] = useState({});
+  const [feedbackOnClose, setFeedbackOnClose] = useState(() => () => setShowFeedback(false));
   const API_URL = import.meta.env.VITE_API_URL;
   const fotoPerfil = user?.fotoPerfil ? `${API_URL}${user.fotoPerfil}` : "../src/assets/profile-placeholder.png";
   console.log(fotoPerfil);
@@ -45,6 +52,32 @@ export default function Profile(){
     fetchUser();
   },[]);
 
+  useEffect(() => {
+    return () => {
+      if (logoutTimerRef.current) {
+        clearTimeout(logoutTimerRef.current);
+        logoutTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  const handleLogout = () => {
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    setFeedback({
+      type: 'success',
+      heading: 'Saindo...',
+      message: 'Redirecionando...',
+      duration: 2000
+    });
+    setShowFeedback(true);
+    setFeedbackOnClose(() => () => setShowFeedback(false));
+
+    if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+    logoutTimerRef.current = setTimeout(() => logout('/login'), 2000);
+  };
+
   
 
   if(loading) return <Loading></Loading>
@@ -65,8 +98,24 @@ export default function Profile(){
       </section>
       <section className="flex flex-col gap-10 items-center w-full py-10" id="buttons">
         <Link className="text-center w-[90%] max-w-[25rem] py-1 border-2 rounded-full bg-white font-bold uppercase hover:bg-gray-100" to={`/perfil/editar`}>Meus Dados</Link>
-        <button className="text-center w-[90%] max-w-[25rem] py-1 border-black border-2 rounded-full bg-red-600 font-bold uppercase text-white hover:cursor-pointer hover:bg-red-700" onClick={()=>logout()}>Sair</button>
+        <button
+          className="text-center w-[90%] max-w-[25rem] py-1 border-black border-2 rounded-full bg-red-600 font-bold uppercase text-white hover:cursor-pointer hover:bg-red-700 disabled:cursor-not-allowed disabled:brightness-85"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+        >
+          Sair
+        </button>
       </section>
+
+      {showFeedback && (
+        <Feedback
+          type={feedback.type}
+          heading={feedback.heading}
+          message={feedback.message}
+          duration={feedback.duration || 3000}
+          onClose={feedbackOnClose}
+        />
+      )}
     </div>
   );
 }

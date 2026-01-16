@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import AccountActivated from './pages/AccountActivated';
+import NewPassword from './pages/NewPassword';
 import Layout from './layouts/Layout';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
@@ -43,6 +44,7 @@ function App() {
           <Route path='/cadastro' element={<Register />}/>
           <Route path='/esqueci-a-senha' element={<ForgotPassword />}/>
           <Route path='/auth/confirmar' element={<AccountActivated />}/>
+          <Route path='/nova-senha' element={<NewPassword />}/>
           <Route path='/perfil' element={<Profile/>}></Route>
           <Route path='/perfil/editar' element={<EditProfile fallback='/perfil' destination='/perfil'/>}/>
         </Route>

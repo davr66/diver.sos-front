@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import Feedback from "../components/Feedback";
 import { confirmAccount } from "../services/api";
@@ -14,6 +14,10 @@ export default function AccountActivated() {
     return searchParams.get("token") || searchParams.get("t") || "";
   }, [searchParams]);
 
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
   useEffect(() => {
     let redirectTimer;
 
@@ -21,23 +25,12 @@ export default function AccountActivated() {
       setLoading(true);
       setFeedback(null);
 
-      if (!token) {
-        setFeedback({
-          type: "error",
-          heading: "Link inválido",
-          message: "Token não encontrado na URL. Verifique o link recebido por e-mail."
-        });
-        setLoading(false);
-        redirectTimer = setTimeout(() => navigate("/login"), 5000);
-        return;
-      }
-
       try {
         await confirmAccount(token);
         setFeedback({
           type: "success",
           heading: "Conta ativada!",
-          message: "Sua conta foi confirmada com sucesso. Você será redirecionado para o login em 5 segundos."
+          message: "Sua conta foi confirmada com sucesso. Redirecionando para o login..."
         });
       } catch (err) {
         setFeedback({
@@ -49,7 +42,7 @@ export default function AccountActivated() {
         });
       } finally {
         setLoading(false);
-        redirectTimer = setTimeout(() => navigate("/login"), 5000);
+        redirectTimer = setTimeout(() => navigate("/login"), 2000);
       }
     };
 

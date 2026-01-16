@@ -64,6 +64,20 @@ export const confirmAccount = async (token) => {
   return response;
 }
 
+export const setNewPassword = async (token, novaSenha, novaSenhaRepeticao) => {
+  const response = await api.post(
+    "/auth/nova-senha",
+    { novaSenha, novaSenhaRepeticao },
+    { params: { token } }
+  );
+  return response;
+}
+
+export const forgotPassword = async (email) => {
+  const response = await api.post('/auth/esqueci-senha', { email: String(email ?? '').trim() });
+  return response;
+}
+
 export const registerUser = async (userData) => {
   const response = await api.post('/usuarios', userData);
   return response;

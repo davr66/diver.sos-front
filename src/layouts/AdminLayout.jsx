@@ -7,15 +7,22 @@ import {HomeIcon,JobsIcon,GroupsIcon,NewsIcon,ManageUserIcon,
   HomeIconFilled,JobsIconFilled,GroupsIconFilled,NewsIconFilled,ManageUserIconFilled,
   LoginIcon,LoginIconFilled} from '../assets/nav/'
 import { TbLogout2 } from "react-icons/tb";
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Loading from '../components/Loading';
 import { useAuth } from '../context/AuthContext';
+import Feedback from '../components/Feedback';
 
 
 export default function Layout(){
   const {logout} = useAuth();
   const {user} = useAuth();
   const [loading,setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const logoutTimerRef = useRef(null);
+
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedback, setFeedback] = useState({});
+  const [feedbackOnClose, setFeedbackOnClose] = useState(() => () => setShowFeedback(false));
   const { pathname } = useLocation();
   const paths = ['/login', '/cadastro', '/esqueci-a-senha'];
   const hiddenAuth = paths.some(p => pathname === p || pathname.startsWith(p + '/'));
@@ -29,6 +36,32 @@ export default function Layout(){
   console.log(user);
 
   const rootBg = hiddenAuth ? 'bg-[var(--profile-bg)]' : 'bg-[var(--general-bg)]';
+
+  useEffect(() => {
+    return () => {
+      if (logoutTimerRef.current) {
+        clearTimeout(logoutTimerRef.current);
+        logoutTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  const handleLogout = () => {
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    setFeedback({
+      type: 'success',
+      heading: 'Saindo...',
+      message: 'Redirecionando...',
+      duration: 2000
+    });
+    setShowFeedback(true);
+    setFeedbackOnClose(() => () => setShowFeedback(false));
+
+    if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
+    logoutTimerRef.current = setTimeout(() => logout('/login'), 2000);
+  };
 
 
   return(
@@ -50,10 +83,20 @@ export default function Layout(){
             </section>
             <button className="flex items-center justify-center 
             w-12 h-12
-            border-black border-2 rounded-md bg-red-600 text-white hover:cursor-pointer hover:bg-red-700" onClick={()=>logout()}><TbLogout2 size={24}/></button>
+            border-black border-2 rounded-md bg-red-600 text-white hover:cursor-pointer hover:bg-red-700 disabled:cursor-not-allowed disabled:brightness-85" onClick={handleLogout} disabled={isLoggingOut}><TbLogout2 size={24}/></button>
           </div>
         )}
           <Outlet/>
+
+          {showFeedback && (
+            <Feedback
+              type={feedback.type}
+              heading={feedback.heading}
+              message={feedback.message}
+              duration={feedback.duration || 3000}
+              onClose={feedbackOnClose}
+            />
+          )}
         </main>
       <NavBar>
         <NavItem href={'/admin'} label={"Início"} Icon={HomeIcon} IconActive={HomeIconFilled} bgColor={'#C5ACFF'} match={['/admin']}></NavItem>
