@@ -3,11 +3,13 @@ import Header from '../components/Header';
 import NavBar from '../components/NavBar';
 import NavItem from '../components/NavItem';
 import { useAuth } from '../context/AuthContext';
+import ContactFab from '../components/ContactFab';
 import {HomeIcon,JobsIcon,GroupsIcon,FavoriteIcon,ProfileIcon,
   HomeIconFilled,JobsIconFilled,GroupsIconFilled,FavoriteIconFilled,ProfileIconFilled,LoginIcon,LoginIconFilled} from '../assets/nav/'
 
 
 export default function Layout(){
+  const year = new Date().getFullYear();
   const auth = useAuth();
   const isLoggedIn = auth?.isAuthenticated ?? false;
   const { pathname } = useLocation();
@@ -19,8 +21,10 @@ export default function Layout(){
   return(
     <div className={`min-h-screen lg:grid lg:grid-cols-5 lg:grid-rows-8 lg:gap-0 lg:h-screen ${rootBg} p-0`}>
       <Header/>
-        <main className='p-0 overflow-hidden lg:row-start-1 lg:row-end-9 lg:col-start-2 lg:col-end-6 lg:overflow-y-auto pb-30'>
+        <main className='p-0 overflow-hidden flex flex-col lg:row-start-1 lg:row-end-9 lg:col-start-2 lg:col-end-6 lg:overflow-y-auto pb-30'>
           <Outlet/>
+          <ContactFab />
+          <footer className='mt-auto py-4 text-center text-sm text-gray-700'>diver.sos &copy;{year}<br/>Desenvolvido por Atemporal</footer>
         </main>
       <NavBar>
         <NavItem href={'/'} label={"Início"} Icon={HomeIcon} IconActive={HomeIconFilled} bgColor={'#C5ACFF'}></NavItem>

@@ -29,6 +29,7 @@ import CreateGroup from './pages/CreateGroup';
 import EditGroup from './pages/EditGroup';
 import CreateNews from './pages/CreateNews';
 import EditNews from './pages/EditNews';
+import Contact from './pages/Contact';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path='/grupos' element={<SupportGroups />}/>
           <Route path='/grupos/:id' element={<GroupDetails/>}/>
           <Route path='/favoritos' element={<Favorites/>}/>
+          <Route path='/contato' element={<Contact/>}/>
           <Route path='/login' element={<Login />}/>
           <Route path='/cadastro' element={<Register />}/>
           <Route path='/esqueci-a-senha' element={<ForgotPassword />}/>
