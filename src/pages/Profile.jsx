@@ -83,7 +83,7 @@ export default function Profile(){
   if(loading) return <Loading></Loading>
 
   return(
-    <div className="flex flex-col items-center px-4 lg:px-15">
+    <div className="flex flex-col items-center px-4 lg:px-15 pt-5">
       <section className="flex flex-col items-center gap-1 border-b-1 w-full pb-5" id="profile-info">
         <div 
           className="w-40 h-40 rounded-full border-3 bg-cover bg-no-repeat bg-contain"

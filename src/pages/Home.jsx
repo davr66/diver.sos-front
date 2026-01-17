@@ -14,6 +14,7 @@ export default function Home() {
   const navigate = useNavigate();
   const [news,setNews] = useState([]);
   const [loading,setLoading] = useState(true);
+  const api_url = import.meta.env.VITE_API_URL;
 
   useEffect(()=>{
     const fetchNews = async()=>{
@@ -30,10 +31,12 @@ export default function Home() {
     fetchNews();
   },[])
 
+  console.log(news)
   if(loading) return <Loading/>
+  
 
   return (
-    <div className="flex flex-col gap-10 px-8 mx-auto items-center">
+    <div className="flex flex-col gap-10 px-8 mx-auto items-center w-full max-w-6xl pt-5">
       <div className="flex flex-col">
         <h1 className="font-[Nunito] font-extrabold text-xl mb-1 lg:text-center lg:text-4xl lg:mb-3">Somos a diver.sos!</h1>
         <p className="text-[.7rem] lg:text-sm lg:self-center lg:text-center lg:w-[50%]">Conectamos você a vagas em empresas inclusivas e a grupos de apoio reais. Aqui, sua identidade é celebrada e sua carreira é levada a sério. Encontre seu espaço seguro.</p>
@@ -44,6 +47,7 @@ export default function Home() {
       place-items-center gap-10
       w-full">
         <Card imgSrc={imagem2}
+          aditionalClasses="max-h-[15.75rem]"
           category="vagas"
           title="Oporturnidades Inclusivas"
           description="Encontre vagas em empresas verificadas que respeitam sua identidade."
@@ -52,6 +56,7 @@ export default function Home() {
           onClick={()=>navigate('vagas')}
         ></Card>
         <Card imgSrc={imagem1}
+          aditionalClasses="max-h-[15.75rem]"
           category="comunidades"
           title="Grupos de Apoio"
           description="Troque experiências e encontre acolhimento em grupos online e presenciais."
@@ -64,16 +69,14 @@ export default function Home() {
 
       <section className="flex flex-col items-center">
         <h2 className="text-xl font-bold font-[nunito] mb-3 lg:text-2xl lg:mb-3 self-start md:self-center">Feed de Notícias</h2>
-        <div className="grid
-      grid-cols-[repeat(auto-fit,minmax(19rem,1fr))]
-      gap-10
-      w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-10 w-full">
         {news.map((newsArticle,index)=>(
           <NewsArticle
+            aditionalClasses="max-h-[20rem]"
             key={index}
             index={index}
             title={newsArticle.titulo}
-            imgSrc={newsArticle.imgUrl}
+            imgSrc={api_url+newsArticle.imagemUrl}
             description={newsArticle.conteudo}
             textColor={'text-white'}
             link={newsArticle.link}

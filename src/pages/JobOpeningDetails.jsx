@@ -72,10 +72,10 @@ export default function JobDetails() {
       {job.bannerDaVaga && (
         <div 
           style={{ backgroundImage: `url('${api}${job.bannerDaVaga}')` }}
-          className="bg-cover bg-center bg-no-repeat w-full h-40 md:h-48 flex-shrink-0 mb-5 border-1"
+          className="bg-cover bg-center bg-no-repeat w-full h-40 md:h-48 flex-shrink-0 border-1"
         ></div>
       )}
-      <div className="px-[1rem]">
+      <div className="px-[1rem] mt-5">
        <BackButton className="self-start" fallback='/vagas'></BackButton>
         <div className="flex justify-between min-h-[40%] py-4">
         <div className="flex flex-col gap-2">
