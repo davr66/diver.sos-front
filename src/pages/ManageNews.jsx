@@ -4,6 +4,7 @@ import AdminTable from "../components/AdminTable";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
 import ConfirmModal from "../components/ConfirmModal";
+import NewsPreviewModal from "../components/NewsPreviewModal";
 import { getNews, deleteNews } from "../services/api";
 
 export default function ManageNews() {
@@ -12,6 +13,7 @@ export default function ManageNews() {
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, item: null });
+  const [previewModal, setPreviewModal] = useState({ isOpen: false, item: null });
   const API_URL = import.meta.env.VITE_API_URL;
 
   const columns = [
@@ -107,7 +109,7 @@ export default function ManageNews() {
   };
 
   const handlePreview = (item) => {
-    console.log("Pré-visualizar notícia", item);
+    setPreviewModal({ isOpen: true, item });
   };
 
   if (loading) return <Loading />;
@@ -142,6 +144,12 @@ export default function ManageNews() {
         message={`Tem certeza que deseja excluir a notícia \"${confirmModal.item?.titulo || confirmModal.item?.title}\"? Esta ação não pode ser desfeita.`}
         confirmText="Excluir"
         cancelText="Cancelar"
+      />
+
+      <NewsPreviewModal
+        isOpen={previewModal.isOpen}
+        onClose={() => setPreviewModal({ isOpen: false, item: null })}
+        item={previewModal.item}
       />
     </div>
   );

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createNews } from "../services/api";
+import { appendNewsPhoto, createNews } from "../services/api";
 import InputField from "../components/InputField";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
@@ -10,10 +10,23 @@ export default function CreateNews(){
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [foto, setFoto] = useState(null);
+  const [fotoPreviewUrl, setFotoPreviewUrl] = useState(null);
   const [formData, setFormData] = useState({
     titulo: "",
-    conteudo: ""
+    conteudo: "",
+    linkExterno: ""
   });
+
+  useEffect(() => {
+    if (!foto) {
+      setFotoPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(foto);
+    setFotoPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [foto]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +38,24 @@ export default function CreateNews(){
     setLoading(true);
     setFeedback(null);
     try {
-      await createNews(formData);
+      const payload = {
+        titulo: formData.titulo,
+        conteudo: formData.conteudo,
+        ...(formData.linkExterno ? { linkExterno: formData.linkExterno } : {})
+      };
+
+      const response = await createNews(payload);
+      const newsId = response.data?.id || response.data;
+
+      if (foto && newsId) {
+        try {
+          await appendNewsPhoto(newsId, foto);
+        } catch (photoErr) {
+          console.error('Erro ao enviar imagem da notícia', photoErr);
+          // Não bloqueia o cadastro por erro na imagem
+        }
+      }
+
       navigate('/admin/noticias');
     } catch(err){
       console.error('Erro ao criar notícia', err);
@@ -47,6 +77,35 @@ export default function CreateNews(){
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <InputField label="Título" name="titulo" value={formData.titulo} onChange={handleChange} required />
         </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <InputField
+            label="Link externo (opcional)"
+            name="linkExterno"
+            type="url"
+            value={formData.linkExterno}
+            onChange={handleChange}
+            placeholder="https://..."
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="font-semibold">Imagem (opcional)</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFoto(e.target.files?.[0] || null)}
+            className="border-2 rounded-lg px-3 py-2"
+          />
+          {fotoPreviewUrl && (
+            <img
+              src={fotoPreviewUrl}
+              alt="Pré-visualização da imagem"
+              className="mt-2 max-h-56 w-full object-contain border-2 rounded-lg bg-white"
+            />
+          )}
+        </div>
+
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Conteúdo</label>
           <textarea name="conteudo" value={formData.conteudo} onChange={handleChange} required rows={8} className="border-2 rounded-lg px-3 py-2 resize-none" />
