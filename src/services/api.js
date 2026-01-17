@@ -182,6 +182,17 @@ export const editNews = async (id, data) => {
   return response;
 }
 
+export const appendNewsPhoto = async (id, file) => {
+  const formData = new FormData();
+  formData.append('foto', file);
+  const response = await api.post(`/noticias/${id}/foto`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+  return response;
+}
+
 export const deleteNews = async (id) => {
   const response = await api.delete(`/noticias/${id}`);
   return response;

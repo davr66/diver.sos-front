@@ -6,14 +6,23 @@ import Loading from "../components/Loading";
 import ConfirmModal from "../components/ConfirmModal";
 import PreviewModal from "../components/PreviewModal";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function ManageJobs(){
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, job: null });
   const [previewModal, setPreviewModal] = useState({ isOpen: false, job: null });
+  const [jobFilter, setJobFilter] = useState('all'); // 'all' | 'pending'
+
+  const isAdminOrModerator = user?.role === 'ADMINISTRADOR' || user?.role === 'MODERADOR';
+
+  useEffect(() => {
+    if (isAdminOrModerator) setJobFilter('pending');
+  }, [isAdminOrModerator]);
 
   const columns = [
     { key: "title", label: "Título / Empresa", render: (row) => (
@@ -95,15 +104,51 @@ export default function ManageJobs(){
     setPreviewModal({ isOpen: true, job });
   };
 
+  const isInactiveJob = (job) => {
+    const status = String(job?.status ?? '').toUpperCase();
+    return status && status !== 'ATIVA';
+  };
+
+  const visibleJobs = (isAdminOrModerator && jobFilter === 'pending')
+    ? jobs.filter(isInactiveJob)
+    : jobs;
+
   if (loading) return <Loading />;
 
   return(
     <div className="flex flex-col items-center w-full px-4 py-4">
       <h1 className="font-[Nunito] font-extrabold text-2xl mb-4">Gerenciar Vagas</h1>
-      <Link to={`/admin/vaga/criar`} className="bg-[var(--jobs-bg)] px-4 py-2 self-end border-2 border-r-3 border-b-3 rounded-md mb-4 font-semibold hover:brightness-95">Nova Vaga</Link>
+      <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+        {isAdminOrModerator ? (
+          <div className='flex self-start gap-2'>
+            <button
+              onClick={() => setJobFilter('all')}
+              className={`px-4 py-1 rounded-full border-2 font-bold text-sm transition-all ${
+                jobFilter === 'all'
+                  ? 'bg-black text-white border-black'
+                  : 'bg-white hover:ring-1 hover:ring-gray-300 hover:cursor-pointer'
+              }`}
+            >
+              Todas
+            </button>
+            <button
+              onClick={() => setJobFilter('pending')}
+              className={`px-4 py-1 rounded-full border-2 font-bold text-sm transition-all ${
+                jobFilter === 'pending'
+                  ? 'bg-black text-white border-black'
+                  : 'bg-white hover:ring-1 hover:ring-gray-300 hover:cursor-pointer'
+              }`}
+            >
+              Aguardando aprovação
+            </button>
+          </div>
+        ) : <span />}
+
+        <Link to={`/admin/vaga/criar`} className="bg-[var(--jobs-bg)] px-4 py-2 self-end border-2 border-r-3 border-b-3 rounded-md font-semibold hover:brightness-95">Nova Vaga</Link>
+      </div>
       <AdminTable
         columns={columns}
-        data={jobs}
+        data={visibleJobs}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onPreview={handlePreview}

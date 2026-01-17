@@ -104,7 +104,7 @@ export default function JobApplications(){
   return(
     <>
       {isLoading ? (<Loading/>):(
-      <div className='flex flex-col items-center px-4 lg:px-10'>
+      <div className='flex flex-col items-center px-4 lg:px-10 pt-5'>
         <div className='flex flex-col gap-2 mt-2 mb-5 w-full'>
           <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} placeholder='Pesquisar vagas...'></SearchBar>
           <div className='flex gap-2'>

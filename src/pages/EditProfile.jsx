@@ -13,7 +13,7 @@ import SearchableMultiSelect from "../components/SearchableMultiSelect";
 
 export default function EditProfile({fallback = '/',destination='/'}) {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, updateAuthUser } = useAuth();
 
   const [form, setForm] = useState({
     name: "",
@@ -250,6 +250,8 @@ export default function EditProfile({fallback = '/',destination='/'}) {
       } else {
         await updateMyData(payload);
       }
+
+      updateAuthUser({ name: payload.nome });
       
       setPhotoPreview(null);
       setPhotoFile(null);
@@ -320,10 +322,12 @@ export default function EditProfile({fallback = '/',destination='/'}) {
 
       if (userId) {
         const response = await updateUserById(userId, payload);
-        console.log(response);
+        const updatedName = response?.data?.nome ?? payload.nome;
+        updateAuthUser({ name: updatedName });
       } else {
         // fallback in case id is not available
         await updateMyData(payload);
+        updateAuthUser({ name: payload.nome });
       }
       setFeedback({
         type: 'success',
@@ -363,7 +367,7 @@ export default function EditProfile({fallback = '/',destination='/'}) {
         <div className="flex flex-col gap-3 w-full mb-4 items-center">
           <label className="font-semibold">Foto de perfil</label>
           <div 
-            className="w-40 h-40 rounded-full border-3 bg-contain bg-no-repeat bg-center"
+            className="w-40 h-40 rounded-full border-3 bg-cover bg-no-repeat bg-center"
             style={{
               backgroundImage: photoPreview 
                 ? `url('${photoPreview}')`

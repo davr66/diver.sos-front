@@ -4,7 +4,7 @@ import AdminTable from "../components/AdminTable";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
 import ConfirmModal from "../components/ConfirmModal";
-import { getAllUsers, deleteUser } from "../services/api";
+import { getAllUsers, deleteUser, getMyData } from "../services/api";
 
 export default function ManageUsers() {
   const navigate = useNavigate();
@@ -70,9 +70,16 @@ export default function ManageUsers() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await getAllUsers();
-        const data = Array.isArray(response?.data) ? response.data : [];
-        setUsers(data);
+        const [usersResponse, meResponse] = await Promise.all([
+          getAllUsers(),
+          getMyData()
+        ]);
+
+        const data = Array.isArray(usersResponse?.data) ? usersResponse.data : [];
+        const myId = meResponse?.data?.id;
+        const filtered = myId ? data.filter(u => u?.id !== myId) : data;
+
+        setUsers(filtered);
       } catch (err) {
         console.error("Erro ao carregar usuários", err);
         setFeedback({
@@ -88,6 +95,7 @@ export default function ManageUsers() {
     fetchUsers();
   }, []);
 
+  console.log(users);
   const handleEdit = (user) => {
     navigate(`/admin/usuario/editar/${user.id}`);
   };
