@@ -3,7 +3,7 @@ import ListItem from '../components/ListItem'
 import SearchBar from '../components/SearchBar';
 import Filter from '../components/Filter';
 import CascadingFilter from '../components/CascadingFilter';
-import {getJobOpenings, searchJobOpenings, getMyFavoriteJobs} from '../services/api';
+import {getJobOpenings, searchJobOpenings, getMyFavoriteJobs, getSkills} from '../services/api';
 import Loading from '../components/Loading';
 import { useAuth } from '../context/AuthContext';
 import Feedback from '../components/Feedback';
@@ -16,6 +16,9 @@ export default function JobApplications(){
   const [workModeFilters, setWorkModeFilters] = useState([]);
   const [selectedState, setSelectedState] = useState([]);
   const [selectedCities, setSelectedCities] = useState([]);
+  const [selectedSkillIds, setSelectedSkillIds] = useState([]); // normalized string ids (ex: ['1','2'])
+  const [skillsOptions, setSkillsOptions] = useState([]);
+  const [loadingSkills, setLoadingSkills] = useState(true);
   const [savedJobIds, setSavedJobIds] = useState([]);
   const [feedback, setFeedback] = useState(null);
 
@@ -34,6 +37,27 @@ export default function JobApplications(){
     };
     fetchJobs();
   },[]);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        setLoadingSkills(true);
+        const response = await getSkills();
+        const skills = Array.isArray(response?.data) ? response.data : [];
+        setSkillsOptions(skills.map(skill => ({
+          value: String(skill.id),
+          label: skill.nome || skill.name || String(skill.id)
+        })));
+      } catch (error) {
+        console.error('Erro ao carregar habilidades:', error);
+        setSkillsOptions([]);
+      } finally {
+        setLoadingSkills(false);
+      }
+    };
+
+    fetchSkills();
+  }, []);
 
   useEffect(()=>{
     if (!isAuthenticated) {
@@ -57,6 +81,7 @@ export default function JobApplications(){
     setIsLoading(true);
     setSelectedState([]);
     setSelectedCities([]);
+    setSelectedSkillIds([]);
     try {
       const response = await searchJobOpenings({ termo: search });
       setJobOpenings(response.data);
@@ -85,6 +110,10 @@ export default function JobApplications(){
     reloadAllJobs();
   }, [search]);
 
+  const selectedSkillIdNums = selectedSkillIds
+    .map(v => Number(v))
+    .filter(n => !Number.isNaN(n));
+
   const filteredJobs = jobOpenings.filter(job => {
     // Filter by work mode
     if (workModeFilters.length > 0 && !workModeFilters.includes(normalize(job.work_mode))) {
@@ -98,6 +127,21 @@ export default function JobApplications(){
     if (selectedCities.length > 0 && !selectedCities.includes(normalize(job.city))) {
       return false;
     }
+
+    // Filter by skills
+    if (selectedSkillIdNums.length > 0) {
+      const rawSkills = job?.skills || job?.habilidades || [];
+      const jobSkillIds = Array.isArray(rawSkills)
+        ? rawSkills
+            .map(s => (typeof s === 'object' && s !== null ? s.id : s))
+            .map(v => Number(v))
+            .filter(n => !Number.isNaN(n))
+        : [];
+      if (!selectedSkillIdNums.some(id => jobSkillIds.includes(id))) {
+        return false;
+      }
+    }
+
     return true;
   }); 
 
@@ -107,7 +151,7 @@ export default function JobApplications(){
       <div className='flex flex-col items-center px-4 lg:px-10 pt-5'>
         <div className='flex flex-col gap-2 mt-2 mb-5 w-full'>
           <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} placeholder='Pesquisar vagas...'></SearchBar>
-          <div className='flex gap-2'>
+          <div className='flex gap-2 flex-wrap'>
             <Filter
               value={workModeFilters}
               onChange={setWorkModeFilters}
@@ -118,6 +162,15 @@ export default function JobApplications(){
               ]}
               label="Modalidade"
             />
+
+            <Filter
+              value={selectedSkillIds}
+              onChange={setSelectedSkillIds}
+              options={skillsOptions}
+              label={loadingSkills ? 'Habilidades...' : 'Habilidades'}
+              useDefaultOptions={false}
+            />
+
             <CascadingFilter
               onStateChange={setSelectedState}
               onCityChange={setSelectedCities}

@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 
-export default function Filter({ value = [], onChange, options: propOptions, label = 'Modalidade', closeOnSelect = false, multiSelect = true }){
+export default function Filter({ value = [], onChange, options: propOptions, label = 'Modalidade', closeOnSelect = false, multiSelect = true, useDefaultOptions = true }){
   const defaultOptions = [
     { value: 'Remoto', label: 'Remoto' },
     { value: 'Híbrido', label: 'Híbrido' },
     { value: 'Presencial', label: 'Presencial' },
   ];
 
-  const options = Array.isArray(propOptions) && propOptions.length > 0 ? propOptions : defaultOptions;
+  const options = Array.isArray(propOptions) && propOptions.length > 0
+    ? propOptions
+    : (useDefaultOptions ? defaultOptions : []);
 
   const normalizeStr = (str) => (str || '').normalize('NFD').replace(/[^\w\s-]|[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
 
@@ -74,14 +76,14 @@ export default function Filter({ value = [], onChange, options: propOptions, lab
       {open && (
         <div className="absolute z-10 mt-1 w-[220px] rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
           <div className="p-2 max-h-44 overflow-auto">
-            {multiSelect && (
+            {options.length > 0 && multiSelect && (
               <div className="flex items-center justify-between mb-2">
                 <button onClick={clearAll} className="text-xs text-blue-600 hover:underline">Limpar</button>
                 <span className="text-xs text-gray-500">Selecionados: {value.length}</span>
               </div>
             )}
 
-            {multiSelect && (
+            {options.length > 0 && multiSelect && (
               <label key="all" className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer">
                 <input
                   type="checkbox"
@@ -93,18 +95,24 @@ export default function Filter({ value = [], onChange, options: propOptions, lab
               </label>
             )}
 
-            {options.map(opt => (
-              <label key={opt.value} className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer">
-                <input
-                  type={multiSelect ? "checkbox" : "radio"}
-                  name={multiSelect ? undefined : "filter-option"}
-                  checked={value.includes(normalizeStr(opt.value))}
-                  onChange={() => multiSelect ? toggleOption(opt.value) : (onChange([normalizeStr(opt.value)]), closeOnSelect && setOpen(false))}
-                  className="w-4 h-4"
-                />
-                <span className="text-sm">{opt.label}</span>
-              </label>
-            ))}
+            {options.length === 0 ? (
+              <div className="px-2 py-3 text-sm text-gray-500 text-center">
+                Nenhuma opção disponível
+              </div>
+            ) : (
+              options.map(opt => (
+                <label key={opt.value} className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer">
+                  <input
+                    type={multiSelect ? "checkbox" : "radio"}
+                    name={multiSelect ? undefined : "filter-option"}
+                    checked={value.includes(normalizeStr(opt.value))}
+                    onChange={() => multiSelect ? toggleOption(opt.value) : (onChange([normalizeStr(opt.value)]), closeOnSelect && setOpen(false))}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm">{opt.label}</span>
+                </label>
+              ))
+            )}
           </div>
         </div>
       )}

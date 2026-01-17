@@ -59,10 +59,10 @@ export default function Favorites(){
   if (loading) return <Loading />;
 
   return (
-    <div className="flex flex-col px-4 lg:px-10">
+    <div className="flex flex-col px-4 lg:px-10 pt-5 lg:pt-10">
       {isAuthenticated ? (
         <>
-          <div className='flex self-start gap-2 mt-4 mb-5 pt-5'>
+          <div className='flex self-start gap-2 mt-4 mb-5'>
             <button
               onClick={() => setFilterType('all')}
               className={`px-4 py-1 rounded-full border-2 font-bold text-sm transition-all ${
