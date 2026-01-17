@@ -13,6 +13,28 @@ export function AuthProvider({children}){
   const [loading,setLoading] = useState(true);
   const logoutTimer = useRef(null);
 
+  const updateAuthUser = (patch = {}) => {
+    setUser((prev) => (prev ? { ...prev, ...patch } : prev));
+
+    if (Object.prototype.hasOwnProperty.call(patch, 'name')) {
+      const nextName = patch.name;
+      if (nextName === null || nextName === undefined) {
+        sessionStorage.removeItem('name');
+      } else {
+        sessionStorage.setItem('name', String(nextName));
+      }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(patch, 'role')) {
+      const nextRole = patch.role;
+      if (nextRole === null || nextRole === undefined) {
+        sessionStorage.removeItem('role');
+      } else {
+        sessionStorage.setItem('role', String(nextRole));
+      }
+    }
+  };
+
   const clearLogoutTimer = () => {
     if (logoutTimer.current) {
       clearTimeout(logoutTimer.current);
@@ -99,6 +121,7 @@ export function AuthProvider({children}){
         isAuthenticated: !!user,
         login,
         logout,
+        updateAuthUser,
         loading
       }}
     >

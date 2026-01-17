@@ -8,7 +8,6 @@ import {HomeIcon,JobsIcon,GroupsIcon,NewsIcon,ManageUserIcon,
   LoginIcon,LoginIconFilled} from '../assets/nav/'
 import { TbLogout2 } from "react-icons/tb";
 import { useEffect, useRef, useState } from 'react';
-import Loading from '../components/Loading';
 import { useAuth } from '../context/AuthContext';
 import Feedback from '../components/Feedback';
 
@@ -16,7 +15,7 @@ import Feedback from '../components/Feedback';
 export default function Layout(){
   const {logout} = useAuth();
   const {user} = useAuth();
-  const [loading,setLoading] = useState(true);
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const logoutTimerRef = useRef(null);
 
@@ -27,15 +26,32 @@ export default function Layout(){
   const paths = ['/login', '/cadastro', '/esqueci-a-senha'];
   const hiddenAuth = paths.some(p => pathname === p || pathname.startsWith(p + '/'));
   const hideProfileInfo = pathname === '/admin/perfil' || pathname.startsWith('/admin/perfil/');
+  const API_URL = import.meta.env.VITE_API_URL;
   const colors = {
     "ADMINISTRADOR":"bg-[#C5ACFF]",
     "MODERADOR":"bg-[#FFA3BE]",
     "RH": "bg-[var(--jobs-bg)]"
   }
-  const bg = user.role ? colors[user.role] : 'bg-none'
-  console.log(user);
+  const bg = user?.role ? colors[user.role] : 'bg-none'
 
   const rootBg = hiddenAuth ? 'bg-[var(--profile-bg)]' : 'bg-[var(--general-bg)]';
+
+  useEffect(() => {
+    const fetchMyProfile = async () => {
+      if (!user?.token || hideProfileInfo) return;
+      try {
+        const response = await getMyData();
+        const me = response?.data;
+        const fotoPerfil = me?.fotoPerfil;
+        setProfilePhotoUrl(fotoPerfil ? `${API_URL}${fotoPerfil}` : null);
+      } catch (err) {
+        console.error('Erro ao carregar foto do perfil', err);
+        setProfilePhotoUrl(null);
+      }
+    };
+
+    fetchMyProfile();
+  }, [user?.token, hideProfileInfo, pathname, API_URL]);
 
   useEffect(() => {
     return () => {
@@ -71,12 +87,18 @@ export default function Layout(){
         {!hideProfileInfo && (
           <div className='flex justify-between px-10 pt-5'>
             <section className="flex gap-2 h-fit mb-10" id="profile-info">
-              <div className={`w-25 h-25 lg:w-30 lg:h-30 rounded-full border-3 bg-[url('../src/assets/profile-placeholder.png')] bg-cover bg-no-repeat bg-center`}>
-              </div>
+              <div
+                className={`w-25 h-25 lg:w-30 lg:h-30 rounded-full border-3 bg-cover bg-no-repeat bg-center`}
+                style={{
+                  backgroundImage: profilePhotoUrl
+                    ? `url('${profilePhotoUrl}')`
+                    : "url('../src/assets/profile-placeholder.png')"
+                }}
+              />
               <div className='flex flex-col justify-between'>
                 <div>
-                  <h1 className="font-[Nunito] font-extrabold text-2xl">{user.name}</h1>
-                  <span className={`font-medium rounded-sm py-1 px-2 text-xs ${bg}`}>{user.role}</span>
+                  <h1 className="font-[Nunito] font-extrabold text-2xl">{user?.name}</h1>
+                  <span className={`font-medium rounded-sm py-1 px-2 text-xs ${bg}`}>{user?.role}</span>
                 </div>
                 <Link className="text-sm underline font-bold" to="/admin/perfil">Editar perfil</Link>
               </div>
@@ -101,7 +123,7 @@ export default function Layout(){
       <NavBar>
         <NavItem href={'/admin'} label={"Início"} Icon={HomeIcon} IconActive={HomeIconFilled} bgColor={'#C5ACFF'} match={['/admin']}></NavItem>
         <NavItem href={'/admin/vagas'} label={'Vagas'} Icon={JobsIcon} IconActive={JobsIconFilled} bgColor={'#FFE79D'}></NavItem>
-        {user.role !== 'RH' && (
+        {user?.role !== 'RH' && (
           <>
             <NavItem href={'/admin/grupos'} label={'Grupos'} Icon={GroupsIcon} IconActive={GroupsIconFilled} bgColor={'#FFA3BE'}></NavItem>
             <NavItem href={'/admin/noticias'} label={'Notícias'} Icon={NewsIcon} IconActive={NewsIconFilled} bgColor={'#6782EE'}></NavItem>
