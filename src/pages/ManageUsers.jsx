@@ -137,6 +137,8 @@ export default function ManageUsers() {
         data={users}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        searchable
+        searchPlaceholder="Buscar usuários..."
       />
 
       {feedback && (

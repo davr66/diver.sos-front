@@ -110,6 +110,8 @@ export default function ManageGroups() {
         onDelete={handleDelete}
         onPreview={handlePreview}
         showPreview
+        searchable
+        searchPlaceholder="Buscar grupos..."
       />
 
       {feedback && (

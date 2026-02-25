@@ -125,6 +125,8 @@ export default function ManageNews() {
         onDelete={handleDelete}
         onPreview={handlePreview}
         showPreview
+        searchable
+        searchPlaceholder="Buscar notícias..."
       />
 
       {feedback && (

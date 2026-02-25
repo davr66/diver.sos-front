@@ -155,6 +155,8 @@ export default function ManageJobs(){
         onDelete={handleDelete}
         onPreview={handlePreview}
         showPreview
+        searchable
+        searchPlaceholder="Buscar vagas..."
       />
 
       {feedback && (
