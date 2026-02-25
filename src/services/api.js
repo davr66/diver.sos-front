@@ -9,12 +9,10 @@ api.interceptors.request.use(
   (config) => {
     try {
       const token = sessionStorage.getItem("token");
-      // log minimal debug info (do NOT log full token in production)
       console.debug("API request:", config.method?.toUpperCase(), config.url, "tokenPresent=", !!token);
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-        // also log that header was attached
         console.debug("API request: Authorization header attached");
       }
     } catch (e) {
@@ -25,7 +23,6 @@ api.interceptors.request.use(
   }, (error) => Promise.reject(error)
 );
 
-// Response error logger for debugging 403 and other errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -53,7 +50,6 @@ const transformJob = (job) => ({
   skills: Array.isArray(job.habilidades) ? job.habilidades : []
 });
 
-//user
 export const loginUser = async (loginData) => {
   const response = await api.post("/auth/login", loginData);
   return response;
@@ -112,11 +108,7 @@ export const getAllUsers = async () => {
 export const uploadProfilePhoto = async (file) => {
   const formData = new FormData();
   formData.append('arquivo', file);
-  const response = await api.post('/usuarios/me/foto', formData, {
-    headers: {
-      'Content-Type': undefined
-    }
-  });
+  const response = await api.post('/usuarios/me/foto', formData);
   return response;
 }
 
@@ -125,7 +117,6 @@ export const deleteUser = async (id) => {
   return response;
 }
 
-//usuários -> vagas
 export const getMyFavoriteJobs = async () => {
   const response = await api.get("/usuarios/me/vagas");
   const transformedData = Array.isArray(response.data) ? response.data.map(transformJob) : [];
@@ -146,7 +137,6 @@ export const deleteJobOpening = async(id)=>{
   return response;
 }
 
-//usuários->grupos
 export const saveGroup = async (id) => {
   const response = await api.post(`/usuarios/me/grupos/${id}`);
   return response;
@@ -162,7 +152,6 @@ export const getMyGroups = async () => {
   return response;
 }
 
-//notícias
 export const getNews = async () =>{
   const response = await api.get('/noticias');
   return response;
@@ -198,7 +187,6 @@ export const deleteNews = async (id) => {
   return response;
 }
 
-//vagas
 export const getJobOpenings = async () => {
   const response = await api.get("/vagas/ativas");
   const transformedData = response.data.map(transformJob);
@@ -246,7 +234,6 @@ export const getJobById = async (id) => {
   };
 }
 
-//grupos
 export const getSupportGroups = async () => {
   const response = await api.get('/grupos');
   return response;
@@ -283,7 +270,6 @@ export const deleteGroup = async (id) => {
   return response;
 }
 
-//habilidades
 export const getSkills = async () =>{
   const response = await api.get('/habilidades');
   return response;

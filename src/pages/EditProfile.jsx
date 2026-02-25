@@ -39,7 +39,6 @@ export default function EditProfile({fallback = '/',destination='/'}) {
   const [loadingCities, setLoadingCities] = useState(false);
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
-  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [skillsOptions, setSkillsOptions] = useState([]);
   const [loadingSkills, setLoadingSkills] = useState(true);
@@ -130,15 +129,12 @@ export default function EditProfile({fallback = '/',destination='/'}) {
           phone: user.telefone ?? "",
           birthDate: user.dataNascimento ?? ""
         });
-        // Carrega foto existente do perfil
         if (user?.fotoPerfil) {
           setPhotoPreview(`${API_URL}${user.fotoPerfil}`);
         }
-        // Carrega habilidades selecionadas do usuário
         if (Array.isArray(user.habilidades)) {
           setSelectedSkills(user.habilidades.map(skill => skill.id));
         }
-        // show 'outro' field only when user explicitly stored 'outro' as selection
         setShowOther(user.pronomes === 'outro');
       } catch (err) {
         console.error(err);
@@ -161,7 +157,6 @@ export default function EditProfile({fallback = '/',destination='/'}) {
     const value = e.target.value;
     if (value === "outro") {
       setShowOther(true);
-      // keep existing form.pronouns so user sees their custom value if present
     } else {
       setForm((prev) => ({ ...prev, pronouns: value }));
       setShowOther(false);
@@ -193,45 +188,8 @@ export default function EditProfile({fallback = '/',destination='/'}) {
     }
   }
 
-  async function handlePhotoUpload() {
-    if (!photoFile) return;
-    setIsUploadingPhoto(true);
-    try {
-      await uploadProfilePhoto(photoFile);
-      
-      // Atualiza os dados do usuário para pegar a nova URL da foto
-      const response = await getMyData();
-      const user = response.data;
-      if (user?.fotoPerfil) {
-        setPhotoPreview(`${API_URL}${user.fotoPerfil}`);
-      }
-      
-      setFeedback({
-        type: 'success',
-        heading: 'Foto atualizada',
-        message: 'Sua foto de perfil foi atualizada com sucesso!',
-        duration: 2000
-      });
-      setShowFeedback(true);
-      setPhotoFile(null);
-    } catch (err) {
-      console.error(err);
-      const errorMessage = err?.response?.data?.message || 'Não foi possível enviar a foto. Tente novamente.';
-      setFeedback({
-        type: 'error',
-        heading: 'Erro ao enviar foto',
-        message: errorMessage,
-        duration: 4000
-      });
-      setShowFeedback(true);
-      if (err?.response?.status === 403) logout();
-    } finally {
-      setIsUploadingPhoto(false);
-    }
-  }
-
   async function handlePhotoDelete() {
-    setIsUploadingPhoto(true);
+    setIsSubmitting(true);
     try {
       const payload = {
         nome: form.name,
@@ -274,7 +232,7 @@ export default function EditProfile({fallback = '/',destination='/'}) {
       setShowFeedback(true);
       if (err?.response?.status === 403) logout();
     } finally {
-      setIsUploadingPhoto(false);
+      setIsSubmitting(false);
     }
   }
 
@@ -307,28 +265,28 @@ export default function EditProfile({fallback = '/',destination='/'}) {
     setIsSubmitting(true);
 
     try {
+      const cleanPhone = form.phone ? form.phone.replace(/\D/g, '') : '';
+
       const payload = {
         nome: form.name,
         email: form.email,
         endereco:{
-          cidade: form.city,
-          estado: form.uf,
+          cidade: form.city || null,
+          estado: form.uf || null,
         },
-        pronomes: form.pronouns,
-        telefone: form.phone,
-        dataNascimento: form.birthDate,
+        pronomes: form.pronouns || null,
+        telefone: cleanPhone || null,
+        dataNascimento: form.birthDate || null,
         habilidades: selectedSkills.map(id => ({ id }))
       };
 
-      if (userId) {
-        const response = await updateUserById(userId, payload);
-        const updatedName = response?.data?.nome ?? payload.nome;
-        updateAuthUser({ name: updatedName });
-      } else {
-        // fallback in case id is not available
-        await updateMyData(payload);
-        updateAuthUser({ name: payload.nome });
+      if (photoFile) {
+        await uploadProfilePhoto(photoFile);
+        setPhotoFile(null);
       }
+
+      await updateUserById(userId, payload);
+      updateAuthUser({ name: payload.nome });
       setFeedback({
         type: 'success',
         heading: 'Perfil atualizado',
@@ -336,29 +294,31 @@ export default function EditProfile({fallback = '/',destination='/'}) {
         duration: 2000
       });
       setShowFeedback(true);
-      // Mantém loading até redirecionar
       setFeedbackOnClose(() => () => { setShowFeedback(false); navigate(destination); });
     } catch (err) {
       console.error(err);
       const errorMessage = err?.response?.data?.message || "Não foi possível atualizar o perfil. Tente novamente.";
+      const isForbidden = err?.response?.status === 403;
       setFeedback({
         type: 'error',
-        heading: 'Erro ao atualizar',
-        message: errorMessage,
+        heading: isForbidden ? 'Sessão expirada' : 'Erro ao atualizar',
+        message: isForbidden ? 'Sua sessão expirou. Faça login novamente.' : errorMessage,
         duration: 4000
       });
       setShowFeedback(true);
-      setFeedbackOnClose(() => () => setShowFeedback(false));
-      // Em erro, desliga loading
+      if (isForbidden) {
+        setFeedbackOnClose(() => () => { setShowFeedback(false); logout(); });
+      } else {
+        setFeedbackOnClose(() => () => setShowFeedback(false));
+      }
       setIsSubmitting(false);
-      if (err?.response?.status === 403) logout();
     }
   }
 
   if (fetching) return <Loading />;
 
   return (
-    <div className="flex flex-col items-center bg-[var(--general-bg)] min-h-screen px-5">
+    <div className="flex flex-col items-center bg-[var(--general-bg)] px-5">
       <div className="w-full max-w-[45rem] mt-6">
         <BackBtn fallback={fallback}/>
       </div>
@@ -381,16 +341,6 @@ export default function EditProfile({fallback = '/',destination='/'}) {
             onChange={handlePhotoChange}
             className="border-2 rounded-lg py-2 px-2 max-w-xs"
           />
-          {photoFile && (
-            <button
-              type="button"
-              onClick={handlePhotoUpload}
-              disabled={isUploadingPhoto}
-              className="bg-[#71CC47] hover:bg-[#5ba339] border-2 border-b-3 border-r-3 px-4 py-2 rounded-md font-semibold disabled:brightness-90"
-            >
-              {isUploadingPhoto ? 'Enviando...' : 'Enviar foto'}
-            </button>
-          )}
         </div>
 
         <Field label="Nome" id="edit-name" name="name" value={form.name} onChange={handleChange("name")} error={errors.name} placeholder={'ex. John Doe'} />
