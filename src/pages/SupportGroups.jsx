@@ -1,6 +1,6 @@
 import ListItem from "../components/ListItem";
 import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import groupImage from "../assets/group.svg";
 import { useEffect, useState } from "react";
 import { getSupportGroups, getMyGroups } from "../services/api";
@@ -11,13 +11,30 @@ import CascadingFilter from "../components/CascadingFilter";
 
 export default function SupportGroups(){
   const {isAuthenticated} = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [groupList,setGroupList] = useState([]);
   const [savedGroupIds, setSavedGroupIds] = useState([]);
   const [loading,setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
-  const [selectedState, setSelectedState] = useState([]);
-  const [selectedCities, setSelectedCities] = useState([]);
+  const [search, setSearch] = useState(searchParams.get('q') || "");
+  const [selectedState, setSelectedState] = useState(() => {
+    const v = searchParams.get('uf');
+    return v ? [v] : [];
+  });
+  const [selectedCities, setSelectedCities] = useState(() => {
+    const v = searchParams.get('cidades');
+    return v ? v.split(',').filter(Boolean) : [];
+  });
   const showFeedback = (type, heading, message) => setFeedback({ type, heading, message });
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (search.trim()) params.set('q', search.trim());
+    if (selectedState.length > 0) params.set('uf', selectedState[0]);
+    if (selectedCities.length > 0) params.set('cidades', selectedCities.join(','));
+    setSearchParams(params, { replace: true });
+  }, [search, selectedState, selectedCities, setSearchParams]);
 
   useEffect(()=>{
     if(isAuthenticated){
@@ -35,7 +52,6 @@ export default function SupportGroups(){
         }
       }
       fetchGroups()
-      // Carrega grupos salvos do usuário
       const fetchSavedGroups = async () => {
         try {
           const response = await getMyGroups();
@@ -52,15 +68,21 @@ export default function SupportGroups(){
     }
   },[isAuthenticated])
 
-  // remove acentos para filtragem
   const normalize = (str) => (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
   const filteredGroups = groupList.filter(group => {
-    // Filter by state
+    if (search.trim()) {
+      const term = normalize(search);
+      const nome = normalize(group.nome);
+      const descricao = normalize(group.descricao);
+      const categoria = normalize(group.categoria);
+      if (!nome.includes(term) && !descricao.includes(term) && !categoria.includes(term)) {
+        return false;
+      }
+    }
     if (selectedState.length > 0 && !selectedState.includes(normalize(group.estado))) {
       return false;
     }
-    // Filter by cities
     if (selectedCities.length > 0 && !selectedCities.includes(normalize(group.cidade))) {
       return false;
     }
@@ -74,16 +96,21 @@ export default function SupportGroups(){
     {isAuthenticated ? 
     ( <>
         <div className='flex flex-col gap-2 mt-2 mb-5'>
-          <SearchBar placeholder="Pesquisar grupos..."/>
+          <SearchBar value={search} onChange={setSearch} placeholder="Pesquisar grupos..."/>
           <CascadingFilter
             onStateChange={setSelectedState}
             onCityChange={setSelectedCities}
             buttonColor="#FFA3BE"
+            initialState={selectedState}
+            initialCities={selectedCities}
           />
         </div>
         {filteredGroups.map((group,index)=>(
           <ListItem key={index} data={group} type="group" isSaved={savedGroupIds.includes(group.id)} onError={showFeedback} />
         ))}
+        {search.trim() !== "" && filteredGroups.length === 0 && (
+          <p>Nenhum grupo encontrado</p>
+        )}
         {feedback && (
           <Feedback
             type={feedback.type}

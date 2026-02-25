@@ -1,9 +1,10 @@
+import { useState, useMemo } from "react";
 import { TbEdit } from "react-icons/tb";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { MdSearch } from "react-icons/md";
 import Eye from '../assets/eye.svg?react';
 
 
-// Componente de tabela reutilizável para telas de administração
 export default function AdminTable({
   columns = [],
   data = [],
@@ -13,8 +14,31 @@ export default function AdminTable({
   showPreview = false,
   getRowId,
   emptyMessage = "Nenhum registro encontrado",
-  className = ""
+  className = "",
+  searchable = false,
+  searchPlaceholder = "Buscar registros..."
 }) {
+  const [search, setSearch] = useState("");
+
+  const filteredData = useMemo(() => {
+    if (!searchable || !search.trim()) return data;
+    const term = search.toLowerCase().trim();
+
+    const extractStrings = (obj) => {
+      if (!obj || typeof obj !== "object") return [];
+      return Object.values(obj).flatMap((val) => {
+        if (typeof val === "string") return [val.toLowerCase()];
+        if (typeof val === "number") return [String(val)];
+        if (val && typeof val === "object") return extractStrings(val);
+        return [];
+      });
+    };
+
+    return data.filter((row) =>
+      extractStrings(row).some((str) => str.includes(term))
+    );
+  }, [data, search, searchable]);
+
   const resolveId = (row, index) => {
     if (typeof getRowId === "function") return getRowId(row, index);
     return row?.id ?? index;
@@ -22,6 +46,18 @@ export default function AdminTable({
 
   return (
     <div className={`w-full overflow-x-auto ${className}`}>
+      {searchable && (
+        <div className="relative mb-4 max-w-md">
+          <MdSearch size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={searchPlaceholder}
+            className="w-full border-2 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300"
+          />
+        </div>
+      )}
       <table className="w-full border-separate border-spacing-0 text-sm">
         <thead>
           <tr className="">
@@ -39,7 +75,7 @@ export default function AdminTable({
           </tr>
         </thead>
         <tbody>
-          {data.length === 0 && (
+          {filteredData.length === 0 && (
             <tr>
               <td
                 colSpan={columns.length + 1}
@@ -50,7 +86,7 @@ export default function AdminTable({
             </tr>
           )}
 
-          {data.map((row, index) => {
+          {filteredData.map((row, index) => {
             const rowId = resolveId(row, index);
             return (
               <tr key={rowId}>

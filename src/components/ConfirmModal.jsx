@@ -20,7 +20,6 @@ export default function ConfirmModal({
       onClick={onClose}
     >
       
-      {/* Modal */}
       <div 
         className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6"
         onClick={(e) => e.stopPropagation()}

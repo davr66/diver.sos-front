@@ -37,7 +37,6 @@ export default function Login() {
 
     const newErrors = {};
 
-    // validações básicas
     if (!form.email) newErrors.email = "Email obrigatório";
     if (!(validateEmail(form.email))) newErrors.email = "Digite um email válido";
     if (!form.password) newErrors.password = "Digite sua senha";
@@ -48,7 +47,6 @@ export default function Login() {
       return;
     }
 
-    // Mensagem de erro simplificada, sem mapeamento detalhado
     const getLoginErrorMessage = (err) => {
       return err?.response?.data?.message || 'Não foi possível fazer login. Verifique suas credenciais e tente novamente.';
     };
@@ -56,11 +54,9 @@ export default function Login() {
     try {
       setIsSubmitting(true);
       await login(form);
-      // Determina rota segura para administradores/moderadores
       const role = (sessionStorage.getItem('role') || '').toLowerCase();
       const isPrivileged = ['administrador','moderador','rh'].includes(role);
       const redirectPath = isPrivileged ? '/admin' : '/';
-      // Mostrar feedback de sucesso antes de redirecionar
       setFeedback({
         type: 'success',
         heading: 'Login realizado',
@@ -68,7 +64,6 @@ export default function Login() {
         duration: 2000
       });
       setShowFeedback(true);
-      // Mantém loading até redirecionar; desligamos ao navegar
       setFeedbackOnClose(() => () => { setShowFeedback(false); navigate(redirectPath); });
     } catch (err) {
       const apiMessage = getLoginErrorMessage(err);
@@ -80,7 +75,6 @@ export default function Login() {
       });
       setShowFeedback(true);
       setFeedbackOnClose(() => () => setShowFeedback(false));
-      // Em erro, desliga loading
       setIsSubmitting(false);
     }
   }

@@ -117,13 +117,11 @@ export default function EditGroup() {
     try {
       await editGroup(id, formData);
 
-      // Se houver novo banner, fazer upload
       if (bannerFile) {
         try {
           await appendGroupBanner(id, bannerFile);
         } catch (bannerErr) {
           console.error("Erro ao enviar banner", bannerErr);
-          // Não bloqueia a edição por erro no banner
         }
       }
 
@@ -160,7 +158,6 @@ export default function EditGroup() {
           <textarea name="descricao" value={formData.descricao} onChange={handleChange} required rows={5} className="border-2 rounded-lg px-3 py-2 resize-none" />
         </div>
 
-        {/* Banner do Grupo */}
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Atualizar Banner do Grupo (opcional)</label>
           <input

@@ -22,7 +22,9 @@ export default function Layout(){
     <div className={`min-h-screen lg:grid lg:grid-cols-5 lg:grid-rows-8 lg:gap-0 lg:h-screen ${rootBg} p-0`}>
       <Header/>
         <main className='p-0 overflow-hidden flex flex-col lg:row-start-1 lg:row-end-9 lg:col-start-2 lg:col-end-6 lg:overflow-y-auto pb-30'>
-          <Outlet/>
+          <div className="flex-1">
+            <Outlet/>
+          </div>
           <ContactFab />
           <footer className='mt-auto py-4 text-center text-sm text-gray-700'>diver.sos &copy;{year}<br/>Desenvolvido por Atemporal</footer>
         </main>

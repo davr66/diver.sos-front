@@ -37,7 +37,6 @@ export default function SearchableMultiSelect({
   );
 
   const handleSelect = (optValue) => {
-    // Garante que value seja sempre um array
     const currentValue = Array.isArray(value) ? value : [];
     const newValue = currentValue.includes(optValue)
       ? currentValue.filter(v => v !== optValue)
@@ -47,13 +46,11 @@ export default function SearchableMultiSelect({
 
   const handleRemove = (optValue, e) => {
     e.stopPropagation();
-    // Garante que value seja sempre um array
     const currentValue = Array.isArray(value) ? value : [];
     const newValue = currentValue.filter(v => v !== optValue);
     onChange({ target: { value: newValue } });
   };
 
-  // Garante que value seja sempre um array antes de mapear
   const currentValue = Array.isArray(value) ? value : [];
   const selectedLabels = currentValue.map(v => {
     const option = options.find(opt => opt.value === v);

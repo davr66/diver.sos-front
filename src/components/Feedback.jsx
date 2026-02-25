@@ -6,10 +6,8 @@ export default function Feedback({ type = 'success', heading, message, duration 
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Animação de entrada
     setTimeout(() => setIsVisible(true), 10);
 
-    // Auto-fechar após duration
     const timer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(() => onClose?.(), 300); // Aguarda animação de saída

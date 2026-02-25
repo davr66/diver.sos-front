@@ -44,7 +44,6 @@ export default function SearchableSelect({
 
   const displayValue = () => {
     if (!value) return '';
-    // Se value for um objeto, pega o value dele
     const val = typeof value === 'object' && value !== null ? value.value : value;
     const option = options.find(opt => opt.value === val);
     return option ? option.label : val;

@@ -78,7 +78,6 @@ export default function EditNews(){
           await appendNewsPhoto(id, foto);
         } catch (photoErr) {
           console.error('Erro ao enviar imagem da notícia', photoErr);
-          // Não bloqueia a edição por erro na imagem
         }
       }
 

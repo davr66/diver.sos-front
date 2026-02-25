@@ -1,4 +1,5 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ListItem from '../components/ListItem'
 import SearchBar from '../components/SearchBar';
 import Filter from '../components/Filter';
@@ -10,33 +11,67 @@ import Feedback from '../components/Feedback';
 
 export default function JobApplications(){
   const { isAuthenticated } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [jobOpenings,setJobOpenings] = useState([]);
-  const [search,setSearch] = useState("");
+  const [search,setSearch] = useState(searchParams.get('q') || "");
+  const [appliedSearch, setAppliedSearch] = useState(searchParams.get('q') || "");
   const [isLoading, setIsLoading] = useState(false);
-  const [workModeFilters, setWorkModeFilters] = useState([]);
-  const [selectedState, setSelectedState] = useState([]);
-  const [selectedCities, setSelectedCities] = useState([]);
-  const [selectedSkillIds, setSelectedSkillIds] = useState([]); // normalized string ids (ex: ['1','2'])
+  const [workModeFilters, setWorkModeFilters] = useState(() => {
+    const v = searchParams.get('modo');
+    return v ? v.split(',').filter(Boolean) : [];
+  });
+  const [selectedState, setSelectedState] = useState(() => {
+    const v = searchParams.get('uf');
+    return v ? [v] : [];
+  });
+  const [selectedCities, setSelectedCities] = useState(() => {
+    const v = searchParams.get('cidades');
+    return v ? v.split(',').filter(Boolean) : [];
+  });
+  const [selectedSkillIds, setSelectedSkillIds] = useState(() => { // normalized string ids (ex: ['1','2'])
+    const v = searchParams.get('habilidades');
+    return v ? v.split(',').filter(Boolean) : [];
+  });
   const [skillsOptions, setSkillsOptions] = useState([]);
   const [loadingSkills, setLoadingSkills] = useState(true);
   const [savedJobIds, setSavedJobIds] = useState([]);
   const [feedback, setFeedback] = useState(null);
+  const initialSearchDone = useRef(false);
 
   const showFeedback = (type, heading, message) => {
     setFeedback({ type, heading, message });
   };
 
-  useEffect(()=>{
-    const fetchJobs = async () =>{
-      try {
-        const response = await getJobOpenings();
-        setJobOpenings(response.data);
-      } catch (error) {
-        console.error('Erro ao carregar vagas:', error);
-      }
-    };
-    fetchJobs();
-  },[]);
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (appliedSearch.trim()) params.set('q', appliedSearch.trim());
+    if (workModeFilters.length > 0) params.set('modo', workModeFilters.join(','));
+    if (selectedSkillIds.length > 0) params.set('habilidades', selectedSkillIds.join(','));
+    if (selectedState.length > 0) params.set('uf', selectedState[0]);
+    if (selectedCities.length > 0) params.set('cidades', selectedCities.join(','));
+    setSearchParams(params, { replace: true });
+  }, [appliedSearch, workModeFilters, selectedSkillIds, selectedState, selectedCities, setSearchParams]);
+
+  useEffect(() => {
+    if (initialSearchDone.current) return;
+    const q = searchParams.get('q');
+    if (q && q.trim()) {
+      initialSearchDone.current = true;
+      const doInitialSearch = async () => {
+        setIsLoading(true);
+        try {
+          const response = await searchJobOpenings({ termo: q });
+          setJobOpenings(response.data);
+        } catch (error) {
+          console.error('Erro ao procurar vagas:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      doInitialSearch();
+    }
+  }, []);
 
   useEffect(() => {
     const fetchSkills = async () => {
@@ -82,6 +117,7 @@ export default function JobApplications(){
     setSelectedState([]);
     setSelectedCities([]);
     setSelectedSkillIds([]);
+    setAppliedSearch(search);
     try {
       const response = await searchJobOpenings({ termo: search });
       setJobOpenings(response.data);
@@ -92,11 +128,11 @@ export default function JobApplications(){
     }
   };
 
-  // remove acentos para a exceção do work_mode 'híbrido'
   const normalize = (str) => (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
   useEffect(() => {
     if (search.trim() !== "") return;
+    setAppliedSearch("");
 
     const reloadAllJobs = async () => {
       try {
@@ -115,20 +151,16 @@ export default function JobApplications(){
     .filter(n => !Number.isNaN(n));
 
   const filteredJobs = jobOpenings.filter(job => {
-    // Filter by work mode
     if (workModeFilters.length > 0 && !workModeFilters.includes(normalize(job.work_mode))) {
       return false;
     }
-    // Filter by state (comparing with state abbreviation/sigla)
     if (selectedState.length > 0 && !selectedState.includes(normalize(job.uf))) {
       return false;
     }
-    // Filter by cities
     if (selectedCities.length > 0 && !selectedCities.includes(normalize(job.city))) {
       return false;
     }
 
-    // Filter by skills
     if (selectedSkillIdNums.length > 0) {
       const rawSkills = job?.skills || job?.habilidades || [];
       const jobSkillIds = Array.isArray(rawSkills)
@@ -175,6 +207,8 @@ export default function JobApplications(){
               onStateChange={setSelectedState}
               onCityChange={setSelectedCities}
               buttonColor="#FFE79D"
+              initialState={selectedState}
+              initialCities={selectedCities}
             />
           </div>
         </div>

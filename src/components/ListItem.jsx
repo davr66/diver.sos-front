@@ -12,7 +12,6 @@ export default function JobOpening({data, type, isSaved = false, onError }) {
   const [saved, setSaved] = useState(isSaved);
   const userInteracted = useRef(false);
 
-  // Sincroniza com a prop apenas se o usuário não interagiu
   useEffect(() => {
     if (!userInteracted.current) {
       setSaved(isSaved);
@@ -47,7 +46,6 @@ export default function JobOpening({data, type, isSaved = false, onError }) {
       console.error("Erro ao salvar/deletar item:", error);
       setSaved(previousState);
       
-      // Mostrar feedback de erro
       if (onError) {
         const isForbidden = error?.response?.status === 403;
         const isJob = type === 'job_opening';
@@ -86,7 +84,7 @@ export default function JobOpening({data, type, isSaved = false, onError }) {
           )
       }
       <div className="flex-shrink-0">
-        <SaveBtn key={`save-${id}-${saved}`} active={saved} onClick={handleSave}/>
+        <SaveBtn active={saved} onClick={handleSave}/>
       </div>
       <Link to={type ==='job_opening' ? `/vagas/${id}`:`/grupos/${id}`} className="absolute right-0 bottom-3 text-nowrap text-sm font-bold border rounded-md border-b-3 bg-white border-r-3 px-5 py-2 hover:cursor-pointer hover:shadow-sm hover:bg-gray-100 hover:scale-102 transition-all">Ver mais</Link>
     </div>

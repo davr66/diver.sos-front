@@ -103,7 +103,6 @@ export default function EditJob() {
         const response = await getJobById(id);
         const job = response.data;
         
-        // Extrai a data sem o horário
         let dateOnly = "";
         if (job.deadline) {
           const date = new Date(job.deadline);
@@ -195,13 +194,11 @@ export default function EditJob() {
       
       await editJobOpening(id, payload);
 
-      // Se houver novo banner, fazer upload
       if (bannerFile) {
         try {
           await appendJobBanner(id, bannerFile);
         } catch (bannerErr) {
           console.error("Erro ao enviar banner", bannerErr);
-          // Não bloqueia a edição por erro no banner
         }
       }
 
@@ -233,7 +230,6 @@ export default function EditJob() {
       <h1 className="font-[Nunito] font-extrabold text-2xl mb-6">Editar Vaga</h1>
 
       <form onSubmit={handleSubmit} className="w-full max-w-4xl flex flex-col gap-4">
-        {/* Linha 1: Título e Empresa */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <InputField
             label="Título da Vaga"
@@ -251,7 +247,6 @@ export default function EditJob() {
           />
         </div>
 
-        {/* Linha 2: Modalidade, Data Limite e Link */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="flex flex-col gap-1">
             <label className="font-semibold">Modalidade</label>
@@ -285,7 +280,6 @@ export default function EditJob() {
           />
         </div>
 
-        {/* Linha 3: Estado e Cidade */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <SearchableSelect
             label="Estado"
@@ -305,7 +299,6 @@ export default function EditJob() {
           />
         </div>
 
-        {/* Status e Tipo */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {user.role !== "RH" &&(
           <div className="flex flex-col gap-1">
@@ -340,7 +333,6 @@ export default function EditJob() {
           </div>
         </div>
 
-        {/* Penúltima linha: Descrição */}
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Descrição</label>
           <textarea
@@ -354,7 +346,6 @@ export default function EditJob() {
           />
         </div>
 
-        {/* Última linha: Habilidades */}
         <SearchableMultiSelect
           label="Habilidades"
           value={formData.habilidades}
@@ -363,7 +354,6 @@ export default function EditJob() {
           placeholder="Selecione as habilidades"
         />
 
-        {/* Banner da Vaga */}
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Atualizar Banner da Vaga (opcional)</label>
           <input

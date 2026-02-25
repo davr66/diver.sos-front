@@ -88,7 +88,6 @@ export default function PreviewModal({ isOpen, onClose, type, item }) {
     >
       <div className="bg-white rounded-lg w-full max-w-6xl my-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
-          {/* Coluna esquerda: ListItem */}
           <div>
             <h3 className="font-bold text-lg mb-4">Como aparece na listagem</h3>
             <div className="border-2 rounded-lg p-4 bg-gray-50">
@@ -100,7 +99,6 @@ export default function PreviewModal({ isOpen, onClose, type, item }) {
             </div>
           </div>
 
-          {/* Coluna direita: Página de detalhes - estrutura exata */}
           <div>
             <h3 className="font-bold text-lg mb-4">Página de detalhes</h3>
             <div className="border-2 rounded-lg overflow-hidden bg-white max-h-96 overflow-y-auto">

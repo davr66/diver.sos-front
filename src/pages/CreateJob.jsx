@@ -151,13 +151,11 @@ export default function CreateJob() {
       const response = await createJobOpening(payload);
       const jobId = response.data?.id || response.data;
 
-      // Se houver banner, fazer upload
       if (bannerFile && jobId) {
         try {
           await appendJobBanner(jobId, bannerFile);
         } catch (bannerErr) {
           console.error("Erro ao enviar banner", bannerErr);
-          // Não bloqueia o cadastro por erro no banner
         }
       }
 
@@ -189,7 +187,6 @@ export default function CreateJob() {
       <h1 className="font-[Nunito] font-extrabold text-2xl mb-6">Cadastrar Nova Vaga</h1>
 
       <form onSubmit={handleSubmit} className="w-full max-w-4xl flex flex-col gap-4">
-        {/* Linha 1: Título e Empresa */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <InputField
             label="Título da Vaga"
@@ -207,7 +204,6 @@ export default function CreateJob() {
           />
         </div>
 
-        {/* Linha 2: Modalidade, Data Limite e Link */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="flex flex-col gap-1">
             <label className="font-semibold">Modalidade</label>
@@ -241,7 +237,6 @@ export default function CreateJob() {
           />
         </div>
 
-        {/* Linha 3: Estado e Cidade */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <SearchableSelect
             label="Estado"
@@ -261,7 +256,6 @@ export default function CreateJob() {
           />
         </div>
 
-        {/* Status e Tipo */}
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {user.role !== "RH" && ( 
@@ -298,7 +292,6 @@ export default function CreateJob() {
           </div>
         </div>
 
-        {/* Penúltima linha: Descrição */}
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Descrição</label>
           <textarea
@@ -312,7 +305,6 @@ export default function CreateJob() {
           />
         </div>
 
-        {/* Última linha: Habilidades */}
         <SearchableMultiSelect
           label="Habilidades"
           value={formData.habilidades}
@@ -321,7 +313,6 @@ export default function CreateJob() {
           placeholder="Selecione as habilidades"
         />
 
-        {/* Banner da Vaga */}
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Banner da Vaga (opcional)</label>
           <input

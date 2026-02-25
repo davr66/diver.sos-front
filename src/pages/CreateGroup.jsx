@@ -111,13 +111,11 @@ export default function CreateGroup() {
       const response = await createGroup(formData);
       const groupId = response.data?.id || response.data;
 
-      // Se houver banner, fazer upload
       if (bannerFile && groupId) {
         try {
           await appendGroupBanner(groupId, bannerFile);
         } catch (bannerErr) {
           console.error("Erro ao enviar banner", bannerErr);
-          // Não bloqueia o cadastro por erro no banner
         }
       }
 
@@ -139,28 +137,23 @@ export default function CreateGroup() {
       </div>
       <h1 className="font-[Nunito] font-extrabold text-2xl mb-6">Cadastrar Novo Grupo</h1>
       <form onSubmit={handleSubmit} className="w-full max-w-4xl flex flex-col gap-4">
-        {/* Linha 1: Nome / Responsável */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <InputField label="Nome" name="nome" value={formData.nome} onChange={handleChange} required />
           <InputField label="Responsável" name="responsavel" value={formData.responsavel} onChange={handleChange} required />
         </div>
-        {/* Linha 2: Categoria / Link */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <InputField label="Categoria" name="categoria" value={formData.categoria} onChange={handleChange} required />
           <InputField label="Link" name="link" type="url" value={formData.link} onChange={handleChange} />
         </div>
-        {/* Linha 3: Estado / Cidade */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <SearchableSelect label="Estado" value={formData.estado} onChange={handleStateChange} options={stateOptions} disabled={loadingStates} placeholder="Selecione" />
           <SearchableSelect label="Cidade" value={formData.cidade} onChange={handleCityChange} options={cityOptions} disabled={!formData.estado || loadingCities} placeholder={!formData.estado ? 'Selecione um estado primeiro' : 'Selecione'} />
         </div>
-        {/* Penúltima: Descrição */}
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Descrição</label>
           <textarea name="descricao" value={formData.descricao} onChange={handleChange} required rows={5} className="border-2 rounded-lg px-3 py-2 resize-none" />
         </div>
         
-        {/* Banner do Grupo */}
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Banner do Grupo (opcional)</label>
           <input
@@ -176,7 +169,6 @@ export default function CreateGroup() {
           )}
         </div>
 
-        {/* Ações */}
         <div className="flex gap-4 mt-4">
           <button type="submit" className="flex-1 border-2 border-b-3 border-r-3 rounded-lg py-2 bg-[var(--groups-bg)] font-semibold hover:brightness-95">Cadastrar Grupo</button>
         </div>

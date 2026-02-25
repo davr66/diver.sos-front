@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import LocationSelect from './LocationSelect';
 
-export default function CascadingFilter({ onStateChange, onCityChange, buttonColor }) {
+export default function CascadingFilter({ onStateChange, onCityChange, buttonColor, initialState = [], initialCities = [] }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedState, setSelectedState] = useState([]);
-  const [selectedCities, setSelectedCities] = useState([]);
-  const [appliedState, setAppliedState] = useState([]);
-  const [appliedCities, setAppliedCities] = useState([]);
+  const [selectedState, setSelectedState] = useState(initialState);
+  const [selectedCities, setSelectedCities] = useState(initialCities);
+  const [appliedState, setAppliedState] = useState(initialState);
+  const [appliedCities, setAppliedCities] = useState(initialCities);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const [stateOptions, setStateOptions] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
@@ -16,7 +16,6 @@ export default function CascadingFilter({ onStateChange, onCityChange, buttonCol
   const buttonRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  // Normalize function to match Filter component logic
   const normalizeStr = (str) => 
     (str || '')
       .normalize('NFD')
@@ -25,7 +24,6 @@ export default function CascadingFilter({ onStateChange, onCityChange, buttonCol
       .trim()
       .toLowerCase();
 
-  // Fetch states from IBGE API on mount
   useEffect(() => {
     const fetchStates = async () => {
       try {
@@ -136,6 +134,17 @@ export default function CascadingFilter({ onStateChange, onCityChange, buttonCol
     setSelectedCities([]);
   };
 
+  const handleClearApplied = (e) => {
+    if (e) e.stopPropagation();
+    setSelectedState([]);
+    setSelectedCities([]);
+    setAppliedState([]);
+    setAppliedCities([]);
+    onStateChange && onStateChange([]);
+    onCityChange && onCityChange([]);
+    setIsOpen(false);
+  };
+
   const getSelectedStateLabel = () => {
     if (selectedState.length === 0) return 'Estado';
     const found = stateOptions.find(s => normalizeStr(s.value) === normalizeStr(selectedState[0]));
@@ -173,9 +182,22 @@ export default function CascadingFilter({ onStateChange, onCityChange, buttonCol
         <div className="flex-1">
           <span>{btnLabel}</span>
         </div>
-        <svg className={`w-4 h-4 ${hasSelection ? 'text-white' : 'text-black'}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 8l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        {hasSelection ? (
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={handleClearApplied}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClearApplied(e); }}
+            className="ml-1 flex items-center justify-center w-5 h-5 rounded-full hover:bg-white/20 text-white text-xs font-bold"
+            title="Limpar filtro de local"
+          >
+            ✕
+          </span>
+        ) : (
+          <svg className="w-4 h-4 text-black" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 8l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
       </button>
 
       {isOpen && (
@@ -191,7 +213,6 @@ export default function CascadingFilter({ onStateChange, onCityChange, buttonCol
           <div id='modal' className="flex-1 overflow-y-auto p-4">
             <h3 className="text-sm font-semibold mb-3">Filtrar por Local</h3>
 
-            {/* Estado Filter */}
             <div className="mb-4">
               <label className="block text-xs font-medium mb-2">Estado</label>
               {loadingStates ? (
@@ -230,13 +251,10 @@ export default function CascadingFilter({ onStateChange, onCityChange, buttonCol
           <div className="flex gap-2 justify-end border-t p-4 bg-white">
             <button
               type="button"
-              onClick={() => {
-                handleResetFilters();
-                setIsOpen(false);
-              }}
+              onClick={handleClearApplied}
               className="px-3 py-1.5 border-2 rounded-md text-xs font-medium hover:bg-gray-50 hover:cursor-pointer"
             >
-              Cancelar
+              Limpar
             </button>
             <button
               type="button"

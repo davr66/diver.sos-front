@@ -90,7 +90,6 @@ export default function LocationSelect({
       {open && (
         <div className="absolute z-20 mt-1 w-full rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
           <div className="p-2">
-            {/* Search Input */}
             <input
               ref={searchInputRef}
               type="text"
@@ -100,7 +99,6 @@ export default function LocationSelect({
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
             />
 
-            {/* Selected Cities as Mini Cards (only for multiSelect) */}
             {multiSelect && value.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-2 p-2 bg-gray-50 rounded max-h-24 overflow-auto">
                 {value.map(normVal => (
@@ -126,7 +124,6 @@ export default function LocationSelect({
               </div>
             )}
 
-            {/* Options List */}
             <div className="max-h-60 overflow-auto">
               {filteredOptions.length === 0 ? (
                 <div className="px-3 py-2 text-sm text-gray-500 text-center">

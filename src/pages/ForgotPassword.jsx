@@ -37,7 +37,6 @@ export default function ForgotPassword() {
 
     const newErrors = {};
 
-    // validações básicas
     if (!form.email) newErrors.email = "Email obrigatório";
     if (!(validateEmail(form.email))) newErrors.email = "Digite um email válido";
 

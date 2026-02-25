@@ -1,21 +1,68 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getGroupById } from '../services/api';
+import { getGroupById, getMyGroups, saveGroup, deleteSavedGroup } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import companyIcon from '../assets/job-applications/company.svg';
 import locationIcon from '../assets/job-applications/location.svg';
 import verifiedIcon from '../assets/groups/verified.svg'
 import BackButton from '../components/BackBtn';
 import SaveBtn from '../components/SaveBtn';
 import Loading from '../components/Loading';
+import Feedback from '../components/Feedback';
 
 export default function JobDetails() {
   const api = import.meta.env.VITE_API_URL;
+  const { isAuthenticated } = useAuth();
   const { id } = useParams();
   const [group, setGroup] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  const showFeedback = (type, heading, message) => setFeedback({ type, heading, message });
 
   useEffect(() => {
     getGroupById(id).then(res => setGroup(res.data));
   }, [id]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setIsSaved(false);
+      return;
+    }
+
+    const fetchSavedStatus = async () => {
+      try {
+        const response = await getMyGroups();
+        const ids = Array.isArray(response?.data) ? response.data.map(g => g.id) : [];
+        setIsSaved(ids.includes(parseInt(id)));
+      } catch (error) {
+        console.error('Erro ao verificar se grupo está salvo:', error);
+      }
+    };
+    fetchSavedStatus();
+  }, [id, isAuthenticated]);
+
+  const handleSave = async () => {
+    const previousState = isSaved;
+    const newState = !isSaved;
+    setIsSaved(newState);
+
+    try {
+      if (previousState) {
+        await deleteSavedGroup(id);
+      } else {
+        await saveGroup(id);
+      }
+    } catch (error) {
+      console.error('Erro ao salvar/deletar grupo:', error);
+      setIsSaved(previousState);
+
+      const isForbidden = error?.response?.status === 403;
+      const loginMsg = 'Faça login para salvar grupos nos seus favoritos.';
+      const genericMsg = 'Não foi possível salvar o grupo. Tente novamente.';
+      showFeedback('error', isForbidden ? 'Acesso negado' : 'Erro ao salvar grupo', isForbidden ? loginMsg : genericMsg);
+    }
+  };
+
   console.log(group);
 
   if (!group) return <Loading/>;
@@ -38,7 +85,7 @@ export default function JobDetails() {
           <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1" src={locationIcon} />{group.cidade}/{group.estado}</p>
         </div>
         <div className="flex flex-col items-end justify-between min-h-full">
-          <SaveBtn></SaveBtn>
+          <SaveBtn active={isSaved} onClick={handleSave}></SaveBtn>
           <a href={group.link} className="text-sm font-bold text-nowrap uppercase mt-5 bg-[var(--groups-bg)] py-2 px-3 rounded-lg border-2 border-r-4 border-b-4 hover:cursor-pointer hover:bg-[#d17b95] hover:scale-104 translate-y-1" target="_blank">quero participar</a>
         </div>
       </div>
@@ -48,6 +95,14 @@ export default function JobDetails() {
           {group.descricao || ''}
         </div>
       </div>
+      {feedback && (
+        <Feedback
+          type={feedback.type}
+          heading={feedback.heading}
+          message={feedback.message}
+          onClose={() => setFeedback(null)}
+        />
+      )}
       </div>
     </div>
   )

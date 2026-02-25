@@ -42,7 +42,6 @@ export default function Register() {
         [field]: value,
       }));
 
-      // feedback em tempo real APENAS para senha
       if (field === "password") {
         setPasswordRules(checkPasswordRules(value));
       }
@@ -54,12 +53,10 @@ export default function Register() {
 
     const newErrors = {};
 
-    // validações básicas
     if (!form.name) newErrors.name = "Nome obrigatório";
     if (form.name.length < 3) newErrors.name = "O nome deve ter mais que 3 caracteres";
     if (!form.email) newErrors.email = "Email obrigatório";
 
-    // validação final da senha
     const rules = checkPasswordRules(form.password);
     const isPasswordStrong = Object.values(rules).every(Boolean);
 

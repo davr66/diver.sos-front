@@ -5,7 +5,6 @@ import logo2 from '../assets/logo2.png';
 export default function Header() {
   const {pathname} = useLocation();
 
-  // rotas onde o header não deve aparecer
   const hiddenPaths = ['/login', '/cadastro', '/esqueci-a-senha'];
   const shouldHideOnMobile = hiddenPaths.some(
     p => pathname === p || pathname.startsWith(p + '/')
@@ -24,10 +23,8 @@ export default function Header() {
 
   return(
       <header className={`${bg} ${shouldHideOnMobile ? 'hidden lg:flex':'flex'} justify-center h-fit py-3 border-b-2 lg:border-b-0 lg:border-r-2 lg:mb-0 lg:w-auto lg:h-auto lg:row-start-1 lg:row-end-3 lg:col-start-1 lg:col-end-2`} aria-label="Site header">
-        {/* Small logo (mobile) */}
         <img src={logo} alt="diver.sos logo" className="block lg:hidden w-[9rem] h-auto object-contain" />
 
-        {/* Large logo (desktop) */}
         <img src={logo2} alt="diver.sos logo" className="hidden lg:block w-[9rem] h-auto object-contain" />
       </header>
   )

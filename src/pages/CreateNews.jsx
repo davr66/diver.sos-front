@@ -52,7 +52,6 @@ export default function CreateNews(){
           await appendNewsPhoto(newsId, foto);
         } catch (photoErr) {
           console.error('Erro ao enviar imagem da notícia', photoErr);
-          // Não bloqueia o cadastro por erro na imagem
         }
       }
 
