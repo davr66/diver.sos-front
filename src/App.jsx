@@ -31,9 +31,14 @@ import CreateNews from './pages/CreateNews';
 import EditNews from './pages/EditNews';
 import ManageSkills from './pages/ManageSkills';
 import Contact from './pages/Contact';
+import { useState } from 'react';
+import Preloader from './components/Preloader';
 
 function App() {
+  const [loading,setLoading] = useState(true);
   return (
+    <>
+      {loading && <Preloader onFinish={()=>setLoading(false)}/>}
       <Routes>
         <Route element={<Layout/>}>
           <Route path='/' element={<Home />}/>
@@ -145,6 +150,7 @@ function App() {
           />
         </Route>
       </Routes>
+    </>
   ) 
 }
 

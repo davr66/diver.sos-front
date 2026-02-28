@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import Button from '../components/Button';
+import BackButton from '../components/BackBtn';
 
 export default function Contact() {
   const supportEmail = 'atemporal.smd@gmail.com';
@@ -44,6 +45,7 @@ export default function Contact() {
 
   return (
     <div className="flex flex-col items-center px-4 lg:px-10 pt-5">
+      <BackButton className="self-start mb-5"/>
       <div className="w-full max-w-[820px]">
         <h1 className="font-[Nunito] font-extrabold text-2xl mb-2">Contato / Feedbacks / Denúncias</h1>
         <p className="text-sm text-gray-700 mb-5">
