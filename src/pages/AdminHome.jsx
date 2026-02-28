@@ -1,5 +1,6 @@
 import AdminLink from "../components/AdminLink";
 import { JobsIcon,GroupsIcon,NewsIcon,ManageUserIcon } from "../assets/nav";
+import { HiSparkles } from "react-icons/hi2";
 import { useAuth } from "../context/AuthContext";
 
 export default function AdminHome(){
@@ -41,6 +42,14 @@ export default function AdminHome(){
             description={"Gerencie moderadores, perfis de rh e usuários comuns da plataforma"}
             bgColor={"#CCFFB4"}
             href={'/admin/gerenciar-usuarios'}
+          />
+
+          <AdminLink
+            icon={HiSparkles}
+            label={"Gerenciar Habilidades"}
+            description={"Cadastre novas habilidades para vagas e usuários"}
+            bgColor={"#C4B5FD"}
+            href={'/admin/habilidades'}
           />
           </>
         )}

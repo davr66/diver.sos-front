@@ -29,6 +29,7 @@ import CreateGroup from './pages/CreateGroup';
 import EditGroup from './pages/EditGroup';
 import CreateNews from './pages/CreateNews';
 import EditNews from './pages/EditNews';
+import ManageSkills from './pages/ManageSkills';
 import Contact from './pages/Contact';
 
 function App() {
@@ -131,6 +132,14 @@ function App() {
             element={
               <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
                 <EditUser/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/habilidades'
+            element={
+              <ProtectedRoute requiredRoles={['ADMINISTRADOR','MODERADOR']}>
+                <ManageSkills/>
               </ProtectedRoute>
             }
           />

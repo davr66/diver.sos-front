@@ -1,13 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ListItem from '../components/ListItem'
 import SearchBar from '../components/SearchBar';
 import Filter from '../components/Filter';
 import CascadingFilter from '../components/CascadingFilter';
-import {getJobOpenings, searchJobOpenings, getMyFavoriteJobs, getSkills} from '../services/api';
+import { searchJobOpenings, getMyFavoriteJobs, getSkills } from '../services/api';
 import Loading from '../components/Loading';
 import { useAuth } from '../context/AuthContext';
 import Feedback from '../components/Feedback';
+
+const MODE_TO_ENUM = { remoto: 'REMOTO', hibrido: 'HIBRIDO', presencial: 'PRESENCIAL' };
 
 export default function JobApplications(){
   const { isAuthenticated } = useAuth();
@@ -16,7 +18,7 @@ export default function JobApplications(){
   const [jobOpenings,setJobOpenings] = useState([]);
   const [search,setSearch] = useState(searchParams.get('q') || "");
   const [appliedSearch, setAppliedSearch] = useState(searchParams.get('q') || "");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [workModeFilters, setWorkModeFilters] = useState(() => {
     const v = searchParams.get('modo');
     return v ? v.split(',').filter(Boolean) : [];
@@ -37,7 +39,7 @@ export default function JobApplications(){
   const [loadingSkills, setLoadingSkills] = useState(true);
   const [savedJobIds, setSavedJobIds] = useState([]);
   const [feedback, setFeedback] = useState(null);
-  const initialSearchDone = useRef(false);
+  const fetchIdRef = useRef(0);
 
   const showFeedback = (type, heading, message) => {
     setFeedback({ type, heading, message });
@@ -53,25 +55,33 @@ export default function JobApplications(){
     setSearchParams(params, { replace: true });
   }, [appliedSearch, workModeFilters, selectedSkillIds, selectedState, selectedCities, setSearchParams]);
 
-  useEffect(() => {
-    if (initialSearchDone.current) return;
-    const q = searchParams.get('q');
-    if (q && q.trim()) {
-      initialSearchDone.current = true;
-      const doInitialSearch = async () => {
-        setIsLoading(true);
-        try {
-          const response = await searchJobOpenings({ termo: q });
-          setJobOpenings(response.data);
-        } catch (error) {
-          console.error('Erro ao procurar vagas:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      doInitialSearch();
+  const fetchJobs = useCallback(async () => {
+    const currentFetchId = ++fetchIdRef.current;
+    try {
+      const params = {};
+      if (appliedSearch.trim()) params.termo = appliedSearch.trim();
+      if (workModeFilters.length === 1 && MODE_TO_ENUM[workModeFilters[0]]) {
+        params.modalidade = MODE_TO_ENUM[workModeFilters[0]];
+      }
+      if (selectedCities.length === 1) {
+        params.cidade = selectedCities[0];
+      }
+      const response = await searchJobOpenings(params);
+      if (currentFetchId === fetchIdRef.current) {
+        setJobOpenings(response.data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar vagas:', error);
+    } finally {
+      if (currentFetchId === fetchIdRef.current) {
+        setIsLoading(false);
+      }
     }
-  }, []);
+  }, [appliedSearch, workModeFilters, selectedCities]);
+
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
 
   useEffect(() => {
     const fetchSkills = async () => {
@@ -112,38 +122,20 @@ export default function JobApplications(){
     fetchSavedJobs();
   },[isAuthenticated]);
 
-  const handleSearchSubmit = async () => {
+  const handleSearchSubmit = () => {
     setIsLoading(true);
     setSelectedState([]);
     setSelectedCities([]);
     setSelectedSkillIds([]);
     setAppliedSearch(search);
-    try {
-      const response = await searchJobOpenings({ termo: search });
-      setJobOpenings(response.data);
-    } catch (error) {
-      console.error('Erro ao procurar vagas:', error);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const normalize = (str) => (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
   useEffect(() => {
-    if (search.trim() !== "") return;
-    setAppliedSearch("");
-
-    const reloadAllJobs = async () => {
-      try {
-        const response = await getJobOpenings();
-        setJobOpenings(response.data);
-      } catch (error) {
-        console.error('Erro ao recarregar vagas:', error);
-      }
-    };
-
-    reloadAllJobs();
+    if (search.trim() === "") {
+      setAppliedSearch("");
+    }
   }, [search]);
 
   const selectedSkillIdNums = selectedSkillIds

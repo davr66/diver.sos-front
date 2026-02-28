@@ -274,3 +274,8 @@ export const getSkills = async () =>{
   const response = await api.get('/habilidades');
   return response;
 }
+
+export const createSkill = async (nome) => {
+  const response = await api.post('/habilidades', { nome });
+  return response;
+}
