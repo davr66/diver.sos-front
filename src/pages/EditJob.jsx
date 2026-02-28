@@ -8,6 +8,7 @@ import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
 import BackBtn from "../components/BackBtn";
 import { useAuth } from "../context/AuthContext";
+import MarkdownEditor from "../components/MarkdownEditor";
 
 export default function EditJob() {
   const {user} = useAuth();
@@ -24,7 +25,7 @@ export default function EditJob() {
   const [bannerFile, setBannerFile] = useState(null);
   const [formData, setFormData] = useState({
     titulo: "",
-    descricao: "",
+    descricao: null,
     empresa: "",
     linkDaVaga: "",
     cidade: "",
@@ -111,7 +112,7 @@ export default function EditJob() {
 
         setFormData({
           titulo: job.title || "",
-          descricao: job.description || "",
+          descricao: job.description ? JSON.parse(job.description) : null,
           empresa: job.company || "",
           linkDaVaga: job.jobLink || "",
           cidade: job.city || "",
@@ -146,6 +147,10 @@ export default function EditJob() {
 
   const handleSkillsChange = (e) => {
     setFormData(prev => ({ ...prev, habilidades: e.target.value }));
+  };
+
+  const handleDescricaoChange = (json) => {
+    setFormData(prev => ({ ...prev, descricao: json }));
   };
 
   const handleStateChange = (e) => {
@@ -188,6 +193,7 @@ export default function EditJob() {
     try {
       const payload = {
         ...formData,
+        descricao: formData.descricao ? JSON.stringify(formData.descricao) : "",
         dataLimite: formData.dataLimite ? `${formData.dataLimite}T23:59:59` : "",
         habilidades: formData.habilidades.map(id => ({ id: Number(id) }))
       };
@@ -335,14 +341,10 @@ export default function EditJob() {
 
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Descrição</label>
-          <textarea
-            name="descricao"
+          <MarkdownEditor
             value={formData.descricao}
-            onChange={handleChange}
-            placeholder="Digite a descrição da vaga..."
-            rows={10}
-            className="border-2 rounded-lg px-3 py-2 font-sans text-sm resize-y min-h-[200px] focus:outline-none focus:border-blue-500"
-            required
+            onChange={handleDescricaoChange}
+            placeholder="Descreva a empresa, requisitos da vaga, diferenciais e afins..."
           />
         </div>
 

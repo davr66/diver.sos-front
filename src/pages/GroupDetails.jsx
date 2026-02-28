@@ -9,6 +9,7 @@ import BackButton from '../components/BackBtn';
 import SaveBtn from '../components/SaveBtn';
 import Loading from '../components/Loading';
 import Feedback from '../components/Feedback';
+import RichTextViewer from '../components/RichTextViewer';
 
 export default function JobDetails() {
   const api = import.meta.env.VITE_API_URL;
@@ -91,9 +92,9 @@ export default function JobDetails() {
       </div>
 
       <div className='flex flex-col py-4'>
-        <div className='prose prose-sm max-w-none whitespace-pre-line leading-relaxed break-words overflow-wrap-anywhere'>
-          {group.descricao || ''}
-        </div>
+        {group.descricao && (
+          <RichTextViewer content={group.descricao} className="prose prose-sm max-w-none" />
+        )}
       </div>
       {feedback && (
         <Feedback

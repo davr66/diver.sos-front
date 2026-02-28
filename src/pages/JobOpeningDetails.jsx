@@ -8,6 +8,7 @@ import workModeIcon from '../assets/job-applications/work-mode.svg';
 import BackButton from '../components/BackBtn';
 import SaveBtn from '../components/SaveBtn';
 import Feedback from '../components/Feedback';
+import RichTextViewer from '../components/RichTextViewer';
 
 
 export default function JobDetails() {
@@ -91,9 +92,7 @@ export default function JobDetails() {
       </div>
 
       <div className='flex flex-col py-4 gap-5'>
-        <div className='prose prose-sm max-w-none whitespace-pre-line leading-relaxed break-words overflow-wrap-anywhere'>
-          {job.description || ''}
-        </div>
+        <RichTextViewer content={job.description} className="prose prose-sm max-w-none" />
         <div>
           <h2 className='font-semibold text-lg mb-2'>Habilidades</h2>
           <div className='flex flex-wrap gap-2'>

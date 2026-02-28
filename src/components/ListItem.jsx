@@ -66,23 +66,15 @@ export default function JobOpening({data, type, isSaved = false, onError }) {
     <div
       data-testid={type === 'job_opening' ? 'job-card' : 'group-card'}
       className="flex justify-between pb-5 pt-2 border-t-2 w-full relative nth-last-1:border-b-2 min-h-30">
-      {type == 'job_opening' ? (
         <div className="flex flex-col">
-            <h3 className="text-sm text-wrap max-w-75 font-bold uppercase">{data.title}</h3>
+            <h3 className="text-sm text-wrap max-w-75 font-bold uppercase">{data.title ? data.title : data.nome}</h3>
+            {type == 'group' && <span className="text-[0.75rem] font-semibold text-gray-700">{data.categoria}</span>}
             <div className="flex flex-col gap-2 mt-1">
-              <p className="flex items-end gap-1 text-[12px] text-clip leading-none"><img src={companyIcon}/>{data.company}</p>
-              <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1" src={locationIcon}/>{data.city}/{data.uf}</p>
-              <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1px" src={workModeIcon}/>{data.work_mode ==='Hibrido' ? 'Híbrido' : data.work_mode}</p>
+              <p className="flex items-end gap-1 text-[12px] text-clip leading-none"><img src={companyIcon}/>{data.company ? data.company : data.responsavel}</p>
+              <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1" src={locationIcon}/>{data.city ? data.city : data.cidade}/{data.uf ? data.uf : data.estado}</p>
+              {type == 'job_opening' && <p className="flex items-end gap-1 text-[12px] leading-none"><img className="pr-1px" src={workModeIcon}/>{data.work_mode ==='Hibrido' ? 'Híbrido' : data.work_mode}</p> }
             </div>
-        </div>)
-        : (
-          <div className="flex flex-col">
-            <h3 className="text-sm text-nowrap text-balance font-bold uppercase">{data.nome}</h3>
-            <span className="text-[0.75rem] font-semibold text-gray-700">{data.categoria}</span>
-            <p className="text-[0.65rem] text-wrap w-[75%] line-clamp-3">{data.descricao}</p>
-          </div>
-          )
-      }
+        </div>
       <div className="flex-shrink-0">
         <SaveBtn active={saved} onClick={handleSave}/>
       </div>

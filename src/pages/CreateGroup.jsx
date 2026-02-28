@@ -6,6 +6,7 @@ import SearchableSelect from "../components/SearchableSelect";
 import Feedback from "../components/Feedback";
 import Loading from "../components/Loading";
 import BackBtn from "../components/BackBtn";
+import MarkdownEditor from "../components/MarkdownEditor";
 
 export default function CreateGroup() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function CreateGroup() {
   const [formData, setFormData] = useState({
     nome: "",
     categoria: "",
-    descricao: "",
+    descricao: null,
     link: "",
     cidade: "",
     estado: "",
@@ -80,6 +81,10 @@ export default function CreateGroup() {
     setFormData(prev => ({ ...prev, cidade: e.target.value }));
   };
 
+  const handleDescricaoChange = (json) => {
+    setFormData(prev => ({ ...prev, descricao: json }));
+  };
+
   const handleBannerChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -108,7 +113,11 @@ export default function CreateGroup() {
     setLoading(true);
     setFeedback(null);
     try {
-      const response = await createGroup(formData);
+      const payload = {
+        ...formData,
+        descricao: formData.descricao ? JSON.stringify(formData.descricao) : ""
+      };
+      const response = await createGroup(payload);
       const groupId = response.data?.id || response.data;
 
       if (bannerFile && groupId) {
@@ -151,7 +160,11 @@ export default function CreateGroup() {
         </div>
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Descrição</label>
-          <textarea name="descricao" value={formData.descricao} onChange={handleChange} required rows={5} className="border-2 rounded-lg px-3 py-2 resize-none" />
+          <MarkdownEditor
+            value={formData.descricao}
+            onChange={handleDescricaoChange}
+            placeholder="Descreva o grupo, objetivos, público-alvo..."
+          />
         </div>
         
         <div className="flex flex-col gap-1">

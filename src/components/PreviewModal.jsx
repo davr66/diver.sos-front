@@ -6,6 +6,7 @@ import locationIcon from '../assets/job-applications/location.svg';
 import workModeIcon from '../assets/job-applications/work-mode.svg';
 import verifiedIcon from '../assets/groups/verified.svg';
 import SaveBtn from './SaveBtn';
+import RichTextViewer from './RichTextViewer';
 
 export default function PreviewModal({ isOpen, onClose, type, item }) {
   const api = import.meta.env.VITE_API_URL;
@@ -125,9 +126,9 @@ export default function PreviewModal({ isOpen, onClose, type, item }) {
                     </div>
 
                     <div className='flex flex-col py-4 gap-5'>
-                      <div className='prose prose-sm max-w-none whitespace-pre-line leading-relaxed break-words overflow-wrap-anywhere text-sm'>
-                        {fullData.description || ''}
-                      </div>
+                      {fullData.description && (
+                        <RichTextViewer content={fullData.description} className="prose prose-sm max-w-none text-sm" />
+                      )}
                       {fullData.skills && fullData.skills.length > 0 && (
                         <div>
                           <h2 className='font-semibold text-lg mb-2'>Habilidades</h2>
@@ -164,9 +165,9 @@ export default function PreviewModal({ isOpen, onClose, type, item }) {
                     </div>
 
                     <div className='flex flex-col py-4'>
-                      <div className='prose prose-sm max-w-none whitespace-pre-line leading-relaxed break-words overflow-wrap-anywhere text-sm'>
-                        {fullData.descricao || ''}
-                      </div>
+                      {fullData.descricao && (
+                        <RichTextViewer content={fullData.descricao} className="prose prose-sm max-w-none text-sm" />
+                      )}
                     </div>
                   </div>
                 </div>

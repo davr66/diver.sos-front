@@ -4,7 +4,9 @@ import { editGroup, appendGroupBanner, getGroupById } from "../services/api";
 import InputField from "../components/InputField";
 import SearchableSelect from "../components/SearchableSelect";
 import Feedback from "../components/Feedback";
-import Loading from "../components/Loading";import BackBtn from "../components/BackBtn";
+import Loading from "../components/Loading";
+import BackBtn from "../components/BackBtn";
+import MarkdownEditor from "../components/MarkdownEditor";
 export default function EditGroup() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -19,7 +21,7 @@ export default function EditGroup() {
   const [formData, setFormData] = useState({
     nome: "",
     categoria: "",
-    descricao: "",
+    descricao: null,
     link: "",
     cidade: "",
     estado: "",
@@ -58,10 +60,13 @@ export default function EditGroup() {
       try {
         const response = await getGroupById(id);
         const g = response.data;
+        const descricaoRaw = g.descricao || g.description || "";
+        let descricaoParsed = null;
+        try { descricaoParsed = descricaoRaw ? JSON.parse(descricaoRaw) : null; } catch { descricaoParsed = null; }
         setFormData({
           nome: g.nome || g.name || "",
           categoria: g.categoria || g.category || "",
-          descricao: g.descricao || g.description || "",
+          descricao: descricaoParsed,
           link: g.link || g.url || "",
           cidade: g.cidade || g.city || "",
           estado: g.estado || g.uf || "",
@@ -85,6 +90,10 @@ export default function EditGroup() {
   };
   const handleCityChange = (e) => {
     setFormData(prev => ({ ...prev, cidade: e.target.value }));
+  };
+
+  const handleDescricaoChange = (json) => {
+    setFormData(prev => ({ ...prev, descricao: json }));
   };
 
   const handleBannerChange = (e) => {
@@ -115,7 +124,11 @@ export default function EditGroup() {
     setSubmitting(true);
     setFeedback(null);
     try {
-      await editGroup(id, formData);
+      const payload = {
+        ...formData,
+        descricao: formData.descricao ? JSON.stringify(formData.descricao) : ""
+      };
+      await editGroup(id, payload);
 
       if (bannerFile) {
         try {
@@ -155,7 +168,11 @@ export default function EditGroup() {
         </div>
         <div className="flex flex-col gap-1">
           <label className="font-semibold">Descrição</label>
-          <textarea name="descricao" value={formData.descricao} onChange={handleChange} required rows={5} className="border-2 rounded-lg px-3 py-2 resize-none" />
+          <MarkdownEditor
+            value={formData.descricao}
+            onChange={handleDescricaoChange}
+            placeholder="Descreva o grupo, objetivos, público-alvo..."
+          />
         </div>
 
         <div className="flex flex-col gap-1">
